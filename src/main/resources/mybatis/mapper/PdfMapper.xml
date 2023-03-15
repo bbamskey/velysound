@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.vely.back.mapper.PdftMapper">
+    <!-- PDF 조회 -->
+    <select id="getListPdf" parameterType="paramMap" resultType="resultMap">
+        /* PDF 조회 : PdftMapper.getListPdf */
+        SELECT
+            T1.*
+        FROM PDF T1
+        WHERE T1.DELETE_YN = 'N'
+            AND T1.SHEET_ID = #{sheetId}
+            AND T1.SHEET_KEY = #{sheetKey}
+    </select>
+
+    <!-- PDF 다운로드 횟수 증가 -->
+    <update id="updatePdfDownCount" parameterType="paramMap">
+        /* PDF 조회 : PdftMapper.updatePdfDownCount */
+        UPDATE PDF
+        SET ALT_ID = #{userNum}
+            , ALT_DT = NOW()
+            , PDF_LAST_DOWN_DT = NOW()
+            , PDF_DOWN_COUNT = PDF_DOWN_COUNT + 1
+        WHERE T1.DELETE_YN = 'N'
+            AND T1.PDF_ID = #{pdfId}
+            AND T1.SHEET_ID = #{sheetId}
+            AND T1.SHEET_KEY = #{sheetKey}
+    </update>
+</mapper>
