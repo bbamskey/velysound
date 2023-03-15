@@ -7,6 +7,11 @@
 		<meta http-equiv="X-UA-Compatible" content="IE=edge" />
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 		<title>Document</title>
+
+		<script src="https://code.jquery.com/jquery-3.6.0.js"></script>
+		<script src="/js/lib/swiper.min.js"></script>
+		<script src="/js/lib/template.js"></script>
+		<script src="/js/lib/ui.js"></script>
 	</head>
 	<body>
 		<tiles:insertAttribute name="top"/>
