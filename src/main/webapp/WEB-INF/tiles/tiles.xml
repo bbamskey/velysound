@@ -5,21 +5,21 @@
 <tiles-definitions>
 	<!-- Header / Footer가 제외된 화면 -->
 	<definition name="layout" template="/WEB-INF/tiles/layout/frameNoHeaderFooter.jsp">
-		<put-attribute name="body" value="" />
+		<put-attribute name="body" value=""/>
 	</definition>
 
 	<definition name="/error/*" extends="layout">
-		<put-attribute name="body" value="/WEB-INF/views/error/{1}.jsp" />
+		<put-attribute name="body" value="/WEB-INF/views/error/{1}.jsp"/>
 	</definition>
 
 	<!-- Header / Footer가 들어간 기본 화면 -->
 	<definition name="frame" template="/WEB-INF/tiles/layout/frame.jsp">
-		<put-attribute name="top" value="/WEB-INF/tiles/layout/top.jsp" />
-		<put-attribute name="body" value="" />
-		<put-attribute name="bottom" value="/WEB-INF/tiles/layout/bottom.jsp" />
+		<put-attribute name="top" value="/WEB-INF/tiles/layout/header.jsp"/>
+		<put-attribute name="body" value=""/>
+		<put-attribute name="bottom" value="/WEB-INF/tiles/layout/footer.jsp"/>
 	</definition>
 
 	<definition name="/*/*" extends="frame">
-		<put-attribute name="body" value="/WEB-INF/views/{1}/{2}.jsp" />
+		<put-attribute name="body" value="/WEB-INF/views/{1}/{2}.jsp"/>
 	</definition>
 </tiles-definitions>

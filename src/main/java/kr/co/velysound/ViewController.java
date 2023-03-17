@@ -7,9 +7,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @Controller
 public class ViewController {
 
-	@RequestMapping("/main")
+	@RequestMapping("/")
 	public String Hello(Model model) {
-		model.addAttribute("name", "velysound");
-		return "/main";
+		return "/main/main";
 	}
 }
