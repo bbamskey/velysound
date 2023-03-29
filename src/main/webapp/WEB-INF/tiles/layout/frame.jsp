@@ -1,21 +1,30 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
-<%@ taglib uri="http://tiles.apache.org/tags-tiles" prefix="tiles"%>
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
+<%@ taglib uri="http://tiles.apache.org/tags-tiles" prefix="tiles" %>
 <!DOCTYPE html>
 <html lang="en">
-	<head>
-		<meta charset="UTF-8" />
-		<meta http-equiv="X-UA-Compatible" content="IE=edge" />
-		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-		<title>Document</title>
+<head>
+	<meta charset="utf-8"/>
+	<meta name="viewport"
+	      content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no"/>
+	<meta name="HandheldFriendly" content="true"/>
+	<meta name="format-detection" content="telephone=no"/>
+	<meta name="theme-color" content="#7047aa"/>
+	<meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+	<title>VELY SOUND</title>
+	<link rel="shortcut icon" href="/assets/images/layout/favicon.ico" type="image/x-icon"/>
+	<link rel="stylesheet" type="text/css" href="/assets/css/style.css"/>
 
-		<script src="https://code.jquery.com/jquery-3.6.0.js"></script>
-		<script src="/js/lib/swiper.min.js"></script>
-		<script src="/js/lib/template.js"></script>
-		<script src="/js/lib/ui.js"></script>
-	</head>
-	<body>
-		<tiles:insertAttribute name="top"/>
-		<tiles:insertAttribute name="body"/>
-		<tiles:insertAttribute name="bottom"/>
-	</body>
+	<script src="https://code.jquery.com/jquery-3.6.0.js"></script>
+	<script src="/assets/js/sample.js"></script>
+	<script src="/assets/js/swiper.min.js"></script>
+	<script src="/assets/js/template2.js"></script>
+	<script src="/assets/js/ui.js"></script>
+</head>
+<body>
+<div id="wrap">
+	<tiles:insertAttribute name="header"/>
+	<tiles:insertAttribute name="body"/>
+	<tiles:insertAttribute name="footer"/>
+</div>
+</body>
 </html>

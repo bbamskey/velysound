@@ -1,3 +1,20 @@
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 /***** imgLiquid *****/
 /*
 imgLiquid v0.9.944 / 03-05-2013
@@ -29,12 +46,15 @@ ex:
 */
 //
 
-var imgLiquid = imgLiquid || { VER: '0.9.944' };
+
+var imgLiquid = imgLiquid || {VER: '0.9.944'};
 imgLiquid.bgs_Available = false;
 imgLiquid.bgs_CheckRunned = false;
 imgLiquid.injectCss = '.imgLiquid img {visibility:hidden}';
 
+
 (function ($) {
+
 	// ___________________________________________________________________
 
 	function checkBgsIsavailable() {
@@ -44,43 +64,49 @@ imgLiquid.injectCss = '.imgLiquid img {visibility:hidden}';
 		var spanBgs = $('<span style="background-size:cover" />');
 		$('body').append(spanBgs);
 
-		!(function () {
+		!function () {
 			var bgs_Check = spanBgs[0];
 			if (!bgs_Check || !window.getComputedStyle) return;
 			var compStyle = window.getComputedStyle(bgs_Check, null);
 			if (!compStyle || !compStyle.backgroundSize) return;
-			imgLiquid.bgs_Available = compStyle.backgroundSize === 'cover';
-		})();
+			imgLiquid.bgs_Available = (compStyle.backgroundSize === 'cover');
+		}();
 
 		spanBgs.remove();
 	}
+
+
+
+
 
 	// ___________________________________________________________________
 
 	$.fn.extend({
 		imgLiquid: function (options) {
+
 			this.defaults = {
 				fill: true,
-				verticalAlign: 'center', //	'top'	//	'bottom' // '50%'  // '10%'
-				horizontalAlign: 'center', //	'left'	//	'right'  // '50%'  // '10%'
+				verticalAlign: 'center',			//	'top'	//	'bottom' // '50%'  // '10%'
+				horizontalAlign: 'center',			//	'left'	//	'right'  // '50%'  // '10%'
 				useBackgroundSize: true,
 				useDataHtmlAttr: true,
 
-				responsive: true /* Only for use with BackgroundSize false (or old browsers) */,
-				delay: 0 /* Only for use with BackgroundSize false (or old browsers) */,
-				fadeInTime: 0 /* Only for use with BackgroundSize false (or old browsers) */,
-				removeBoxBackground: true /* Only for use with BackgroundSize false (or old browsers) */,
-				hardPixels: true /* Only for use with BackgroundSize false (or old browsers) */,
-				responsiveCheckTime: 500 /* Only for use with BackgroundSize false (or old browsers) */ /* time to check div resize */,
-				timecheckvisibility: 500 /* Only for use with BackgroundSize false (or old browsers) */ /* time to recheck if visible/loaded */,
+				responsive: true,					/* Only for use with BackgroundSize false (or old browsers) */
+				delay: 0,							/* Only for use with BackgroundSize false (or old browsers) */
+				fadeInTime: 0,						/* Only for use with BackgroundSize false (or old browsers) */
+				removeBoxBackground: true,			/* Only for use with BackgroundSize false (or old browsers) */
+				hardPixels: true,					/* Only for use with BackgroundSize false (or old browsers) */
+				responsiveCheckTime: 500,			/* Only for use with BackgroundSize false (or old browsers) */ /* time to check div resize */
+				timecheckvisibility: 500,			/* Only for use with BackgroundSize false (or old browsers) */ /* time to recheck if visible/loaded */
 
 				// CALLBACKS
-				onStart: null, // no-params
-				onFinish: null, // no-params
-				onItemStart: null, // params: (index, container, img )
-				onItemFinish: null, // params: (index, container, img )
-				onItemError: null, // params: (index, container, img )
+				onStart: null,						// no-params
+				onFinish: null,						// no-params
+				onItemStart: null,					// params: (index, container, img )
+				onItemFinish: null,					// params: (index, container, img )
+				onItemError: null					// params: (index, container, img )
 			};
+
 
 			checkBgsIsavailable();
 			var imgLiquidRoot = this;
@@ -92,18 +118,20 @@ imgLiquid.injectCss = '.imgLiquid img {visibility:hidden}';
 			// CallBack
 			if (this.settings.onStart) this.settings.onStart();
 
+
+
+
 			// ___________________________________________________________________
 
 			return this.each(function ($i) {
+
 				// MAIN >> each for image
 
 				var settings = imgLiquidRoot.settings,
 					$imgBoxCont = $(this),
-					$img = $('img:first', $imgBoxCont);
-				if (!$img.length) {
-					onError();
-					return;
-				}
+					$img = $('img:first',$imgBoxCont);
+				if (!$img.length) {onError(); return;}
+
 
 				// Extend settings
 				if (!$img.data('imgLiquid_settings')) {
@@ -117,41 +145,46 @@ imgLiquid.injectCss = '.imgLiquid img {visibility:hidden}';
 				}
 				$img.data('imgLiquid_settings', settings);
 
+
 				// Start CallBack
 				if (settings.onItemStart) settings.onItemStart($i, $imgBoxCont, $img); /* << CallBack */
 
+
 				// Process
-				if (imgLiquid.bgs_Available && settings.useBackgroundSize) processBgSize();
-				else processOldMethod();
+				if (imgLiquid.bgs_Available && settings.useBackgroundSize)
+					processBgSize();
+				else
+					processOldMethod();
+
 
 				// END MAIN <<
+
+
+
 
 				// ___________________________________________________________________
 
 				function processBgSize() {
+
 					// Check change img src
 					if ($imgBoxCont.css('background-image').indexOf(encodeURI($img.attr('src'))) === -1) {
 						// Change
-						$imgBoxCont.css({ 'background-image': 'url("' + encodeURI($img.attr('src')) + '")' });
+						$imgBoxCont.css({'background-image': 'url("' + encodeURI($img.attr('src')) + '")'});
 					}
 
 					$imgBoxCont.css({
-						'background-size': settings.fill ? 'cover' : 'contain',
-						'background-position': (
-							settings.horizontalAlign +
-							' ' +
-							settings.verticalAlign
-						).toLowerCase(),
-						'background-repeat': 'no-repeat',
+						'background-size':		(settings.fill) ? 'cover' : 'contain',
+						'background-position':	(settings.horizontalAlign + ' ' + settings.verticalAlign).toLowerCase(),
+						'background-repeat':	'no-repeat'
 					});
 
 					$('a:first', $imgBoxCont).css({
-						display: 'block',
-						width: '100%',
-						height: '100%',
+						'display':	'block',
+						'width':	'100%',
+						'height':	'100%'
 					});
 
-					$('img', $imgBoxCont).css({ display: 'none' });
+					$('img', $imgBoxCont).css({'display': 'none'});
 
 					if (settings.onItemFinish) settings.onItemFinish($i, $imgBoxCont, $img); /* << CallBack */
 
@@ -160,11 +193,16 @@ imgLiquid.injectCss = '.imgLiquid img {visibility:hidden}';
 					checkFinish();
 				}
 
+
+
+
 				// ___________________________________________________________________
 
 				function processOldMethod() {
+
 					// Check change img src
 					if ($img.data('oldSrc') && $img.data('oldSrc') !== $img.attr('src')) {
+
 						/* Clone & Reset img */
 						var $imgCopy = $img.clone().removeAttr('style');
 						$imgCopy.data('imgLiquid_settings', $img.data('imgLiquid_settings'));
@@ -178,48 +216,43 @@ imgLiquid.injectCss = '.imgLiquid img {visibility:hidden}';
 						return;
 					}
 
+
 					// Reproceess?
 					if ($img.data('imgLiquid_oldProcessed')) {
-						makeOldProcess();
-						return;
+						makeOldProcess(); return;
 					}
+
 
 					// Set data
 					$img.data('imgLiquid_oldProcessed', false);
 					$img.data('oldSrc', $img.attr('src'));
 
+
 					// Hide others images
 					$('img:not(:first)', $imgBoxCont).css('display', 'none');
 
+
 					// CSSs
-					$imgBoxCont.css({ overflow: 'hidden' });
+					$imgBoxCont.css({'overflow': 'hidden'});
 					$img.fadeTo(0, 0).removeAttr('width').removeAttr('height').css({
-						visibility: 'visible',
+						'visibility': 'visible',
 						'max-width': 'none',
 						'max-height': 'none',
-						width: 'auto',
-						height: 'auto',
-						display: 'block',
+						'width': 'auto',
+						'height': 'auto',
+						'display': 'block'
 					});
+
 
 					// CheckErrors
 					$img.on('error', onError);
 					$img[0].onerror = onError;
 
+
 					// loop until load
 					function onLoad() {
-						if (
-							$img.data('imgLiquid_error') ||
-							$img.data('imgLiquid_loaded') ||
-							$img.data('imgLiquid_oldProcessed')
-						)
-							return;
-						if (
-							$imgBoxCont.is(':visible') &&
-							$img[0].complete &&
-							$img[0].width > 0 &&
-							$img[0].height > 0
-						) {
+						if ($img.data('imgLiquid_error') || $img.data('imgLiquid_loaded') || $img.data('imgLiquid_oldProcessed')) return;
+						if ($imgBoxCont.is(':visible') && $img[0].complete && $img[0].width > 0 && $img[0].height > 0) {
 							$img.data('imgLiquid_loaded', true);
 							setTimeout(makeOldProcess, $i * settings.delay);
 						} else {
@@ -227,13 +260,18 @@ imgLiquid.injectCss = '.imgLiquid img {visibility:hidden}';
 						}
 					}
 
+
 					onLoad();
 					checkResponsive();
 				}
 
+
+
+
 				// ___________________________________________________________________
 
 				function checkResponsive() {
+
 					/* Only for oldProcessed method (background-size dont need) */
 
 					if (!settings.responsive && !$img.data('imgLiquid_oldProcessed')) return;
@@ -241,14 +279,15 @@ imgLiquid.injectCss = '.imgLiquid img {visibility:hidden}';
 
 					settings = $img.data('imgLiquid_settings');
 
-					$imgBoxCont.actualSize =
-						$imgBoxCont.get(0).offsetWidth + $imgBoxCont.get(0).offsetHeight / 10000;
-					if ($imgBoxCont.sizeOld && $imgBoxCont.actualSize !== $imgBoxCont.sizeOld)
-						makeOldProcess();
+					$imgBoxCont.actualSize = $imgBoxCont.get(0).offsetWidth + ($imgBoxCont.get(0).offsetHeight / 10000);
+					if ($imgBoxCont.sizeOld && $imgBoxCont.actualSize !== $imgBoxCont.sizeOld) makeOldProcess();
 
 					$imgBoxCont.sizeOld = $imgBoxCont.actualSize;
 					setTimeout(checkResponsive, settings.responsiveCheckTime);
 				}
+
+
+
 
 				// ___________________________________________________________________
 
@@ -259,6 +298,9 @@ imgLiquid.injectCss = '.imgLiquid img {visibility:hidden}';
 					checkFinish();
 				}
 
+
+
+
 				// ___________________________________________________________________
 
 				function getSettingsOverwrite() {
@@ -266,51 +308,41 @@ imgLiquid.injectCss = '.imgLiquid img {visibility:hidden}';
 
 					if (imgLiquidRoot.settings.useDataHtmlAttr) {
 						var dif = $imgBoxCont.attr('data-imgLiquid-fill'),
-							ha = $imgBoxCont.attr('data-imgLiquid-horizontalAlign'),
-							va = $imgBoxCont.attr('data-imgLiquid-verticalAlign');
+							ha =  $imgBoxCont.attr('data-imgLiquid-horizontalAlign'),
+							va =  $imgBoxCont.attr('data-imgLiquid-verticalAlign');
 
-						if (dif === 'true' || dif === 'false') SettingsOverwrite.fill = Boolean(dif === 'true');
-						if (
-							ha !== undefined &&
-							(ha === 'left' || ha === 'center' || ha === 'right' || ha.indexOf('%') !== -1)
-						)
-							SettingsOverwrite.horizontalAlign = ha;
-						if (
-							va !== undefined &&
-							(va === 'top' || va === 'bottom' || va === 'center' || va.indexOf('%') !== -1)
-						)
-							SettingsOverwrite.verticalAlign = va;
+						if (dif === 'true' || dif === 'false') SettingsOverwrite.fill = Boolean (dif === 'true');
+						if (ha !== undefined && (ha === 'left' || ha === 'center' || ha === 'right' || ha.indexOf('%') !== -1)) SettingsOverwrite.horizontalAlign = ha;
+						if (va !== undefined && (va === 'top' ||  va === 'bottom' || va === 'center' || va.indexOf('%') !== -1)) SettingsOverwrite.verticalAlign = va;
 					}
 
-					if (imgLiquid.isIE && imgLiquidRoot.settings.ieFadeInDisabled)
-						SettingsOverwrite.fadeInTime = 0; //ie no anims
+					if (imgLiquid.isIE && imgLiquidRoot.settings.ieFadeInDisabled) SettingsOverwrite.fadeInTime = 0; //ie no anims
 					return SettingsOverwrite;
 				}
 
+
+
+
+
 				// ___________________________________________________________________
 
-				function makeOldProcess() {
-					/* Only for old browsers, or useBackgroundSize seted false */
+				function makeOldProcess() { /* Only for old browsers, or useBackgroundSize seted false */
+
 					// Calculate size
-					var w,
-						h,
-						wn,
-						hn,
-						ha,
-						va,
-						hdif,
-						vdif,
+					var w, h, wn, hn, ha, va, hdif, vdif,
 						margT = 0,
 						margL = 0,
 						$imgCW = $imgBoxCont.width(),
 						$imgCH = $imgBoxCont.height();
 
+
 					// Save original sizes
-					if ($img.data('owidth') === undefined) $img.data('owidth', $img[0].width);
+					if ($img.data('owidth')	=== undefined) $img.data('owidth',	$img[0].width);
 					if ($img.data('oheight') === undefined) $img.data('oheight', $img[0].height);
 
+
 					// Compare ratio
-					if (settings.fill === $imgCW / $imgCH >= $img.data('owidth') / $img.data('oheight')) {
+					if (settings.fill === ($imgCW / $imgCH) >= ($img.data('owidth') / $img.data('oheight'))) {
 						w = '100%';
 						h = 'auto';
 						wn = Math.floor($imgCW);
@@ -328,10 +360,11 @@ imgLiquid.injectCss = '.imgLiquid img {visibility:hidden}';
 					if (ha === 'left') margL = 0;
 					if (ha === 'center') margL = hdif * 0.5;
 					if (ha === 'right') margL = hdif;
-					if (ha.indexOf('%') !== -1) {
-						ha = parseInt(ha.replace('%', ''), 10);
+					if (ha.indexOf('%') !== -1){
+						ha = parseInt (ha.replace('%',''), 10);
 						if (ha > 0) margL = hdif * ha * 0.01;
 					}
+
 
 					// Align Y
 					va = settings.verticalAlign.toLowerCase();
@@ -339,22 +372,21 @@ imgLiquid.injectCss = '.imgLiquid img {visibility:hidden}';
 					if (va === 'left') margT = 0;
 					if (va === 'center') margT = vdif * 0.5;
 					if (va === 'bottom') margT = vdif;
-					if (va.indexOf('%') !== -1) {
-						va = parseInt(va.replace('%', ''), 10);
+					if (va.indexOf('%') !== -1){
+						va = parseInt (va.replace('%',''), 10);
 						if (va > 0) margT = vdif * va * 0.01;
 					}
 
+
 					// Add Css
-					if (settings.hardPixels) {
-						w = wn;
-						h = hn;
-					}
+					if (settings.hardPixels) {w = wn; h = hn;}
 					$img.css({
-						width: w,
-						height: h,
+						'width': w,
+						'height': h,
 						'margin-left': Math.floor(margL),
-						'margin-top': Math.floor(margT),
+						'margin-top': Math.floor(margT)
 					});
+
 
 					// FadeIn > Only first time
 					if (!$img.data('imgLiquid_oldProcessed')) {
@@ -365,23 +397,30 @@ imgLiquid.injectCss = '.imgLiquid img {visibility:hidden}';
 						$imgBoxCont.addClass('imgLiquid_ready');
 					}
 
+
 					if (settings.onItemFinish) settings.onItemFinish($i, $imgBoxCont, $img); /* << CallBack */
 					checkFinish();
 				}
 
+
+
+
 				// ___________________________________________________________________
 
-				function checkFinish() {
-					/* Check callBack */ if ($i === imgLiquidRoot.length - 1)
-						if (imgLiquidRoot.settings.onFinish) imgLiquidRoot.settings.onFinish();
+				function checkFinish() { /* Check callBack */
+					if ($i === imgLiquidRoot.length - 1) if (imgLiquidRoot.settings.onFinish) imgLiquidRoot.settings.onFinish();
 				}
+
+
 			});
-		},
+		}
 	});
 })(jQuery);
 
+
+
 // Inject css styles ______________________________________________________
-!(function () {
+!function () {
 	var css = imgLiquid.injectCss,
 		head = document.getElementsByTagName('head')[0],
 		style = document.createElement('style');
@@ -392,7 +431,13 @@ imgLiquid.injectCss = '.imgLiquid img {visibility:hidden}';
 		style.appendChild(document.createTextNode(css));
 	}
 	head.appendChild(style);
-})();
+}();
+
+
+
+
+
+
 
 /*
  *	jQuery carouFredSel 6.2.1
@@ -407,39 +452,50 @@ imgLiquid.injectCss = '.imgLiquid img {visibility:hidden}';
  *	http://en.wikipedia.org/wiki/GNU_General_Public_License
  */
 
-(function ($) {
+
+(function($) {
+
+
 	//	LOCAL
 
-	if ($.fn.carouFredSel) {
+	if ( $.fn.carouFredSel )
+	{
 		return;
 	}
 
-	$.fn.caroufredsel = $.fn.carouFredSel = function (options, configs) {
+	$.fn.caroufredsel = $.fn.carouFredSel = function(options, configs)
+	{
+
 		//	no element
-		if (this.length == 0) {
-			debug(true, 'No element found for "' + this.selector + '".');
+		if (this.length == 0)
+		{
+			debug( true, 'No element found for "' + this.selector + '".' );
 			return this;
 		}
 
 		//	multiple elements
-		if (this.length > 1) {
-			return this.each(function () {
+		if (this.length > 1)
+		{
+			return this.each(function() {
 				$(this).carouFredSel(options, configs);
 			});
 		}
+
 
 		var $cfs = this,
 			$tt0 = this[0],
 			starting_position = false;
 
-		if ($cfs.data('_cfs_isCarousel')) {
+		if ($cfs.data('_cfs_isCarousel'))
+		{
 			starting_position = $cfs.triggerHandler('_cfs_triggerEvent', 'currentPosition');
 			$cfs.trigger('_cfs_triggerEvent', ['destroy', true]);
 		}
 
 		var FN = {};
 
-		FN._init = function (o, setOrig, start) {
+		FN._init = function(o, setOrig, start)
+		{
 			o = go_getObject($tt0, o);
 
 			o.items = go_getItemsObject($tt0, o.items);
@@ -451,19 +507,21 @@ imgLiquid.injectCss = '.imgLiquid img {visibility:hidden}';
 			o.swipe = go_getSwipeObject($tt0, o.swipe);
 			o.mousewheel = go_getMousewheelObject($tt0, o.mousewheel);
 
-			if (setOrig) {
+			if (setOrig)
+			{
 				opts_orig = $.extend(true, {}, $.fn.carouFredSel.defaults, o);
 			}
 
 			opts = $.extend(true, {}, $.fn.carouFredSel.defaults, o);
 			opts.d = cf_getDimensions(opts);
 
-			crsl.direction = opts.direction == 'up' || opts.direction == 'left' ? 'next' : 'prev';
+			crsl.direction = (opts.direction == 'up' || opts.direction == 'left') ? 'next' : 'prev';
 
-			var a_itm = $cfs.children(),
+			var	a_itm = $cfs.children(),
 				avail_primary = ms_getParentSize($wrp, opts, 'width');
 
-			if (is_true(opts.cookie)) {
+			if (is_true(opts.cookie))
+			{
 				opts.cookie = 'caroufredsel_cookie_' + conf.serialNumber;
 			}
 
@@ -475,93 +533,111 @@ imgLiquid.injectCss = '.imgLiquid img {visibility:hidden}';
 			opts[opts.d['height']] = in_complementSecondarySize(opts[opts.d['height']], opts, a_itm);
 
 			//	primary size not set for a responsive carousel
-			if (opts.responsive) {
-				if (!is_percentage(opts[opts.d['width']])) {
+			if (opts.responsive)
+			{
+				if (!is_percentage(opts[opts.d['width']]))
+				{
 					opts[opts.d['width']] = '100%';
 				}
 			}
 
 			//	primary size is percentage
-			if (is_percentage(opts[opts.d['width']])) {
+			if (is_percentage(opts[opts.d['width']]))
+			{
 				crsl.upDateOnWindowResize = true;
 				crsl.primarySizePercentage = opts[opts.d['width']];
 				opts[opts.d['width']] = ms_getPercentage(avail_primary, crsl.primarySizePercentage);
-				if (!opts.items.visible) {
+				if (!opts.items.visible)
+				{
 					opts.items.visibleConf.variable = true;
 				}
 			}
 
-			if (opts.responsive) {
+			if (opts.responsive)
+			{
 				opts.usePadding = false;
 				opts.padding = [0, 0, 0, 0];
 				opts.align = false;
 				opts.items.visibleConf.variable = false;
-			} else {
+			}
+			else
+			{
 				//	visible-items not set
-				if (!opts.items.visible) {
+				if (!opts.items.visible)
+				{
 					opts = in_complementVisibleItems(opts, avail_primary);
 				}
 
 				//	primary size not set -> calculate it or set to "variable"
-				if (!opts[opts.d['width']]) {
-					if (
-						!opts.items.visibleConf.variable &&
-						is_number(opts.items[opts.d['width']]) &&
-						opts.items.filter == '*'
-					) {
+				if (!opts[opts.d['width']])
+				{
+					if (!opts.items.visibleConf.variable && is_number(opts.items[opts.d['width']]) && opts.items.filter == '*')
+					{
 						opts[opts.d['width']] = opts.items.visible * opts.items[opts.d['width']];
 						opts.align = false;
-					} else {
+					}
+					else
+					{
 						opts[opts.d['width']] = 'variable';
 					}
 				}
 				//	align not set -> set to center if primary size is number
-				if (is_undefined(opts.align)) {
-					opts.align = is_number(opts[opts.d['width']]) ? 'center' : false;
+				if (is_undefined(opts.align))
+				{
+					opts.align = (is_number(opts[opts.d['width']]))
+						? 'center'
+						: false;
 				}
 				//	set variabe visible-items
-				if (opts.items.visibleConf.variable) {
+				if (opts.items.visibleConf.variable)
+				{
 					opts.items.visible = gn_getVisibleItemsNext(a_itm, opts, 0);
 				}
 			}
 
 			//	set visible items by filter
-			if (opts.items.filter != '*' && !opts.items.visibleConf.variable) {
+			if (opts.items.filter != '*' && !opts.items.visibleConf.variable)
+			{
 				opts.items.visibleConf.org = opts.items.visible;
 				opts.items.visible = gn_getVisibleItemsNextFilter(a_itm, opts, 0);
 			}
 
-			opts.items.visible = cf_getItemsAdjust(
-				opts.items.visible,
-				opts,
-				opts.items.visibleConf.adjust,
-				$tt0,
-			);
+			opts.items.visible = cf_getItemsAdjust(opts.items.visible, opts, opts.items.visibleConf.adjust, $tt0);
 			opts.items.visibleConf.old = opts.items.visible;
 
-			if (opts.responsive) {
-				if (!opts.items.visibleConf.min) {
+			if (opts.responsive)
+			{
+				if (!opts.items.visibleConf.min)
+				{
 					opts.items.visibleConf.min = opts.items.visible;
 				}
-				if (!opts.items.visibleConf.max) {
+				if (!opts.items.visibleConf.max)
+				{
 					opts.items.visibleConf.max = opts.items.visible;
 				}
 				opts = in_getResponsiveValues(opts, a_itm, avail_primary);
-			} else {
+			}
+			else
+			{
 				opts.padding = cf_getPadding(opts.padding);
 
-				if (opts.align == 'top') {
+				if (opts.align == 'top')
+				{
 					opts.align = 'left';
-				} else if (opts.align == 'bottom') {
+				}
+				else if (opts.align == 'bottom')
+				{
 					opts.align = 'right';
 				}
 
-				switch (opts.align) {
+				switch (opts.align)
+				{
 					//	align: center, left or right
 					case 'center':
 					case 'left':
 					case 'right':
-						if (opts[opts.d['width']] != 'variable') {
+						if (opts[opts.d['width']] != 'variable')
+						{
 							opts = in_getAlignPadding(opts, a_itm);
 							opts.usePadding = true;
 						}
@@ -570,25 +646,25 @@ imgLiquid.injectCss = '.imgLiquid img {visibility:hidden}';
 					//	padding
 					default:
 						opts.align = false;
-						opts.usePadding =
+						opts.usePadding = (
 							opts.padding[0] == 0 &&
 							opts.padding[1] == 0 &&
 							opts.padding[2] == 0 &&
 							opts.padding[3] == 0
-								? false
-								: true;
+						) ? false : true;
 						break;
 				}
 			}
 
-			if (!is_number(opts.scroll.duration)) {
+			if (!is_number(opts.scroll.duration))
+			{
 				opts.scroll.duration = 500;
 			}
-			if (is_undefined(opts.scroll.items)) {
-				opts.scroll.items =
-					opts.responsive || opts.items.visibleConf.variable || opts.items.filter != '*'
-						? 'visible'
-						: opts.items.visible;
+			if (is_undefined(opts.scroll.items))
+			{
+				opts.scroll.items = (opts.responsive || opts.items.visibleConf.variable || opts.items.filter != '*')
+					? 'visible'
+					: opts.items.visible;
 			}
 
 			opts.auto = $.extend(true, {}, opts.scroll, opts.auto);
@@ -604,103 +680,108 @@ imgLiquid.injectCss = '.imgLiquid img {visibility:hidden}';
 			opts.swipe = go_complementSwipeObject($tt0, opts.swipe);
 			opts.mousewheel = go_complementMousewheelObject($tt0, opts.mousewheel);
 
-			if (opts.synchronise) {
+			if (opts.synchronise)
+			{
 				opts.synchronise = cf_getSynchArr(opts.synchronise);
 			}
 
+
 			//	DEPRECATED
-			if (opts.auto.onPauseStart) {
+			if (opts.auto.onPauseStart)
+			{
 				opts.auto.onTimeoutStart = opts.auto.onPauseStart;
 				deprecated('auto.onPauseStart', 'auto.onTimeoutStart');
 			}
-			if (opts.auto.onPausePause) {
+			if (opts.auto.onPausePause)
+			{
 				opts.auto.onTimeoutPause = opts.auto.onPausePause;
 				deprecated('auto.onPausePause', 'auto.onTimeoutPause');
 			}
-			if (opts.auto.onPauseEnd) {
+			if (opts.auto.onPauseEnd)
+			{
 				opts.auto.onTimeoutEnd = opts.auto.onPauseEnd;
 				deprecated('auto.onPauseEnd', 'auto.onTimeoutEnd');
 			}
-			if (opts.auto.pauseDuration) {
+			if (opts.auto.pauseDuration)
+			{
 				opts.auto.timeoutDuration = opts.auto.pauseDuration;
 				deprecated('auto.pauseDuration', 'auto.timeoutDuration');
 			}
 			//	/DEPRECATED
-		}; //	/init
 
-		FN._build = function () {
+
+		};	//	/init
+
+
+		FN._build = function() {
 			$cfs.data('_cfs_isCarousel', true);
 
 			var a_itm = $cfs.children(),
-				orgCSS = in_mapCss($cfs, [
-					'textAlign',
-					'float',
-					'position',
-					'top',
-					'right',
-					'bottom',
-					'left',
-					'zIndex',
-					'width',
-					'height',
-					'marginTop',
-					'marginRight',
-					'marginBottom',
-					'marginLeft',
-				]),
+				orgCSS = in_mapCss($cfs, ['textAlign', 'float', 'position', 'top', 'right', 'bottom', 'left', 'zIndex', 'width', 'height', 'marginTop', 'marginRight', 'marginBottom', 'marginLeft']),
 				newPosition = 'relative';
 
-			switch (orgCSS.position) {
+			switch (orgCSS.position)
+			{
 				case 'absolute':
 				case 'fixed':
 					newPosition = orgCSS.position;
 					break;
 			}
 
-			if (conf.wrapper == 'parent') {
+			if (conf.wrapper == 'parent')
+			{
 				sz_storeOrigCss($wrp);
-			} else {
+			}
+			else
+			{
 				$wrp.css(orgCSS);
 			}
 			$wrp.css({
-				overflow: 'hidden',
-				position: newPosition,
+				'overflow'		: 'hidden',
+				'position'		: newPosition
 			});
 
 			sz_storeOrigCss($cfs);
 			$cfs.data('_cfs_origCssZindex', orgCSS.zIndex);
 			$cfs.css({
-				textAlign: 'left',
-				float: 'none',
+				'textAlign'		: 'left',
+				'float'			: 'none',
 
-				position: 'absolute',
-				top: 0,
-				right: 'auto',
-				bottom: 'auto',
-				left: 0,
-				marginTop: 0,
-				marginRight: 0,
-				marginBottom: 0,
-				marginLeft: 0,
+
+				'position'		: 'absolute',
+				'top'			: 0,
+				'right'			: 'auto',
+				'bottom'		: 'auto',
+				'left'			: 0,
+				'marginTop'		: 0,
+				'marginRight'	: 0,
+				'marginBottom'	: 0,
+				'marginLeft'	: 0
 			});
 
 			sz_storeMargin(a_itm, opts);
 			sz_storeOrigCss(a_itm);
-			if (opts.responsive) {
+			if (opts.responsive)
+			{
 				sz_setResponsiveSizes(opts, a_itm);
 			}
-		}; //	/build
 
-		FN._bind_events = function () {
+		};	//	/build
+
+
+		FN._bind_events = function() {
 			FN._unbind_events();
 
+
 			//	stop event
-			$cfs.bind(cf_e('stop', conf), function (e, imm) {
+			$cfs.bind(cf_e('stop', conf), function(e, imm) {
 				e.stopPropagation();
 
 				//	button
-				if (!crsl.isStopped) {
-					if (opts.auto.button) {
+				if (!crsl.isStopped)
+				{
+					if (opts.auto.button)
+					{
 						opts.auto.button.addClass(cf_c('stopped', conf));
 					}
 				}
@@ -708,51 +789,62 @@ imgLiquid.injectCss = '.imgLiquid img {visibility:hidden}';
 				//	set stopped
 				crsl.isStopped = true;
 
-				if (opts.auto.play) {
+				if (opts.auto.play)
+				{
 					opts.auto.play = false;
 					$cfs.trigger(cf_e('pause', conf), imm);
 				}
 				return true;
 			});
 
+
 			//	finish event
-			$cfs.bind(cf_e('finish', conf), function (e) {
+			$cfs.bind(cf_e('finish', conf), function(e) {
 				e.stopPropagation();
-				if (crsl.isScrolling) {
+				if (crsl.isScrolling)
+				{
 					sc_stopScroll(scrl);
 				}
 				return true;
 			});
 
+
 			//	pause event
-			$cfs.bind(cf_e('pause', conf), function (e, imm, res) {
+			$cfs.bind(cf_e('pause', conf), function(e, imm, res) {
 				e.stopPropagation();
 				tmrs = sc_clearTimers(tmrs);
 
 				//	immediately pause
-				if (imm && crsl.isScrolling) {
+				if (imm && crsl.isScrolling)
+				{
 					scrl.isStopped = true;
 					var nst = getTime() - scrl.startTime;
 					scrl.duration -= nst;
-					if (scrl.pre) {
+					if (scrl.pre)
+					{
 						scrl.pre.duration -= nst;
 					}
-					if (scrl.post) {
+					if (scrl.post)
+					{
 						scrl.post.duration -= nst;
 					}
 					sc_stopScroll(scrl, false);
 				}
 
 				//	update remaining pause-time
-				if (!crsl.isPaused && !crsl.isScrolling) {
-					if (res) {
+				if (!crsl.isPaused && !crsl.isScrolling)
+				{
+					if (res)
+					{
 						tmrs.timePassed += getTime() - tmrs.startTime;
 					}
 				}
 
 				//	button
-				if (!crsl.isPaused) {
-					if (opts.auto.button) {
+				if (!crsl.isPaused)
+				{
+					if (opts.auto.button)
+					{
 						opts.auto.button.addClass(cf_c('paused', conf));
 					}
 				}
@@ -761,17 +853,19 @@ imgLiquid.injectCss = '.imgLiquid img {visibility:hidden}';
 				crsl.isPaused = true;
 
 				//	pause pause callback
-				if (opts.auto.onTimeoutPause) {
+				if (opts.auto.onTimeoutPause)
+				{
 					var dur1 = opts.auto.timeoutDuration - tmrs.timePassed,
-						perc = 100 - Math.ceil((dur1 * 100) / opts.auto.timeoutDuration);
+						perc = 100 - Math.ceil( dur1 * 100 / opts.auto.timeoutDuration );
 
 					opts.auto.onTimeoutPause.call($tt0, perc, dur1);
 				}
 				return true;
 			});
 
+
 			//	play event
-			$cfs.bind(cf_e('play', conf), function (e, dir, del, res) {
+			$cfs.bind(cf_e('play', conf), function(e, dir, del, res) {
 				e.stopPropagation();
 				tmrs = sc_clearTimers(tmrs);
 
@@ -784,29 +878,36 @@ imgLiquid.injectCss = '.imgLiquid img {visibility:hidden}';
 				del = a[1];
 				res = a[2];
 
-				if (dir != 'prev' && dir != 'next') {
+				if (dir != 'prev' && dir != 'next')
+				{
 					dir = crsl.direction;
 				}
-				if (!is_number(del)) {
+				if (!is_number(del))
+				{
 					del = 0;
 				}
-				if (!is_boolean(res)) {
+				if (!is_boolean(res))
+				{
 					res = false;
 				}
 
 				//	stopped?
-				if (res) {
+				if (res)
+				{
 					crsl.isStopped = false;
 					opts.auto.play = true;
 				}
-				if (!opts.auto.play) {
+				if (!opts.auto.play)
+				{
 					e.stopImmediatePropagation();
 					return debug(conf, 'Carousel stopped: Not scrolling.');
 				}
 
 				//	button
-				if (crsl.isPaused) {
-					if (opts.auto.button) {
+				if (crsl.isPaused)
+				{
+					if (opts.auto.button)
+					{
 						opts.auto.button.removeClass(cf_c('stopped', conf));
 						opts.auto.button.removeClass(cf_c('paused', conf));
 					}
@@ -819,71 +920,82 @@ imgLiquid.injectCss = '.imgLiquid img {visibility:hidden}';
 				//	timeout the scrolling
 				var dur1 = opts.auto.timeoutDuration + del;
 				dur2 = dur1 - tmrs.timePassed;
-				perc = 100 - Math.ceil((dur2 * 100) / dur1);
+				perc = 100 - Math.ceil(dur2 * 100 / dur1);
 
-				if (opts.auto.progress) {
-					tmrs.progress = setInterval(function () {
+				if (opts.auto.progress)
+				{
+					tmrs.progress = setInterval(function() {
 						var pasd = getTime() - tmrs.startTime + tmrs.timePassed,
-							perc = Math.ceil((pasd * 100) / dur1);
+							perc = Math.ceil(pasd * 100 / dur1);
 						opts.auto.progress.updater.call(opts.auto.progress.bar[0], perc);
 					}, opts.auto.progress.interval);
 				}
 
-				tmrs.auto = setTimeout(function () {
-					if (opts.auto.progress) {
+				tmrs.auto = setTimeout(function() {
+					if (opts.auto.progress)
+					{
 						opts.auto.progress.updater.call(opts.auto.progress.bar[0], 100);
 					}
-					if (opts.auto.onTimeoutEnd) {
+					if (opts.auto.onTimeoutEnd)
+					{
 						opts.auto.onTimeoutEnd.call($tt0, perc, dur2);
 					}
-					if (crsl.isScrolling) {
+					if (crsl.isScrolling)
+					{
 						$cfs.trigger(cf_e('play', conf), dir);
-					} else {
+					}
+					else
+					{
 						$cfs.trigger(cf_e(dir, conf), opts.auto);
 					}
 				}, dur2);
 
 				//	pause start callback
-				if (opts.auto.onTimeoutStart) {
+				if (opts.auto.onTimeoutStart)
+				{
 					opts.auto.onTimeoutStart.call($tt0, perc, dur2);
 				}
 
 				return true;
 			});
 
+
 			//	resume event
-			$cfs.bind(cf_e('resume', conf), function (e) {
+			$cfs.bind(cf_e('resume', conf), function(e) {
 				e.stopPropagation();
-				if (scrl.isStopped) {
+				if (scrl.isStopped)
+				{
 					scrl.isStopped = false;
 					crsl.isPaused = false;
 					crsl.isScrolling = true;
 					scrl.startTime = getTime();
 					sc_startScroll(scrl, conf);
-				} else {
+				}
+				else
+				{
 					$cfs.trigger(cf_e('play', conf));
 				}
 				return true;
 			});
 
+
 			//	prev + next events
-			$cfs.bind(cf_e('prev', conf) + ' ' + cf_e('next', conf), function (e, obj, num, clb, que) {
+			$cfs.bind(cf_e('prev', conf)+' '+cf_e('next', conf), function(e, obj, num, clb, que) {
 				e.stopPropagation();
 
 				//	stopped or hidden carousel, don't scroll, don't queue
-				if (crsl.isStopped || $cfs.is(':hidden')) {
+				if (crsl.isStopped || $cfs.is(':hidden'))
+				{
 					e.stopImmediatePropagation();
 					return debug(conf, 'Carousel stopped or hidden: Not scrolling.');
 				}
 
 				//	not enough items
-				var minimum = is_number(opts.items.minimum) ? opts.items.minimum : opts.items.visible + 1;
-				if (minimum > itms.total) {
+				var minimum = (is_number(opts.items.minimum)) ? opts.items.minimum : opts.items.visible + 1;
+				if (minimum > itms.total)
+				{
 					e.stopImmediatePropagation();
-					return debug(
-						conf,
-						'Not enough items (' + itms.total + ' total, ' + minimum + ' needed): Not scrolling.',
-					);
+					return debug(conf, 'Not enough items ('+itms.total+' total, '+minimum+' needed): Not scrolling.');
 				}
 
 				//	get config
@@ -898,43 +1010,53 @@ imgLiquid.injectCss = '.imgLiquid img {visibility:hidden}';
 
 				var eType = e.type.slice(conf.events.prefix.length);
 
-				if (!is_object(obj)) {
+				if (!is_object(obj))
+				{
 					obj = {};
 				}
-				if (is_function(clb)) {
+				if (is_function(clb))
+				{
 					obj.onAfter = clb;
 				}
-				if (is_boolean(que)) {
+				if (is_boolean(que))
+				{
 					obj.queue = que;
 				}
 				obj = $.extend(true, {}, opts[eType], obj);
 
 				//	test conditions callback
-				if (obj.conditions && !obj.conditions.call($tt0, eType)) {
+				if (obj.conditions && !obj.conditions.call($tt0, eType))
+				{
 					e.stopImmediatePropagation();
 					return debug(conf, 'Callback "conditions" returned false.');
 				}
 
-				if (!is_number(num)) {
-					if (opts.items.filter != '*') {
+				if (!is_number(num))
+				{
+					if (opts.items.filter != '*')
+					{
 						num = 'visible';
-					} else {
+					}
+					else
+					{
 						var arr = [num, obj.items, opts[eType].items];
-						for (var a = 0, l = arr.length; a < l; a++) {
+						for (var a = 0, l = arr.length; a < l; a++)
+						{
 							if (is_number(arr[a]) || arr[a] == 'page' || arr[a] == 'visible') {
 								num = arr[a];
 								break;
 							}
 						}
 					}
-					switch (num) {
+					switch(num) {
 						case 'page':
 							e.stopImmediatePropagation();
-							return $cfs.triggerHandler(cf_e(eType + 'Page', conf), [obj, clb]);
+							return $cfs.triggerHandler(cf_e(eType+'Page', conf), [obj, clb]);
 							break;
 
 						case 'visible':
-							if (!opts.items.visibleConf.variable && opts.items.filter == '*') {
+							if (!opts.items.visibleConf.variable && opts.items.filter == '*')
+							{
 								num = opts.items.visible;
 							}
 							break;
@@ -942,7 +1064,8 @@ imgLiquid.injectCss = '.imgLiquid img {visibility:hidden}';
 				}
 
 				//	resume animation, add current to queue
-				if (scrl.isStopped) {
+				if (scrl.isStopped)
+				{
 					$cfs.trigger(cf_e('resume', conf));
 					$cfs.trigger(cf_e('queue', conf), [eType, [obj, num, clb]]);
 					e.stopImmediatePropagation();
@@ -950,13 +1073,18 @@ imgLiquid.injectCss = '.imgLiquid img {visibility:hidden}';
 				}
 
 				//	queue if scrolling
-				if (obj.duration > 0) {
-					if (crsl.isScrolling) {
-						if (obj.queue) {
-							if (obj.queue == 'last') {
+				if (obj.duration > 0)
+				{
+					if (crsl.isScrolling)
+					{
+						if (obj.queue)
+						{
+							if (obj.queue == 'last')
+							{
 								queu = [];
 							}
-							if (obj.queue != 'first' || queu.length == 0) {
+							if (obj.queue != 'first' || queu.length == 0)
+							{
 								$cfs.trigger(cf_e('queue', conf), [eType, [obj, num, clb]]);
 							}
 						}
@@ -966,38 +1094,45 @@ imgLiquid.injectCss = '.imgLiquid img {visibility:hidden}';
 				}
 
 				tmrs.timePassed = 0;
-				$cfs.trigger(cf_e('slide_' + eType, conf), [obj, num]);
+				$cfs.trigger(cf_e('slide_'+eType, conf), [obj, num]);
 
 				//	synchronise
-				if (opts.synchronise) {
+				if (opts.synchronise)
+				{
 					var s = opts.synchronise,
 						c = [obj, num];
 
 					for (var j = 0, l = s.length; j < l; j++) {
 						var d = eType;
-						if (!s[j][2]) {
-							d = d == 'prev' ? 'next' : 'prev';
+						if (!s[j][2])
+						{
+							d = (d == 'prev') ? 'next' : 'prev';
 						}
-						if (!s[j][1]) {
+						if (!s[j][1])
+						{
 							c[0] = s[j][0].triggerHandler('_cfs_triggerEvent', ['configuration', d]);
 						}
 						c[1] = num + s[j][3];
-						s[j][0].trigger('_cfs_triggerEvent', ['slide_' + d, c]);
+						s[j][0].trigger('_cfs_triggerEvent', ['slide_'+d, c]);
 					}
 				}
 				return true;
 			});
 
+
 			//	prev event
-			$cfs.bind(cf_e('slide_prev', conf), function (e, sO, nI) {
+			$cfs.bind(cf_e('slide_prev', conf), function(e, sO, nI) {
 				e.stopPropagation();
 				var a_itm = $cfs.children();
 
 				//	non-circular at start, scroll to end
-				if (!opts.circular) {
-					if (itms.first == 0) {
-						if (opts.infinite) {
-							$cfs.trigger(cf_e('next', conf), itms.total - 1);
+				if (!opts.circular)
+				{
+					if (itms.first == 0)
+					{
+						if (opts.infinite)
+						{
+							$cfs.trigger(cf_e('next', conf), itms.total-1);
 						}
 						return e.stopImmediatePropagation();
 					}
@@ -1006,92 +1141,94 @@ imgLiquid.injectCss = '.imgLiquid img {visibility:hidden}';
 				sz_resetMargin(a_itm, opts);
 
 				//	find number of items to scroll
-				if (!is_number(nI)) {
-					if (opts.items.visibleConf.variable) {
-						nI = gn_getVisibleItemsPrev(a_itm, opts, itms.total - 1);
-					} else if (opts.items.filter != '*') {
-						var xI = is_number(sO.items) ? sO.items : gn_getVisibleOrg($cfs, opts);
-						nI = gn_getScrollItemsPrevFilter(a_itm, opts, itms.total - 1, xI);
-					} else {
+				if (!is_number(nI))
+				{
+					if (opts.items.visibleConf.variable)
+					{
+						nI = gn_getVisibleItemsPrev(a_itm, opts, itms.total-1);
+					}
+					else if (opts.items.filter != '*')
+					{
+						var xI = (is_number(sO.items)) ? sO.items : gn_getVisibleOrg($cfs, opts);
+						nI = gn_getScrollItemsPrevFilter(a_itm, opts, itms.total-1, xI);
+					}
+					else
+					{
 						nI = opts.items.visible;
 					}
 					nI = cf_getAdjust(nI, opts, sO.items, $tt0);
 				}
 
 				//	prevent non-circular from scrolling to far
-				if (!opts.circular) {
-					if (itms.total - nI < itms.first) {
+				if (!opts.circular)
+				{
+					if (itms.total - nI < itms.first)
+					{
 						nI = itms.total - itms.first;
 					}
 				}
 
 				//	set new number of visible items
 				opts.items.visibleConf.old = opts.items.visible;
-				if (opts.items.visibleConf.variable) {
-					var vI = cf_getItemsAdjust(
-						gn_getVisibleItemsNext(a_itm, opts, itms.total - nI),
-						opts,
-						opts.items.visibleConf.adjust,
-						$tt0,
-					);
-					if (opts.items.visible + nI <= vI && nI < itms.total) {
+				if (opts.items.visibleConf.variable)
+				{
+					var vI = cf_getItemsAdjust(gn_getVisibleItemsNext(a_itm, opts, itms.total-nI), opts, opts.items.visibleConf.adjust, $tt0);
+					if (opts.items.visible+nI <= vI && nI < itms.total)
+					{
 						nI++;
-						vI = cf_getItemsAdjust(
-							gn_getVisibleItemsNext(a_itm, opts, itms.total - nI),
-							opts,
-							opts.items.visibleConf.adjust,
-							$tt0,
-						);
+						vI = cf_getItemsAdjust(gn_getVisibleItemsNext(a_itm, opts, itms.total-nI), opts, opts.items.visibleConf.adjust, $tt0);
 					}
 					opts.items.visible = vI;
-				} else if (opts.items.filter != '*') {
-					var vI = gn_getVisibleItemsNextFilter(a_itm, opts, itms.total - nI);
+				}
+				else if (opts.items.filter != '*')
+				{
+					var vI = gn_getVisibleItemsNextFilter(a_itm, opts, itms.total-nI);
 					opts.items.visible = cf_getItemsAdjust(vI, opts, opts.items.visibleConf.adjust, $tt0);
 				}
 
 				sz_resetMargin(a_itm, opts, true);
 
 				//	scroll 0, don't scroll
-				if (nI == 0) {
+				if (nI == 0)
+				{
 					e.stopImmediatePropagation();
 					return debug(conf, '0 items to scroll: Not scrolling.');
 				}
-				debug(conf, 'Scrolling ' + nI + ' items backward.');
+				debug(conf, 'Scrolling '+nI+' items backward.');
+
 
 				//	save new config
 				itms.first += nI;
-				while (itms.first >= itms.total) {
+				while (itms.first >= itms.total)
+				{
 					itms.first -= itms.total;
 				}
 
 				//	non-circular callback
-				if (!opts.circular) {
-					if (itms.first == 0 && sO.onEnd) {
+				if (!opts.circular)
+				{
+					if (itms.first == 0 && sO.onEnd)
+					{
 						sO.onEnd.call($tt0, 'prev');
 					}
-					if (!opts.infinite) {
+					if (!opts.infinite)
+					{
 						nv_enableNavi(opts, itms.first, conf);
 					}
 				}
 
 				//	rearrange items
-				$cfs
-					.children()
-					.slice(itms.total - nI, itms.total)
-					.prependTo($cfs);
-				if (itms.total < opts.items.visible + nI) {
-					$cfs
-						.children()
-						.slice(0, opts.items.visible + nI - itms.total)
-						.clone(true)
-						.appendTo($cfs);
+				$cfs.children().slice(itms.total-nI, itms.total).prependTo($cfs);
+				if (itms.total < opts.items.visible + nI)
+				{
+					$cfs.children().slice(0, (opts.items.visible+nI)-itms.total).clone(true).appendTo($cfs);
 				}
 
 				//	the needed items
 				var a_itm = $cfs.children(),
 					i_old = gi_getOldItemsPrev(a_itm, opts, nI),
 					i_new = gi_getNewItemsPrev(a_itm, opts),
-					i_cur_l = a_itm.eq(nI - 1),
+					i_cur_l = a_itm.eq(nI-1),
 					i_old_l = i_old.last(),
 					i_new_l = i_new.last();
 
@@ -1100,19 +1237,22 @@ imgLiquid.injectCss = '.imgLiquid img {visibility:hidden}';
 				var pL = 0,
 					pR = 0;
 
-				if (opts.align) {
+				if (opts.align)
+				{
 					var p = cf_getAlignPadding(i_new, opts);
 					pL = p[0];
 					pR = p[1];
 				}
-				var oL = pL < 0 ? opts.padding[opts.d[3]] : 0;
+				var oL = (pL < 0) ? opts.padding[opts.d[3]] : 0;
 
 				//	hide items for fx directscroll
 				var hiddenitems = false,
 					i_skp = $();
-				if (opts.items.visible < nI) {
+				if (opts.items.visible < nI)
+				{
 					i_skp = a_itm.slice(opts.items.visibleConf.old, nI);
-					if (sO.fx == 'directscroll') {
+					if (sO.fx == 'directscroll')
+					{
 						var orgW = opts.items[opts.d['width']];
 						hiddenitems = i_skp;
 						i_cur_l = i_new_l;
@@ -1135,7 +1275,8 @@ imgLiquid.injectCss = '.imgLiquid img {visibility:hidden}';
 					a_lef_vis = {},
 					a_dur = sc_getDuration(sO, opts, nI, i_siz);
 
-				switch (sO.fx) {
+				switch(sO.fx)
+				{
 					case 'cover':
 
 					case 'cover-fade':
@@ -1143,19 +1284,23 @@ imgLiquid.injectCss = '.imgLiquid img {visibility:hidden}';
 						break;
 				}
 
-				if (hiddenitems) {
+				if (hiddenitems)
+				{
 					opts.items[opts.d['width']] = orgW;
 				}
 
 				sz_resetMargin(a_itm, opts, true);
-				if (pR >= 0) {
+				if (pR >= 0)
+				{
 					sz_resetMargin(i_old_l, opts, opts.padding[opts.d[1]]);
 				}
-				if (pL >= 0) {
+				if (pL >= 0)
+				{
 					sz_resetMargin(i_cur_l, opts, opts.padding[opts.d[3]]);
 				}
 
-				if (opts.align) {
+				if (opts.align)
+				{
 					opts.padding[opts.d[1]] = pR;
 					opts.padding[opts.d[3]] = pL;
 				}
@@ -1165,20 +1310,21 @@ imgLiquid.injectCss = '.imgLiquid img {visibility:hidden}';
 				a_wsz[opts.d['left']] = w_siz[opts.d['width']];
 
 				//	scrolling functions
-				var _s_wrapper = function () {},
-					_a_wrapper = function () {},
-					_s_paddingold = function () {},
-					_a_paddingold = function () {},
-					_s_paddingnew = function () {},
-					_a_paddingnew = function () {},
-					_s_paddingcur = function () {},
-					_a_paddingcur = function () {},
-					_onafter = function () {},
-					_moveitems = function () {},
-					_position = function () {};
+				var _s_wrapper = function() {},
+					_a_wrapper = function() {},
+					_s_paddingold = function() {},
+					_a_paddingold = function() {},
+					_s_paddingnew = function() {},
+					_a_paddingnew = function() {},
+					_s_paddingcur = function() {},
+					_a_paddingcur = function() {},
+					_onafter = function() {},
+					_moveitems = function() {},
+					_position = function() {};
 
 				//	clone carousel
-				switch (sO.fx) {
+				switch(sO.fx)
+				{
 					case 'crossfade':
 					case 'cover':
 					case 'cover-fade':
@@ -1187,7 +1333,8 @@ imgLiquid.injectCss = '.imgLiquid img {visibility:hidden}';
 						$cf2 = $cfs.clone(true).appendTo($wrp);
 						break;
 				}
-				switch (sO.fx) {
+				switch(sO.fx)
+				{
 					case 'crossfade':
 					case 'uncover':
 					case 'uncover-fade':
@@ -1208,103 +1355,108 @@ imgLiquid.injectCss = '.imgLiquid img {visibility:hidden}';
 				scrl = sc_setScroll(a_dur, sO.easing, conf);
 
 				//	animate / set carousel
-				a_cfs[opts.d['left']] = opts.usePadding ? opts.padding[opts.d[3]] : 0;
+				a_cfs[opts.d['left']] = (opts.usePadding) ? opts.padding[opts.d[3]] : 0;
 
 				//	animate / set wrapper
-				if (opts[opts.d['width']] == 'variable' || opts[opts.d['height']] == 'variable') {
-					_s_wrapper = function () {
+				if (opts[opts.d['width']] == 'variable' || opts[opts.d['height']] == 'variable')
+				{
+					_s_wrapper = function() {
 						$wrp.css(w_siz);
 					};
-					_a_wrapper = function () {
+					_a_wrapper = function() {
 						scrl.anims.push([$wrp, w_siz]);
 					};
 				}
 
 				//	animate / set items
-				if (opts.usePadding) {
-					if (i_new_l.not(i_cur_l).length) {
+				if (opts.usePadding)
+				{
+					if (i_new_l.not(i_cur_l).length)
+					{
 						a_cur[opts.d['marginRight']] = i_cur_l.data('_cfs_origCssMargin');
 
-						if (pL < 0) {
+						if (pL < 0)
+						{
 							i_cur_l.css(a_cur);
-						} else {
-							_s_paddingcur = function () {
+						}
+						else
+						{
+							_s_paddingcur = function() {
 								i_cur_l.css(a_cur);
 							};
-							_a_paddingcur = function () {
+							_a_paddingcur = function() {
 								scrl.anims.push([i_cur_l, a_cur]);
 							};
 						}
 					}
-					switch (sO.fx) {
+					switch(sO.fx)
+					{
 						case 'cover':
 						case 'cover-fade':
-							$cf2
-								.children()
-								.eq(nI - 1)
-								.css(a_cur);
+							$cf2.children().eq(nI-1).css(a_cur);
 							break;
 					}
 
-					if (i_new_l.not(i_old_l).length) {
+					if (i_new_l.not(i_old_l).length)
+					{
 						a_old[opts.d['marginRight']] = i_old_l.data('_cfs_origCssMargin');
-						_s_paddingold = function () {
+						_s_paddingold = function() {
 							i_old_l.css(a_old);
 						};
-						_a_paddingold = function () {
+						_a_paddingold = function() {
 							scrl.anims.push([i_old_l, a_old]);
 						};
 					}
 
-					if (pR >= 0) {
-						a_new[opts.d['marginRight']] =
-							i_new_l.data('_cfs_origCssMargin') + opts.padding[opts.d[1]];
-						_s_paddingnew = function () {
+					if (pR >= 0)
+					{
+						a_new[opts.d['marginRight']] = i_new_l.data('_cfs_origCssMargin') + opts.padding[opts.d[1]];
+						_s_paddingnew = function() {
 							i_new_l.css(a_new);
 						};
-						_a_paddingnew = function () {
+						_a_paddingnew = function() {
 							scrl.anims.push([i_new_l, a_new]);
 						};
 					}
 				}
 
 				//	set position
-				_position = function () {
+				_position = function() {
 					$cfs.css(a_cfs);
 				};
 
-				var overFill = opts.items.visible + nI - itms.total;
+
+				var overFill = opts.items.visible+nI-itms.total;
 
 				//	rearrange items
-				_moveitems = function () {
-					if (overFill > 0) {
+				_moveitems = function() {
+					if (overFill > 0)
+					{
 						$cfs.children().slice(itms.total).remove();
-						i_old = $(
-							$cfs
-								.children()
-								.slice(itms.total - (opts.items.visible - overFill))
-								.get()
-								.concat($cfs.children().slice(0, overFill).get()),
-						);
+						i_old = $( $cfs.children().slice(itms.total-(opts.items.visible-overFill)).get().concat( $cfs.children().slice(0, overFill).get() ) );
+
 					}
 					sc_showHiddenItems(hiddenitems);
 
-					if (opts.usePadding) {
-						var l_itm = $cfs.children().eq(opts.items.visible + nI - 1);
+					if (opts.usePadding)
+					{
+						var l_itm = $cfs.children().eq(opts.items.visible+nI-1);
 						l_itm.css(opts.d['marginRight'], l_itm.data('_cfs_origCssMargin'));
 					}
 				};
 
+
 				var cb_arguments = sc_mapCallbackArguments(i_old, i_skp, i_new, nI, 'prev', a_dur, w_siz);
 
 				//	fire onAfter callbacks
-				_onafter = function () {
+				_onafter = function() {
 					sc_afterScroll($cfs, $cf2, sO);
 					crsl.isScrolling = false;
 					clbk.onAfter = sc_fireCallbacks($tt0, sO, 'onAfter', cb_arguments, clbk);
 					queu = sc_fireQueue($cfs, queu, conf);
 
-					if (!crsl.isPaused) {
+					if (!crsl.isPaused)
+					{
 						$cfs.trigger(cf_e('play', conf));
 					}
 				};
@@ -1314,7 +1466,8 @@ imgLiquid.injectCss = '.imgLiquid img {visibility:hidden}';
 				tmrs = sc_clearTimers(tmrs);
 				clbk.onBefore = sc_fireCallbacks($tt0, sO, 'onBefore', cb_arguments, clbk);
 
-				switch (sO.fx) {
+				switch(sO.fx)
+				{
 					case 'none':
 						$cfs.css(a_cfs);
 						_s_wrapper();
@@ -1327,27 +1480,23 @@ imgLiquid.injectCss = '.imgLiquid img {visibility:hidden}';
 						break;
 
 					case 'fade':
-						scrl.anims.push([
-							$cfs,
-							{ opacity: 0 },
-							function () {
-								_s_wrapper();
-								_s_paddingold();
-								_s_paddingnew();
-								_s_paddingcur();
-								_position();
-								_moveitems();
-								scrl = sc_setScroll(a_dur, sO.easing, conf);
-								scrl.anims.push([$cfs, { opacity: 1 }, _onafter]);
-								sc_startScroll(scrl, conf);
-							},
-						]);
+						scrl.anims.push([$cfs, { 'opacity': 0 }, function() {
+							_s_wrapper();
+							_s_paddingold();
+							_s_paddingnew();
+							_s_paddingcur();
+							_position();
+							_moveitems();
+							scrl = sc_setScroll(a_dur, sO.easing, conf);
+							scrl.anims.push([$cfs, { 'opacity': 1 }, _onafter]);
+							sc_startScroll(scrl, conf);
+						}]);
 						break;
 
 					case 'crossfade':
-						$cfs.css({ opacity: 0 });
-						scrl.anims.push([$cf2, { opacity: 0 }]);
-						scrl.anims.push([$cfs, { opacity: 1 }, _onafter]);
+						$cfs.css({ 'opacity': 0 });
+						scrl.anims.push([$cf2, { 'opacity': 0 }]);
+						scrl.anims.push([$cfs, { 'opacity': 1 }, _onafter]);
 						_a_wrapper();
 						_s_paddingold();
 						_s_paddingnew();
@@ -1357,35 +1506,27 @@ imgLiquid.injectCss = '.imgLiquid img {visibility:hidden}';
 						break;
 
 					case 'cover':
-						scrl.anims.push([
-							$cf2,
-							a_cfs,
-							function () {
-								_s_paddingold();
-								_s_paddingnew();
-								_s_paddingcur();
-								_position();
-								_moveitems();
-								_onafter();
-							},
-						]);
+						scrl.anims.push([$cf2, a_cfs, function() {
+							_s_paddingold();
+							_s_paddingnew();
+							_s_paddingcur();
+							_position();
+							_moveitems();
+							_onafter();
+						}]);
 						_a_wrapper();
 						break;
 
 					case 'cover-fade':
-						scrl.anims.push([$cfs, { opacity: 0 }]);
-						scrl.anims.push([
-							$cf2,
-							a_cfs,
-							function () {
-								_s_paddingold();
-								_s_paddingnew();
-								_s_paddingcur();
-								_position();
-								_moveitems();
-								_onafter();
-							},
-						]);
+						scrl.anims.push([$cfs, { 'opacity': 0 }]);
+						scrl.anims.push([$cf2, a_cfs, function() {
+							_s_paddingold();
+							_s_paddingnew();
+							_s_paddingcur();
+							_position();
+							_moveitems();
+							_onafter();
+						}]);
 						_a_wrapper();
 						break;
 
@@ -1400,8 +1541,8 @@ imgLiquid.injectCss = '.imgLiquid img {visibility:hidden}';
 						break;
 
 					case 'uncover-fade':
-						$cfs.css({ opacity: 0 });
-						scrl.anims.push([$cfs, { opacity: 1 }]);
+						$cfs.css({ 'opacity': 0 });
+						scrl.anims.push([$cfs, { 'opacity': 1 }]);
 						scrl.anims.push([$cf2, a_wsz, _onafter]);
 						_a_wrapper();
 						_s_paddingold();
@@ -1412,14 +1553,10 @@ imgLiquid.injectCss = '.imgLiquid img {visibility:hidden}';
 						break;
 
 					default:
-						scrl.anims.push([
-							$cfs,
-							a_cfs,
-							function () {
-								_moveitems();
-								_onafter();
-							},
-						]);
+						scrl.anims.push([$cfs, a_cfs, function() {
+							_moveitems();
+							_onafter();
+						}]);
 						_a_wrapper();
 						_a_paddingold();
 						_a_paddingnew();
@@ -1435,16 +1572,20 @@ imgLiquid.injectCss = '.imgLiquid img {visibility:hidden}';
 				return true;
 			});
 
+
 			//	next event
-			$cfs.bind(cf_e('slide_next', conf), function (e, sO, nI) {
+			$cfs.bind(cf_e('slide_next', conf), function(e, sO, nI) {
 				e.stopPropagation();
 				var a_itm = $cfs.children();
 
 				//	non-circular at end, scroll to start
-				if (!opts.circular) {
-					if (itms.first == opts.items.visible) {
-						if (opts.infinite) {
-							$cfs.trigger(cf_e('prev', conf), itms.total - 1);
+				if (!opts.circular)
+				{
+					if (itms.first == opts.items.visible)
+					{
+						if (opts.infinite)
+						{
+							$cfs.trigger(cf_e('prev', conf), itms.total-1);
 						}
 						return e.stopImmediatePropagation();
 					}
@@ -1453,53 +1594,56 @@ imgLiquid.injectCss = '.imgLiquid img {visibility:hidden}';
 				sz_resetMargin(a_itm, opts);
 
 				//	find number of items to scroll
-				if (!is_number(nI)) {
-					if (opts.items.filter != '*') {
-						var xI = is_number(sO.items) ? sO.items : gn_getVisibleOrg($cfs, opts);
+				if (!is_number(nI))
+				{
+					if (opts.items.filter != '*')
+					{
+						var xI = (is_number(sO.items)) ? sO.items : gn_getVisibleOrg($cfs, opts);
 						nI = gn_getScrollItemsNextFilter(a_itm, opts, 0, xI);
-					} else {
+					}
+					else
+					{
 						nI = opts.items.visible;
 					}
 					nI = cf_getAdjust(nI, opts, sO.items, $tt0);
 				}
 
-				var lastItemNr = itms.first == 0 ? itms.total : itms.first;
+				var lastItemNr = (itms.first == 0) ? itms.total : itms.first;
 
 				//	prevent non-circular from scrolling to far
-				if (!opts.circular) {
-					if (opts.items.visibleConf.variable) {
+				if (!opts.circular)
+				{
+					if (opts.items.visibleConf.variable)
+					{
 						var vI = gn_getVisibleItemsNext(a_itm, opts, nI),
-							xI = gn_getVisibleItemsPrev(a_itm, opts, lastItemNr - 1);
-					} else {
+							xI = gn_getVisibleItemsPrev(a_itm, opts, lastItemNr-1);
+					}
+					else
+					{
 						var vI = opts.items.visible,
 							xI = opts.items.visible;
 					}
 
-					if (nI + vI > lastItemNr) {
+					if (nI + vI > lastItemNr)
+					{
 						nI = lastItemNr - xI;
 					}
 				}
 
 				//	set new number of visible items
 				opts.items.visibleConf.old = opts.items.visible;
-				if (opts.items.visibleConf.variable) {
-					var vI = cf_getItemsAdjust(
-						gn_getVisibleItemsNextTestCircular(a_itm, opts, nI, lastItemNr),
-						opts,
-						opts.items.visibleConf.adjust,
-						$tt0,
-					);
-					while (opts.items.visible - nI >= vI && nI < itms.total) {
+				if (opts.items.visibleConf.variable)
+				{
+					var vI = cf_getItemsAdjust(gn_getVisibleItemsNextTestCircular(a_itm, opts, nI, lastItemNr), opts, opts.items.visibleConf.adjust, $tt0);
+					while (opts.items.visible-nI >= vI && nI < itms.total)
+					{
 						nI++;
-						vI = cf_getItemsAdjust(
-							gn_getVisibleItemsNextTestCircular(a_itm, opts, nI, lastItemNr),
-							opts,
-							opts.items.visibleConf.adjust,
-							$tt0,
-						);
+						vI = cf_getItemsAdjust(gn_getVisibleItemsNextTestCircular(a_itm, opts, nI, lastItemNr), opts, opts.items.visibleConf.adjust, $tt0);
 					}
 					opts.items.visible = vI;
-				} else if (opts.items.filter != '*') {
+				}
+				else if (opts.items.filter != '*')
+				{
 					var vI = gn_getVisibleItemsNextFilter(a_itm, opts, nI);
 					opts.items.visible = cf_getItemsAdjust(vI, opts, opts.items.visibleConf.adjust, $tt0);
 				}
@@ -1507,42 +1651,45 @@ imgLiquid.injectCss = '.imgLiquid img {visibility:hidden}';
 				sz_resetMargin(a_itm, opts, true);
 
 				//	scroll 0, don't scroll
-				if (nI == 0) {
+				if (nI == 0)
+				{
 					e.stopImmediatePropagation();
 					return debug(conf, '0 items to scroll: Not scrolling.');
 				}
-				debug(conf, 'Scrolling ' + nI + ' items forward.');
+				debug(conf, 'Scrolling '+nI+' items forward.');
+
 
 				//	save new config
 				itms.first -= nI;
-				while (itms.first < 0) {
+				while (itms.first < 0)
+				{
 					itms.first += itms.total;
 				}
 
 				//	non-circular callback
-				if (!opts.circular) {
-					if (itms.first == opts.items.visible && sO.onEnd) {
+				if (!opts.circular)
+				{
+					if (itms.first == opts.items.visible && sO.onEnd)
+					{
 						sO.onEnd.call($tt0, 'next');
 					}
-					if (!opts.infinite) {
+					if (!opts.infinite)
+					{
 						nv_enableNavi(opts, itms.first, conf);
 					}
 				}
 
 				//	rearrange items
-				if (itms.total < opts.items.visible + nI) {
-					$cfs
-						.children()
-						.slice(0, opts.items.visible + nI - itms.total)
-						.clone(true)
-						.appendTo($cfs);
+				if (itms.total < opts.items.visible+nI)
+				{
+					$cfs.children().slice(0, (opts.items.visible+nI)-itms.total).clone(true).appendTo($cfs);
 				}
 
 				//	the needed items
 				var a_itm = $cfs.children(),
 					i_old = gi_getOldItemsNext(a_itm, opts),
 					i_new = gi_getNewItemsNext(a_itm, opts, nI),
-					i_cur_l = a_itm.eq(nI - 1),
+					i_cur_l = a_itm.eq(nI-1),
 					i_old_l = i_old.last(),
 					i_new_l = i_new.last();
 
@@ -1551,7 +1698,8 @@ imgLiquid.injectCss = '.imgLiquid img {visibility:hidden}';
 				var pL = 0,
 					pR = 0;
 
-				if (opts.align) {
+				if (opts.align)
+				{
 					var p = cf_getAlignPadding(i_new, opts);
 					pL = p[0];
 					pR = p[1];
@@ -1560,9 +1708,11 @@ imgLiquid.injectCss = '.imgLiquid img {visibility:hidden}';
 				//	hide items for fx directscroll
 				var hiddenitems = false,
 					i_skp = $();
-				if (opts.items.visibleConf.old < nI) {
+				if (opts.items.visibleConf.old < nI)
+				{
 					i_skp = a_itm.slice(opts.items.visibleConf.old, nI);
-					if (sO.fx == 'directscroll') {
+					if (sO.fx == 'directscroll')
+					{
 						var orgW = opts.items[opts.d['width']];
 						hiddenitems = i_skp;
 						i_cur_l = i_old_l;
@@ -1583,45 +1733,51 @@ imgLiquid.injectCss = '.imgLiquid img {visibility:hidden}';
 					a_lef = {},
 					a_dur = sc_getDuration(sO, opts, nI, i_siz);
 
-				switch (sO.fx) {
+				switch(sO.fx)
+				{
 					case 'uncover':
 					case 'uncover-fade':
 						i_siz_vis = ms_getTotalSize(a_itm.slice(0, opts.items.visibleConf.old), opts, 'width');
 						break;
 				}
 
-				if (hiddenitems) {
+				if (hiddenitems)
+				{
 					opts.items[opts.d['width']] = orgW;
 				}
 
-				if (opts.align) {
-					if (opts.padding[opts.d[1]] < 0) {
+				if (opts.align)
+				{
+					if (opts.padding[opts.d[1]] < 0)
+					{
 						opts.padding[opts.d[1]] = 0;
 					}
 				}
 				sz_resetMargin(a_itm, opts, true);
 				sz_resetMargin(i_old_l, opts, opts.padding[opts.d[1]]);
 
-				if (opts.align) {
+				if (opts.align)
+				{
 					opts.padding[opts.d[1]] = pR;
 					opts.padding[opts.d[3]] = pL;
 				}
 
-				a_lef[opts.d['left']] = opts.usePadding ? opts.padding[opts.d[3]] : 0;
+				a_lef[opts.d['left']] = (opts.usePadding) ? opts.padding[opts.d[3]] : 0;
 
 				//	scrolling functions
-				var _s_wrapper = function () {},
-					_a_wrapper = function () {},
-					_s_paddingold = function () {},
-					_a_paddingold = function () {},
-					_s_paddingcur = function () {},
-					_a_paddingcur = function () {},
-					_onafter = function () {},
-					_moveitems = function () {},
-					_position = function () {};
+				var _s_wrapper = function() {},
+					_a_wrapper = function() {},
+					_s_paddingold = function() {},
+					_a_paddingold = function() {},
+					_s_paddingcur = function() {},
+					_a_paddingcur = function() {},
+					_onafter = function() {},
+					_moveitems = function() {},
+					_position = function() {};
 
 				//	clone carousel
-				switch (sO.fx) {
+				switch(sO.fx)
+				{
 					case 'crossfade':
 					case 'cover':
 					case 'cover-fade':
@@ -1631,7 +1787,8 @@ imgLiquid.injectCss = '.imgLiquid img {visibility:hidden}';
 						$cf2.children().slice(opts.items.visibleConf.old).remove();
 						break;
 				}
-				switch (sO.fx) {
+				switch(sO.fx)
+				{
 					case 'crossfade':
 					case 'cover':
 					case 'cover-fade':
@@ -1647,95 +1804,104 @@ imgLiquid.injectCss = '.imgLiquid img {visibility:hidden}';
 				a_cfs[opts.d['left']] = -i_siz;
 				a_cfs_vis[opts.d['left']] = -i_siz_vis;
 
-				if (pL < 0) {
+				if (pL < 0)
+				{
 					a_cfs[opts.d['left']] += pL;
 				}
 
 				//	animate / set wrapper
-				if (opts[opts.d['width']] == 'variable' || opts[opts.d['height']] == 'variable') {
-					_s_wrapper = function () {
+				if (opts[opts.d['width']] == 'variable' || opts[opts.d['height']] == 'variable')
+				{
+					_s_wrapper = function() {
 						$wrp.css(w_siz);
 					};
-					_a_wrapper = function () {
+					_a_wrapper = function() {
 						scrl.anims.push([$wrp, w_siz]);
 					};
 				}
 
 				//	animate / set items
-				if (opts.usePadding) {
+				if (opts.usePadding)
+				{
 					var i_new_l_m = i_new_l.data('_cfs_origCssMargin');
 
-					if (pR >= 0) {
+					if (pR >= 0)
+					{
 						i_new_l_m += opts.padding[opts.d[1]];
 					}
 					i_new_l.css(opts.d['marginRight'], i_new_l_m);
 
-					if (i_cur_l.not(i_old_l).length) {
+					if (i_cur_l.not(i_old_l).length)
+					{
 						a_old[opts.d['marginRight']] = i_old_l.data('_cfs_origCssMargin');
 					}
-					_s_paddingold = function () {
+					_s_paddingold = function() {
 						i_old_l.css(a_old);
 					};
-					_a_paddingold = function () {
+					_a_paddingold = function() {
 						scrl.anims.push([i_old_l, a_old]);
 					};
 
 					var i_cur_l_m = i_cur_l.data('_cfs_origCssMargin');
-					if (pL > 0) {
+					if (pL > 0)
+					{
 						i_cur_l_m += opts.padding[opts.d[3]];
 					}
 
 					a_cur[opts.d['marginRight']] = i_cur_l_m;
 
-					_s_paddingcur = function () {
+					_s_paddingcur = function() {
 						i_cur_l.css(a_cur);
 					};
-					_a_paddingcur = function () {
+					_a_paddingcur = function() {
 						scrl.anims.push([i_cur_l, a_cur]);
 					};
 				}
 
 				//	set position
-				_position = function () {
+				_position = function() {
 					$cfs.css(a_lef);
 				};
 
-				var overFill = opts.items.visible + nI - itms.total;
+
+				var overFill = opts.items.visible+nI-itms.total;
 
 				//	rearrange items
-				_moveitems = function () {
-					if (overFill > 0) {
+				_moveitems = function() {
+					if (overFill > 0)
+					{
 						$cfs.children().slice(itms.total).remove();
 					}
 					var l_itm = $cfs.children().slice(0, nI).appendTo($cfs).last();
-					if (overFill > 0) {
+					if (overFill > 0)
+					{
 						i_new = gi_getCurrentItems(a_itm, opts);
 					}
 					sc_showHiddenItems(hiddenitems);
 
-					if (opts.usePadding) {
-						if (itms.total < opts.items.visible + nI) {
-							var i_cur_l = $cfs.children().eq(opts.items.visible - 1);
-							i_cur_l.css(
-								opts.d['marginRight'],
-								i_cur_l.data('_cfs_origCssMargin') + opts.padding[opts.d[1]],
-							);
+					if (opts.usePadding)
+					{
+						if (itms.total < opts.items.visible+nI) {
+							var i_cur_l = $cfs.children().eq(opts.items.visible-1);
+							i_cur_l.css(opts.d['marginRight'], i_cur_l.data('_cfs_origCssMargin') + opts.padding[opts.d[1]]);
 						}
 						l_itm.css(opts.d['marginRight'], l_itm.data('_cfs_origCssMargin'));
 					}
 				};
 
+
 				var cb_arguments = sc_mapCallbackArguments(i_old, i_skp, i_new, nI, 'next', a_dur, w_siz);
 
 				//	fire onAfter callbacks
-				_onafter = function () {
+				_onafter = function() {
 					$cfs.css('zIndex', $cfs.data('_cfs_origCssZindex'));
 					sc_afterScroll($cfs, $cf2, sO);
 					crsl.isScrolling = false;
 					clbk.onAfter = sc_fireCallbacks($tt0, sO, 'onAfter', cb_arguments, clbk);
 					queu = sc_fireQueue($cfs, queu, conf);
 
-					if (!crsl.isPaused) {
+					if (!crsl.isPaused)
+					{
 						$cfs.trigger(cf_e('play', conf));
 					}
 				};
@@ -1745,7 +1911,8 @@ imgLiquid.injectCss = '.imgLiquid img {visibility:hidden}';
 				tmrs = sc_clearTimers(tmrs);
 				clbk.onBefore = sc_fireCallbacks($tt0, sO, 'onBefore', cb_arguments, clbk);
 
-				switch (sO.fx) {
+				switch(sO.fx)
+				{
 					case 'none':
 						$cfs.css(a_cfs);
 						_s_wrapper();
@@ -1757,26 +1924,22 @@ imgLiquid.injectCss = '.imgLiquid img {visibility:hidden}';
 						break;
 
 					case 'fade':
-						scrl.anims.push([
-							$cfs,
-							{ opacity: 0 },
-							function () {
-								_s_wrapper();
-								_s_paddingold();
-								_s_paddingcur();
-								_position();
-								_moveitems();
-								scrl = sc_setScroll(a_dur, sO.easing, conf);
-								scrl.anims.push([$cfs, { opacity: 1 }, _onafter]);
-								sc_startScroll(scrl, conf);
-							},
-						]);
+						scrl.anims.push([$cfs, { 'opacity': 0 }, function() {
+							_s_wrapper();
+							_s_paddingold();
+							_s_paddingcur();
+							_position();
+							_moveitems();
+							scrl = sc_setScroll(a_dur, sO.easing, conf);
+							scrl.anims.push([$cfs, { 'opacity': 1 }, _onafter]);
+							sc_startScroll(scrl, conf);
+						}]);
 						break;
 
 					case 'crossfade':
-						$cfs.css({ opacity: 0 });
-						scrl.anims.push([$cf2, { opacity: 0 }]);
-						scrl.anims.push([$cfs, { opacity: 1 }, _onafter]);
+						$cfs.css({ 'opacity': 0 });
+						scrl.anims.push([$cf2, { 'opacity': 0 }]);
+						scrl.anims.push([$cfs, { 'opacity': 1 }, _onafter]);
 						_a_wrapper();
 						_s_paddingold();
 						_s_paddingcur();
@@ -1795,7 +1958,7 @@ imgLiquid.injectCss = '.imgLiquid img {visibility:hidden}';
 
 					case 'cover-fade':
 						$cfs.css(opts.d['left'], $wrp[opts.d['width']]());
-						scrl.anims.push([$cf2, { opacity: 0 }]);
+						scrl.anims.push([$cf2, { 'opacity': 0 }]);
 						scrl.anims.push([$cfs, a_lef, _onafter]);
 						_a_wrapper();
 						_s_paddingold();
@@ -1813,8 +1976,8 @@ imgLiquid.injectCss = '.imgLiquid img {visibility:hidden}';
 						break;
 
 					case 'uncover-fade':
-						$cfs.css({ opacity: 0 });
-						scrl.anims.push([$cfs, { opacity: 1 }]);
+						$cfs.css({ 'opacity': 0 });
+						scrl.anims.push([$cfs, { 'opacity': 1 }]);
 						scrl.anims.push([$cf2, a_cfs_vis, _onafter]);
 						_a_wrapper();
 						_s_paddingold();
@@ -1824,15 +1987,11 @@ imgLiquid.injectCss = '.imgLiquid img {visibility:hidden}';
 						break;
 
 					default:
-						scrl.anims.push([
-							$cfs,
-							a_cfs,
-							function () {
-								_position();
-								_moveitems();
-								_onafter();
-							},
-						]);
+						scrl.anims.push([$cfs, a_cfs, function() {
+							_position();
+							_moveitems();
+							_onafter();
+						}]);
 						_a_wrapper();
 						_a_paddingold();
 						_a_paddingcur();
@@ -1847,8 +2006,9 @@ imgLiquid.injectCss = '.imgLiquid img {visibility:hidden}';
 				return true;
 			});
 
+
 			//	slideTo event
-			$cfs.bind(cf_e('slideTo', conf), function (e, num, dev, org, obj, dir, clb) {
+			$cfs.bind(cf_e('slideTo', conf), function(e, num, dev, org, obj, dir, clb) {
 				e.stopPropagation();
 
 				var v = [num, dev, org, obj, dir, clb],
@@ -1861,74 +2021,93 @@ imgLiquid.injectCss = '.imgLiquid img {visibility:hidden}';
 
 				num = gn_getItemIndex(a[0], a[1], a[2], itms, $cfs);
 
-				if (num == 0) {
+				if (num == 0)
+				{
 					return false;
 				}
-				if (!is_object(obj)) {
+				if (!is_object(obj))
+				{
 					obj = false;
 				}
 
-				if (dir != 'prev' && dir != 'next') {
-					if (opts.circular) {
-						dir = num <= itms.total / 2 ? 'next' : 'prev';
-					} else {
-						dir = itms.first == 0 || itms.first > num ? 'next' : 'prev';
+				if (dir != 'prev' && dir != 'next')
+				{
+					if (opts.circular)
+					{
+						dir = (num <= itms.total / 2) ? 'next' : 'prev';
+					}
+					else
+					{
+						dir = (itms.first == 0 || itms.first > num) ? 'next' : 'prev';
 					}
 				}
 
-				if (dir == 'prev') {
-					num = itms.total - num;
+				if (dir == 'prev')
+				{
+					num = itms.total-num;
 				}
 				$cfs.trigger(cf_e(dir, conf), [obj, num, clb]);
 
 				return true;
 			});
 
+
 			//	prevPage event
-			$cfs.bind(cf_e('prevPage', conf), function (e, obj, clb) {
+			$cfs.bind(cf_e('prevPage', conf), function(e, obj, clb) {
 				e.stopPropagation();
 				var cur = $cfs.triggerHandler(cf_e('currentPage', conf));
-				return $cfs.triggerHandler(cf_e('slideToPage', conf), [cur - 1, obj, 'prev', clb]);
+				return $cfs.triggerHandler(cf_e('slideToPage', conf), [cur-1, obj, 'prev', clb]);
 			});
+
 
 			//	nextPage event
-			$cfs.bind(cf_e('nextPage', conf), function (e, obj, clb) {
+			$cfs.bind(cf_e('nextPage', conf), function(e, obj, clb) {
 				e.stopPropagation();
 				var cur = $cfs.triggerHandler(cf_e('currentPage', conf));
-				return $cfs.triggerHandler(cf_e('slideToPage', conf), [cur + 1, obj, 'next', clb]);
+				return $cfs.triggerHandler(cf_e('slideToPage', conf), [cur+1, obj, 'next', clb]);
 			});
 
+
 			//	slideToPage event
-			$cfs.bind(cf_e('slideToPage', conf), function (e, pag, obj, dir, clb) {
+			$cfs.bind(cf_e('slideToPage', conf), function(e, pag, obj, dir, clb) {
 				e.stopPropagation();
-				if (!is_number(pag)) {
+				if (!is_number(pag))
+				{
 					pag = $cfs.triggerHandler(cf_e('currentPage', conf));
 				}
 				var ipp = opts.pagination.items || opts.items.visible,
-					max = Math.ceil(itms.total / ipp) - 1;
+					max = Math.ceil(itms.total / ipp)-1;
 
-				if (pag < 0) {
+				if (pag < 0)
+				{
 					pag = max;
 				}
-				if (pag > max) {
+				if (pag > max)
+				{
 					pag = 0;
 				}
-				return $cfs.triggerHandler(cf_e('slideTo', conf), [pag * ipp, 0, true, obj, dir, clb]);
+				return $cfs.triggerHandler(cf_e('slideTo', conf), [pag*ipp, 0, true, obj, dir, clb]);
 			});
 
 			//	jumpToStart event
-			$cfs.bind(cf_e('jumpToStart', conf), function (e, s) {
+			$cfs.bind(cf_e('jumpToStart', conf), function(e, s) {
 				e.stopPropagation();
-				if (s) {
+				if (s)
+				{
 					s = gn_getItemIndex(s, 0, true, itms, $cfs);
-				} else {
+				}
+				else
+				{
 					s = 0;
 				}
 
 				s += itms.first;
-				if (s != 0) {
-					if (itms.total > 0) {
-						while (s > itms.total) {
+				if (s != 0)
+				{
+					if (itms.total > 0)
+					{
+						while (s > itms.total)
+						{
 							s -= itms.total;
 						}
 					}
@@ -1937,43 +2116,58 @@ imgLiquid.injectCss = '.imgLiquid img {visibility:hidden}';
 				return true;
 			});
 
+
 			//	synchronise event
-			$cfs.bind(cf_e('synchronise', conf), function (e, s) {
+			$cfs.bind(cf_e('synchronise', conf), function(e, s) {
 				e.stopPropagation();
-				if (s) {
+				if (s)
+				{
 					s = cf_getSynchArr(s);
-				} else if (opts.synchronise) {
+				}
+				else if (opts.synchronise)
+				{
 					s = opts.synchronise;
-				} else {
+				}
+				else
+				{
 					return debug(conf, 'No carousel to synchronise.');
 				}
 
 				var n = $cfs.triggerHandler(cf_e('currentPosition', conf)),
 					x = true;
 
-				for (var j = 0, l = s.length; j < l; j++) {
-					if (!s[j][0].triggerHandler(cf_e('slideTo', conf), [n, s[j][3], true])) {
+				for (var j = 0, l = s.length; j < l; j++)
+				{
+					if (!s[j][0].triggerHandler(cf_e('slideTo', conf), [n, s[j][3], true]))
+					{
 						x = false;
 					}
 				}
 				return x;
 			});
 
+
 			//	queue event
-			$cfs.bind(cf_e('queue', conf), function (e, dir, opt) {
+			$cfs.bind(cf_e('queue', conf), function(e, dir, opt) {
 				e.stopPropagation();
-				if (is_function(dir)) {
+				if (is_function(dir))
+				{
 					dir.call($tt0, queu);
-				} else if (is_array(dir)) {
+				}
+				else if (is_array(dir))
+				{
 					queu = dir;
-				} else if (!is_undefined(dir)) {
+				}
+				else if (!is_undefined(dir))
+				{
 					queu.push([dir, opt]);
 				}
 				return queu;
 			});
 
+
 			//	insertItem event
-			$cfs.bind(cf_e('insertItem', conf), function (e, itm, num, org, dev) {
+			$cfs.bind(cf_e('insertItem', conf), function(e, itm, num, org, dev) {
 				e.stopPropagation();
 
 				var v = [itm, num, org, dev],
@@ -1985,16 +2179,21 @@ imgLiquid.injectCss = '.imgLiquid img {visibility:hidden}';
 				org = a[2];
 				dev = a[3];
 
-				if (is_object(itm) && !is_jquery(itm)) {
-					itm = $(itm);
-				} else if (is_string(itm)) {
+				if (is_object(itm) && !is_jquery(itm))
+				{
 					itm = $(itm);
 				}
-				if (!is_jquery(itm) || itm.length == 0) {
+				else if (is_string(itm))
+				{
+					itm = $(itm);
+				}
+				if (!is_jquery(itm) || itm.length == 0)
+				{
 					return debug(conf, 'Not a valid object.');
 				}
 
-				if (is_undefined(num)) {
+				if (is_undefined(num))
+				{
 					num = 'end';
 				}
 
@@ -2004,41 +2203,57 @@ imgLiquid.injectCss = '.imgLiquid img {visibility:hidden}';
 				var orgNum = num,
 					before = 'before';
 
-				if (num == 'end') {
-					if (org) {
-						if (itms.first == 0) {
-							num = itms.total - 1;
+				if (num == 'end')
+				{
+					if (org)
+					{
+						if (itms.first == 0)
+						{
+							num = itms.total-1;
 							before = 'after';
-						} else {
+						}
+						else
+						{
 							num = itms.first;
 							itms.first += itm.length;
 						}
-						if (num < 0) {
+						if (num < 0)
+						{
 							num = 0;
 						}
-					} else {
-						num = itms.total - 1;
+					}
+					else
+					{
+						num = itms.total-1;
 						before = 'after';
 					}
-				} else {
+				}
+				else
+				{
 					num = gn_getItemIndex(num, dev, org, itms, $cfs);
 				}
 
 				var $cit = $cfs.children().eq(num);
-				if ($cit.length) {
+				if ($cit.length)
+				{
 					$cit[before](itm);
-				} else {
+				}
+				else
+				{
 					debug(conf, 'Correct insert-position not found! Appending item to the end.');
 					$cfs.append(itm);
 				}
 
-				if (orgNum != 'end' && !org) {
-					if (num < itms.first) {
+				if (orgNum != 'end' && !org)
+				{
+					if (num < itms.first)
+					{
 						itms.first += itm.length;
 					}
 				}
 				itms.total = $cfs.children().length;
-				if (itms.first >= itms.total) {
+				if (itms.first >= itms.total)
+				{
 					itms.first -= itms.total;
 				}
 
@@ -2048,8 +2263,9 @@ imgLiquid.injectCss = '.imgLiquid img {visibility:hidden}';
 				return true;
 			});
 
+
 			//	removeItem event
-			$cfs.bind(cf_e('removeItem', conf), function (e, num, org, dev) {
+			$cfs.bind(cf_e('removeItem', conf), function(e, num, org, dev) {
 				e.stopPropagation();
 
 				var v = [num, org, dev],
@@ -2062,29 +2278,37 @@ imgLiquid.injectCss = '.imgLiquid img {visibility:hidden}';
 
 				var removed = false;
 
-				if (num instanceof $ && num.length > 1) {
+				if (num instanceof $ && num.length > 1)
+				{
 					$removed = $();
-					num.each(function (i, el) {
+					num.each(function(i, el) {
 						var $rem = $cfs.trigger(cf_e('removeItem', conf), [$(this), org, dev]);
-						if ($rem) {
+						if ( $rem )
+						{
 							$removed = $removed.add($rem);
 						}
 					});
 					return $removed;
 				}
 
-				if (is_undefined(num) || num == 'end') {
+				if (is_undefined(num) || num == 'end')
+				{
 					$removed = $cfs.children().last();
-				} else {
+				}
+				else
+				{
 					num = gn_getItemIndex(num, dev, org, itms, $cfs);
 					var $removed = $cfs.children().eq(num);
-					if ($removed.length) {
-						if (num < itms.first) {
+					if ( $removed.length )
+					{
+						if (num < itms.first)
+						{
 							itms.first -= $removed.length;
 						}
 					}
 				}
-				if ($removed && $removed.length) {
+				if ( $removed && $removed.length )
+				{
 					$removed.detach();
 					itms.total = $cfs.children().length;
 					$cfs.trigger(cf_e('updateSizes', conf));
@@ -2093,75 +2317,98 @@ imgLiquid.injectCss = '.imgLiquid img {visibility:hidden}';
 				return $removed;
 			});
 
+
 			//	onBefore and onAfter event
-			$cfs.bind(cf_e('onBefore', conf) + ' ' + cf_e('onAfter', conf), function (e, fn) {
+			$cfs.bind(cf_e('onBefore', conf)+' '+cf_e('onAfter', conf), function(e, fn) {
 				e.stopPropagation();
 				var eType = e.type.slice(conf.events.prefix.length);
-				if (is_array(fn)) {
+				if (is_array(fn))
+				{
 					clbk[eType] = fn;
 				}
-				if (is_function(fn)) {
+				if (is_function(fn))
+				{
 					clbk[eType].push(fn);
 				}
 				return clbk[eType];
 			});
 
+
 			//	currentPosition event
-			$cfs.bind(cf_e('currentPosition', conf), function (e, fn) {
+			$cfs.bind(cf_e('currentPosition', conf), function(e, fn) {
 				e.stopPropagation();
-				if (itms.first == 0) {
+				if (itms.first == 0)
+				{
 					var val = 0;
-				} else {
+				}
+				else
+				{
 					var val = itms.total - itms.first;
 				}
-				if (is_function(fn)) {
+				if (is_function(fn))
+				{
 					fn.call($tt0, val);
 				}
 				return val;
 			});
 
+
 			//	currentPage event
-			$cfs.bind(cf_e('currentPage', conf), function (e, fn) {
+			$cfs.bind(cf_e('currentPage', conf), function(e, fn) {
 				e.stopPropagation();
 				var ipp = opts.pagination.items || opts.items.visible,
-					max = Math.ceil(itms.total / ipp - 1),
+					max = Math.ceil(itms.total/ipp-1),
 					nr;
-				if (itms.first == 0) {
-					nr = 0;
-				} else if (itms.first < itms.total % ipp) {
-					nr = 0;
-				} else if (itms.first == ipp && !opts.circular) {
-					nr = max;
-				} else {
-					nr = Math.round((itms.total - itms.first) / ipp);
-				}
-				if (nr < 0) {
+				if (itms.first == 0)
+				{
 					nr = 0;
 				}
-				if (nr > max) {
+				else if (itms.first < itms.total % ipp)
+				{
+					nr = 0;
+				}
+				else if (itms.first == ipp && !opts.circular)
+				{
 					nr = max;
 				}
-				if (is_function(fn)) {
+				else
+				{
+					nr = Math.round((itms.total-itms.first)/ipp);
+				}
+				if (nr < 0)
+				{
+					nr = 0;
+				}
+				if (nr > max)
+				{
+					nr = max;
+				}
+				if (is_function(fn))
+				{
 					fn.call($tt0, nr);
 				}
 				return nr;
 			});
 
+
 			//	currentVisible event
-			$cfs.bind(cf_e('currentVisible', conf), function (e, fn) {
+			$cfs.bind(cf_e('currentVisible', conf), function(e, fn) {
 				e.stopPropagation();
 				var $i = gi_getCurrentItems($cfs.children(), opts);
-				if (is_function(fn)) {
+				if (is_function(fn))
+				{
 					fn.call($tt0, $i);
 				}
 				return $i;
 			});
 
+
 			//	slice event
-			$cfs.bind(cf_e('slice', conf), function (e, f, l, fn) {
+			$cfs.bind(cf_e('slice', conf), function(e, f, l, fn) {
 				e.stopPropagation();
 
-				if (itms.total == 0) {
+				if (itms.total == 0)
+				{
 					return false;
 				}
 
@@ -2169,92 +2416,112 @@ imgLiquid.injectCss = '.imgLiquid img {visibility:hidden}';
 					t = ['number', 'number', 'function'],
 					a = cf_sortParams(v, t);
 
-				f = is_number(a[0]) ? a[0] : 0;
-				l = is_number(a[1]) ? a[1] : itms.total;
+				f = (is_number(a[0])) ? a[0] : 0;
+				l = (is_number(a[1])) ? a[1] : itms.total;
 				fn = a[2];
 
 				f += itms.first;
 				l += itms.first;
 
-				if (items.total > 0) {
-					while (f > itms.total) {
+				if (items.total > 0)
+				{
+					while (f > itms.total)
+					{
 						f -= itms.total;
 					}
-					while (l > itms.total) {
+					while (l > itms.total)
+					{
 						l -= itms.total;
 					}
-					while (f < 0) {
+					while (f < 0)
+					{
 						f += itms.total;
 					}
-					while (l < 0) {
+					while (l < 0)
+					{
 						l += itms.total;
 					}
 				}
 				var $iA = $cfs.children(),
 					$i;
 
-				if (l > f) {
+				if (l > f)
+				{
 					$i = $iA.slice(f, l);
-				} else {
-					$i = $($iA.slice(f, itms.total).get().concat($iA.slice(0, l).get()));
+				}
+				else
+				{
+					$i = $( $iA.slice(f, itms.total).get().concat( $iA.slice(0, l).get() ) );
 				}
 
-				if (is_function(fn)) {
+				if (is_function(fn))
+				{
 					fn.call($tt0, $i);
 				}
 				return $i;
 			});
 
+
 			//	isPaused, isStopped and isScrolling events
-			$cfs.bind(
-				cf_e('isPaused', conf) + ' ' + cf_e('isStopped', conf) + ' ' + cf_e('isScrolling', conf),
-				function (e, fn) {
-					e.stopPropagation();
-					var eType = e.type.slice(conf.events.prefix.length),
-						value = crsl[eType];
-					if (is_function(fn)) {
-						fn.call($tt0, value);
-					}
-					return value;
-				},
-			);
+			$cfs.bind(cf_e('isPaused', conf)+' '+cf_e('isStopped', conf)+' '+cf_e('isScrolling', conf), function(e, fn) {
+				e.stopPropagation();
+				var eType = e.type.slice(conf.events.prefix.length),
+					value = crsl[eType];
+				if (is_function(fn))
+				{
+					fn.call($tt0, value);
+				}
+				return value;
+			});
+
 
 			//	configuration event
-			$cfs.bind(cf_e('configuration', conf), function (e, a, b, c) {
+			$cfs.bind(cf_e('configuration', conf), function(e, a, b, c) {
 				e.stopPropagation();
 				var reInit = false;
 
 				//	return entire configuration-object
-				if (is_function(a)) {
+				if (is_function(a))
+				{
 					a.call($tt0, opts);
 				}
 				//	set multiple options via object
-				else if (is_object(a)) {
+				else if (is_object(a))
+				{
 					opts_orig = $.extend(true, {}, opts_orig, a);
 					if (b !== false) reInit = true;
 					else opts = $.extend(true, {}, opts, a);
-				} else if (!is_undefined(a)) {
+
+				}
+				else if (!is_undefined(a))
+				{
+
 					//	callback function for specific option
-					if (is_function(b)) {
-						var val = eval('opts.' + a);
-						if (is_undefined(val)) {
+					if (is_function(b))
+					{
+						var val = eval('opts.'+a);
+						if (is_undefined(val))
+						{
 							val = '';
 						}
 						b.call($tt0, val);
 					}
 					//	set individual option
-					else if (!is_undefined(b)) {
+					else if (!is_undefined(b))
+					{
 						if (typeof c !== 'boolean') c = true;
-						eval('opts_orig.' + a + ' = b');
+						eval('opts_orig.'+a+' = b');
 						if (c !== false) reInit = true;
-						else eval('opts.' + a + ' = b');
+						else eval('opts.'+a+' = b');
 					}
 					//	return value for specific option
-					else {
-						return eval('opts.' + a);
+					else
+					{
+						return eval('opts.'+a);
 					}
 				}
-				if (reInit) {
+				if (reInit)
+				{
 					sz_resetMargin($cfs.children(), opts);
 					FN._init(opts_orig);
 					FN._bind_buttons();
@@ -2264,127 +2531,141 @@ imgLiquid.injectCss = '.imgLiquid img {visibility:hidden}';
 				return opts;
 			});
 
+
 			//	linkAnchors event
-			$cfs.bind(cf_e('linkAnchors', conf), function (e, $con, sel) {
+			$cfs.bind(cf_e('linkAnchors', conf), function(e, $con, sel) {
 				e.stopPropagation();
 
-				if (is_undefined($con)) {
+				if (is_undefined($con))
+				{
 					$con = $('body');
-				} else if (is_string($con)) {
+				}
+				else if (is_string($con))
+				{
 					$con = $($con);
 				}
-				if (!is_jquery($con) || $con.length == 0) {
+				if (!is_jquery($con) || $con.length == 0)
+				{
 					return debug(conf, 'Not a valid object.');
 				}
-				if (!is_string(sel)) {
+				if (!is_string(sel))
+				{
 					sel = 'a.caroufredsel';
 				}
 
-				$con.find(sel).each(function () {
+				$con.find(sel).each(function() {
 					var h = this.hash || '';
-					if (h.length > 0 && $cfs.children().index($(h)) != -1) {
-						$(this)
-							.unbind('click')
-							.click(function (e) {
-								e.preventDefault();
-								$cfs.trigger(cf_e('slideTo', conf), h);
-							});
+					if (h.length > 0 && $cfs.children().index($(h)) != -1)
+					{
+						$(this).unbind('click').click(function(e) {
+							e.preventDefault();
+							$cfs.trigger(cf_e('slideTo', conf), h);
+						});
 					}
 				});
 				return true;
 			});
 
+
 			//	updatePageStatus event
-			$cfs.bind(cf_e('updatePageStatus', conf), function (e, build, sizes) {
+			$cfs.bind(cf_e('updatePageStatus', conf), function(e, build, sizes) {
 				e.stopPropagation();
-				if (!opts.pagination.container) {
+				if (!opts.pagination.container)
+				{
 					return;
 				}
 
 				var ipp = opts.pagination.items || opts.items.visible,
-					pgs = Math.ceil(itms.total / ipp);
+					pgs = Math.ceil(itms.total/ipp);
 
-				if (build) {
-					if (opts.pagination.anchorBuilder) {
+				if (build)
+				{
+					if (opts.pagination.anchorBuilder)
+					{
 						opts.pagination.container.children().remove();
-						opts.pagination.container.each(function () {
-							for (var a = 0; a < pgs; a++) {
-								var i = $cfs.children().eq(gn_getItemIndex(a * ipp, 0, true, itms, $cfs));
-								$(this).append(opts.pagination.anchorBuilder.call(i[0], a + 1));
+						opts.pagination.container.each(function() {
+							for (var a = 0; a < pgs; a++)
+							{
+								var i = $cfs.children().eq( gn_getItemIndex(a*ipp, 0, true, itms, $cfs) );
+								$(this).append(opts.pagination.anchorBuilder.call(i[0], a+1));
 							}
 						});
 					}
-					opts.pagination.container.each(function () {
-						$(this)
-							.children()
-							.unbind(opts.pagination.event)
-							.each(function (a) {
-								$(this).bind(opts.pagination.event, function (e) {
-									e.preventDefault();
-									$cfs.trigger(cf_e('slideTo', conf), [
-										a * ipp,
-										-opts.pagination.deviation,
-										true,
-										opts.pagination,
-									]);
-								});
+					opts.pagination.container.each(function() {
+						$(this).children().unbind(opts.pagination.event).each(function(a) {
+							$(this).bind(opts.pagination.event, function(e) {
+								e.preventDefault();
+								$cfs.trigger(cf_e('slideTo', conf), [a*ipp, -opts.pagination.deviation, true, opts.pagination]);
 							});
+						});
 					});
 				}
 
 				var selected = $cfs.triggerHandler(cf_e('currentPage', conf)) + opts.pagination.deviation;
-				if (selected >= pgs) {
+				if (selected >= pgs)
+				{
 					selected = 0;
 				}
-				if (selected < 0) {
-					selected = pgs - 1;
+				if (selected < 0)
+				{
+					selected = pgs-1;
 				}
-				opts.pagination.container.each(function () {
-					$(this)
-						.children()
-						.removeClass(cf_c('selected', conf))
-						.eq(selected)
-						.addClass(cf_c('selected', conf));
+				opts.pagination.container.each(function() {
+					$(this).children().removeClass(cf_c('selected', conf)).eq(selected).addClass(cf_c('selected', conf));
 				});
 				return true;
 			});
 
+
 			//	updateSizes event
-			$cfs.bind(cf_e('updateSizes', conf), function (e) {
+			$cfs.bind(cf_e('updateSizes', conf), function(e) {
 				var vI = opts.items.visible,
 					a_itm = $cfs.children(),
 					avail_primary = ms_getParentSize($wrp, opts, 'width');
 
 				itms.total = a_itm.length;
 
-				if (crsl.primarySizePercentage) {
+				if (crsl.primarySizePercentage)
+				{
 					opts.maxDimension = avail_primary;
 					opts[opts.d['width']] = ms_getPercentage(avail_primary, crsl.primarySizePercentage);
-				} else {
+				}
+				else
+				{
 					opts.maxDimension = ms_getMaxDimension(opts, avail_primary);
 				}
 
-				if (opts.responsive) {
+				if (opts.responsive)
+				{
 					opts.items.width = opts.items.sizesConf.width;
 					opts.items.height = opts.items.sizesConf.height;
 					opts = in_getResponsiveValues(opts, a_itm, avail_primary);
 					vI = opts.items.visible;
 					sz_setResponsiveSizes(opts, a_itm);
-				} else if (opts.items.visibleConf.variable) {
+				}
+				else if (opts.items.visibleConf.variable)
+				{
 					vI = gn_getVisibleItemsNext(a_itm, opts, 0);
-				} else if (opts.items.filter != '*') {
+				}
+				else if (opts.items.filter != '*')
+				{
 					vI = gn_getVisibleItemsNextFilter(a_itm, opts, 0);
 				}
 
 				if (!opts.circular && itms.first != 0 && vI > itms.first) {
-					if (opts.items.visibleConf.variable) {
+					if (opts.items.visibleConf.variable)
+					{
 						var nI = gn_getVisibleItemsPrev(a_itm, opts, itms.first) - itms.first;
-					} else if (opts.items.filter != '*') {
+					}
+					else if (opts.items.filter != '*')
+					{
 						var nI = gn_getVisibleItemsPrevFilter(a_itm, opts, itms.first) - itms.first;
-					} else {
+					}
+					else
+					{
 						var nI = opts.items.visible - itms.first;
 					}
-					debug(conf, 'Preventing non-circular: sliding ' + nI + ' items backward.');
+					debug(conf, 'Preventing non-circular: sliding '+nI+' items backward.');
 					$cfs.trigger(cf_e('prev', conf), nI);
 				}
 
@@ -2400,155 +2681,162 @@ imgLiquid.injectCss = '.imgLiquid img {visibility:hidden}';
 				return sz;
 			});
 
+
 			//	destroy event
-			$cfs.bind(cf_e('destroy', conf), function (e, orgOrder) {
+			$cfs.bind(cf_e('destroy', conf), function(e, orgOrder) {
 				e.stopPropagation();
 				tmrs = sc_clearTimers(tmrs);
 
 				$cfs.data('_cfs_isCarousel', false);
 				$cfs.trigger(cf_e('finish', conf));
-				if (orgOrder) {
+				if (orgOrder)
+				{
 					$cfs.trigger(cf_e('jumpToStart', conf));
 				}
 				sz_restoreOrigCss($cfs.children());
 				sz_restoreOrigCss($cfs);
 				FN._unbind_events();
 				FN._unbind_buttons();
-				if (conf.wrapper == 'parent') {
+				if (conf.wrapper == 'parent')
+				{
 					sz_restoreOrigCss($wrp);
-				} else {
+				}
+				else
+				{
 					$wrp.replaceWith($cfs);
 				}
 
 				return true;
 			});
 
+
 			//	debug event
-			$cfs.bind(cf_e('debug', conf), function (e) {
+			$cfs.bind(cf_e('debug', conf), function(e) {
 				debug(conf, 'Carousel width: ' + opts.width);
 				debug(conf, 'Carousel height: ' + opts.height);
 				debug(conf, 'Item widths: ' + opts.items.width);
 				debug(conf, 'Item heights: ' + opts.items.height);
 				debug(conf, 'Number of items visible: ' + opts.items.visible);
-				if (opts.auto.play) {
+				if (opts.auto.play)
+				{
 					debug(conf, 'Number of items scrolled automatically: ' + opts.auto.items);
 				}
-				if (opts.prev.button) {
+				if (opts.prev.button)
+				{
 					debug(conf, 'Number of items scrolled backward: ' + opts.prev.items);
 				}
-				if (opts.next.button) {
+				if (opts.next.button)
+				{
 					debug(conf, 'Number of items scrolled forward: ' + opts.next.items);
 				}
 				return conf.debug;
 			});
 
+
 			//	triggerEvent, making prefixed and namespaced events accessible from outside
-			$cfs.bind('_cfs_triggerEvent', function (e, n, o) {
+			$cfs.bind('_cfs_triggerEvent', function(e, n, o) {
 				e.stopPropagation();
 				return $cfs.triggerHandler(cf_e(n, conf), o);
 			});
-		}; //	/bind_events
+		};	//	/bind_events
 
-		FN._unbind_events = function () {
+
+		FN._unbind_events = function() {
 			$cfs.unbind(cf_e('', conf));
 			$cfs.unbind(cf_e('', conf, false));
 			$cfs.unbind('_cfs_triggerEvent');
-		}; //	/unbind_events
+		};	//	/unbind_events
 
-		FN._bind_buttons = function () {
+
+		FN._bind_buttons = function() {
 			FN._unbind_buttons();
 			nv_showNavi(opts, itms.total, conf);
 			nv_enableNavi(opts, itms.first, conf);
 
-			if (opts.auto.pauseOnHover) {
+			if (opts.auto.pauseOnHover)
+			{
 				var pC = bt_pauseOnHoverConfig(opts.auto.pauseOnHover);
-				$wrp
-					.bind(cf_e('mouseenter', conf, false), function () {
-						$cfs.trigger(cf_e('pause', conf), pC);
-					})
-					.bind(cf_e('mouseleave', conf, false), function () {
-						$cfs.trigger(cf_e('resume', conf));
-					});
+				$wrp.bind(cf_e('mouseenter', conf, false), function() { $cfs.trigger(cf_e('pause', conf), pC);	})
+					.bind(cf_e('mouseleave', conf, false), function() { $cfs.trigger(cf_e('resume', conf));		});
 			}
 
 			//	play button
-			if (opts.auto.button) {
-				opts.auto.button.bind(cf_e(opts.auto.event, conf, false), function (e) {
+			if (opts.auto.button)
+			{
+				opts.auto.button.bind(cf_e(opts.auto.event, conf, false), function(e) {
 					e.preventDefault();
 					var ev = false,
 						pC = null;
 
-					if (crsl.isPaused) {
+					if (crsl.isPaused)
+					{
 						ev = 'play';
-					} else if (opts.auto.pauseOnEvent) {
+					}
+					else if (opts.auto.pauseOnEvent)
+					{
 						ev = 'pause';
 						pC = bt_pauseOnHoverConfig(opts.auto.pauseOnEvent);
 					}
-					if (ev) {
+					if (ev)
+					{
 						$cfs.trigger(cf_e(ev, conf), pC);
 					}
 				});
 			}
 
 			//	prev button
-			if (opts.prev.button) {
-				opts.prev.button.bind(cf_e(opts.prev.event, conf, false), function (e) {
+			if (opts.prev.button)
+			{
+				opts.prev.button.bind(cf_e(opts.prev.event, conf, false), function(e) {
 					e.preventDefault();
 					$cfs.trigger(cf_e('prev', conf));
 				});
-				if (opts.prev.pauseOnHover) {
+				if (opts.prev.pauseOnHover)
+				{
 					var pC = bt_pauseOnHoverConfig(opts.prev.pauseOnHover);
-					opts.prev.button
-						.bind(cf_e('mouseenter', conf, false), function () {
-							$cfs.trigger(cf_e('pause', conf), pC);
-						})
-						.bind(cf_e('mouseleave', conf, false), function () {
-							$cfs.trigger(cf_e('resume', conf));
-						});
+					opts.prev.button.bind(cf_e('mouseenter', conf, false), function() { $cfs.trigger(cf_e('pause', conf), pC);	})
+						.bind(cf_e('mouseleave', conf, false), function() { $cfs.trigger(cf_e('resume', conf));		});
 				}
 			}
 
 			//	next butotn
-			if (opts.next.button) {
-				opts.next.button.bind(cf_e(opts.next.event, conf, false), function (e) {
+			if (opts.next.button)
+			{
+				opts.next.button.bind(cf_e(opts.next.event, conf, false), function(e) {
 					e.preventDefault();
 					$cfs.trigger(cf_e('next', conf));
 				});
-				if (opts.next.pauseOnHover) {
+				if (opts.next.pauseOnHover)
+				{
 					var pC = bt_pauseOnHoverConfig(opts.next.pauseOnHover);
-					opts.next.button
-						.bind(cf_e('mouseenter', conf, false), function () {
-							$cfs.trigger(cf_e('pause', conf), pC);
-						})
-						.bind(cf_e('mouseleave', conf, false), function () {
-							$cfs.trigger(cf_e('resume', conf));
-						});
+					opts.next.button.bind(cf_e('mouseenter', conf, false), function() { $cfs.trigger(cf_e('pause', conf), pC); 	})
+						.bind(cf_e('mouseleave', conf, false), function() { $cfs.trigger(cf_e('resume', conf));		});
 				}
 			}
 
 			//	pagination
-			if (opts.pagination.container) {
-				if (opts.pagination.pauseOnHover) {
+			if (opts.pagination.container)
+			{
+				if (opts.pagination.pauseOnHover)
+				{
 					var pC = bt_pauseOnHoverConfig(opts.pagination.pauseOnHover);
-					opts.pagination.container
-						.bind(cf_e('mouseenter', conf, false), function () {
-							$cfs.trigger(cf_e('pause', conf), pC);
-						})
-						.bind(cf_e('mouseleave', conf, false), function () {
-							$cfs.trigger(cf_e('resume', conf));
-						});
+					opts.pagination.container.bind(cf_e('mouseenter', conf, false), function() { $cfs.trigger(cf_e('pause', conf), pC);	})
+						.bind(cf_e('mouseleave', conf, false), function() { $cfs.trigger(cf_e('resume', conf));	});
 				}
 			}
 
 			//	prev/next keys
-			if (opts.prev.key || opts.next.key) {
-				$(document).bind(cf_e('keyup', conf, false, true, true), function (e) {
+			if (opts.prev.key || opts.next.key)
+			{
+				$(document).bind(cf_e('keyup', conf, false, true, true), function(e) {
 					var k = e.keyCode;
-					if (k == opts.next.key) {
+					if (k == opts.next.key)
+					{
 						e.preventDefault();
 						$cfs.trigger(cf_e('next', conf));
 					}
-					if (k == opts.prev.key) {
+					if (k == opts.prev.key)
+					{
 						e.preventDefault();
 						$cfs.trigger(cf_e('prev', conf));
 					}
@@ -2556,12 +2844,15 @@ imgLiquid.injectCss = '.imgLiquid img {visibility:hidden}';
 			}
 
 			//	pagination keys
-			if (opts.pagination.keys) {
-				$(document).bind(cf_e('keyup', conf, false, true, true), function (e) {
+			if (opts.pagination.keys)
+			{
+				$(document).bind(cf_e('keyup', conf, false, true, true), function(e) {
 					var k = e.keyCode;
-					if (k >= 49 && k < 58) {
-						k = (k - 49) * opts.items.visible;
-						if (k <= itms.total) {
+					if (k >= 49 && k < 58)
+					{
+						k = (k-49) * opts.items.visible;
+						if (k <= itms.total)
+						{
 							e.preventDefault();
 							$cfs.trigger(cf_e('slideTo', conf), [k, 0, true, opts.pagination]);
 						}
@@ -2570,19 +2861,18 @@ imgLiquid.injectCss = '.imgLiquid img {visibility:hidden}';
 			}
 
 			//	swipe
-			if ($.fn.swipe) {
+			if ($.fn.swipe)
+			{
 				var isTouch = 'ontouchstart' in window;
-				if ((isTouch && opts.swipe.onTouch) || (!isTouch && opts.swipe.onMouse)) {
+				if ((isTouch && opts.swipe.onTouch) || (!isTouch && opts.swipe.onMouse))
+				{
 					var scP = $.extend(true, {}, opts.prev, opts.swipe),
 						scN = $.extend(true, {}, opts.next, opts.swipe),
-						swP = function () {
-							$cfs.trigger(cf_e('prev', conf), [scP]);
-						},
-						swN = function () {
-							$cfs.trigger(cf_e('next', conf), [scN]);
-						};
+						swP = function() { $cfs.trigger(cf_e('prev', conf), [scP]) },
+						swN = function() { $cfs.trigger(cf_e('next', conf), [scN]) };
 
-					switch (opts.direction) {
+					switch (opts.direction)
+					{
 						case 'up':
 						case 'down':
 							opts.swipe.options.swipeUp = swN;
@@ -2592,7 +2882,8 @@ imgLiquid.injectCss = '.imgLiquid img {visibility:hidden}';
 							opts.swipe.options.swipeLeft = swN;
 							opts.swipe.options.swipeRight = swP;
 					}
-					if (crsl.swipe) {
+					if (crsl.swipe)
+					{
 						$cfs.swipe('destroy');
 					}
 					$wrp.swipe(opts.swipe.options);
@@ -2602,19 +2893,26 @@ imgLiquid.injectCss = '.imgLiquid img {visibility:hidden}';
 			}
 
 			//	mousewheel
-			if ($.fn.mousewheel) {
-				if (opts.mousewheel) {
+			if ($.fn.mousewheel)
+			{
+
+				if (opts.mousewheel)
+				{
 					var mcP = $.extend(true, {}, opts.prev, opts.mousewheel),
 						mcN = $.extend(true, {}, opts.next, opts.mousewheel);
 
-					if (crsl.mousewheel) {
+					if (crsl.mousewheel)
+					{
 						$wrp.unbind(cf_e('mousewheel', conf, false));
 					}
-					$wrp.bind(cf_e('mousewheel', conf, false), function (e, delta) {
+					$wrp.bind(cf_e('mousewheel', conf, false), function(e, delta) {
 						e.preventDefault();
-						if (delta > 0) {
+						if (delta > 0)
+						{
 							$cfs.trigger(cf_e('prev', conf), [mcP]);
-						} else {
+						}
+						else
+						{
 							$cfs.trigger(cf_e('next', conf), [mcN]);
 						}
 					});
@@ -2622,14 +2920,17 @@ imgLiquid.injectCss = '.imgLiquid img {visibility:hidden}';
 				}
 			}
 
-			if (opts.auto.play) {
+			if (opts.auto.play)
+			{
 				$cfs.trigger(cf_e('play', conf), opts.auto.delay);
 			}
 
-			if (crsl.upDateOnWindowResize) {
-				var resizeFn = function (e) {
+			if (crsl.upDateOnWindowResize)
+			{
+				var resizeFn = function(e) {
 					$cfs.trigger(cf_e('finish', conf));
-					if (opts.auto.pauseOnResize && !crsl.isPaused) {
+					if (opts.auto.pauseOnResize && !crsl.isPaused)
+					{
 						$cfs.trigger(cf_e('play', conf));
 					}
 					sz_resetMargin($cfs.children(), opts);
@@ -2639,19 +2940,25 @@ imgLiquid.injectCss = '.imgLiquid img {visibility:hidden}';
 				var $w = $(window),
 					onResize = null;
 
-				if ($.debounce && conf.onWindowResize == 'debounce') {
+				if ($.debounce && conf.onWindowResize == 'debounce')
+				{
 					onResize = $.debounce(200, resizeFn);
-				} else if ($.throttle && conf.onWindowResize == 'throttle') {
+				}
+				else if ($.throttle && conf.onWindowResize == 'throttle')
+				{
 					onResize = $.throttle(300, resizeFn);
-				} else {
+				}
+				else
+				{
 					var _windowWidth = 0,
 						_windowHeight = 0;
 
-					onResize = function () {
+					onResize = function() {
 						var nw = $w.width(),
 							nh = $w.height();
 
-						if (nw != _windowWidth || nh != _windowHeight) {
+						if (nw != _windowWidth || nh != _windowHeight)
+						{
 							resizeFn();
 							_windowWidth = nw;
 							_windowHeight = nh;
@@ -2660,9 +2967,10 @@ imgLiquid.injectCss = '.imgLiquid img {visibility:hidden}';
 				}
 				$w.bind(cf_e('resize', conf, false, true, true), onResize);
 			}
-		}; //	/bind_buttons
+		};	//	/bind_buttons
 
-		FN._unbind_buttons = function () {
+
+		FN._unbind_buttons = function() {
 			var ns1 = cf_e('', conf),
 				ns2 = cf_e('', conf, false);
 			ns3 = cf_e('', conf, false, true, true);
@@ -2671,87 +2979,96 @@ imgLiquid.injectCss = '.imgLiquid img {visibility:hidden}';
 			$(window).unbind(ns3);
 			$wrp.unbind(ns2);
 
-			if (opts.auto.button) {
+			if (opts.auto.button)
+			{
 				opts.auto.button.unbind(ns2);
 			}
-			if (opts.prev.button) {
+			if (opts.prev.button)
+			{
 				opts.prev.button.unbind(ns2);
 			}
-			if (opts.next.button) {
+			if (opts.next.button)
+			{
 				opts.next.button.unbind(ns2);
 			}
-			if (opts.pagination.container) {
+			if (opts.pagination.container)
+			{
 				opts.pagination.container.unbind(ns2);
-				if (opts.pagination.anchorBuilder) {
+				if (opts.pagination.anchorBuilder)
+				{
 					opts.pagination.container.children().remove();
 				}
 			}
-			if (crsl.swipe) {
+			if (crsl.swipe)
+			{
 				$cfs.swipe('destroy');
 				$wrp.css('cursor', 'default');
 				crsl.swipe = false;
 			}
-			if (crsl.mousewheel) {
+			if (crsl.mousewheel)
+			{
 				crsl.mousewheel = false;
 			}
 
 			nv_showNavi(opts, 'hide', conf);
 			nv_enableNavi(opts, 'removeClass', conf);
-		}; //	/unbind_buttons
+
+		};	//	/unbind_buttons
+
+
 
 		//	START
 
-		if (is_boolean(configs)) {
+		if (is_boolean(configs))
+		{
 			configs = {
-				debug: configs,
+				'debug': configs
 			};
 		}
 
 		//	set vars
 		var crsl = {
-				direction: 'next',
-				isPaused: true,
-				isScrolling: false,
-				isStopped: false,
-				mousewheel: false,
-				swipe: false,
+				'direction'		: 'next',
+				'isPaused'		: true,
+				'isScrolling'	: false,
+				'isStopped'		: false,
+				'mousewheel'	: false,
+				'swipe'			: false
 			},
 			itms = {
-				total: $cfs.children().length,
-				first: 0,
+				'total'			: $cfs.children().length,
+				'first'			: 0
 			},
 			tmrs = {
-				auto: null,
-				progress: null,
-				startTime: getTime(),
-				timePassed: 0,
+				'auto'			: null,
+				'progress'		: null,
+				'startTime'		: getTime(),
+				'timePassed'	: 0
 			},
 			scrl = {
-				isStopped: false,
-				duration: 0,
-				startTime: 0,
-				easing: '',
-				anims: [],
+				'isStopped'		: false,
+				'duration'		: 0,
+				'startTime'		: 0,
+				'easing'		: '',
+				'anims'			: []
 			},
 			clbk = {
-				onBefore: [],
-				onAfter: [],
+				'onBefore'		: [],
+				'onAfter'		: []
 			},
 			queu = [],
 			conf = $.extend(true, {}, $.fn.carouFredSel.configs, configs),
 			opts = {},
 			opts_orig = $.extend(true, {}, options),
-			$wrp =
-				conf.wrapper == 'parent'
-					? $cfs.parent()
-					: $cfs
-						.wrap('<' + conf.wrapper.element + ' class="' + conf.wrapper.classname + '" />')
-						.parent();
+			$wrp = (conf.wrapper == 'parent')
+				? $cfs.parent()
+				: $cfs.wrap('<'+conf.wrapper.element+' class="'+conf.wrapper.classname+'" />').parent();
 
-		conf.selector = $cfs.selector;
-		conf.serialNumber = $.fn.carouFredSel.serialNumber++;
 
-		conf.transition = conf.transition && $.fn.transition ? 'transition' : 'animate';
+		conf.selector		= $cfs.selector;
+		conf.serialNumber	= $.fn.carouFredSel.serialNumber++;
+
+		conf.transition = (conf.transition && $.fn.transition) ? 'transition' : 'animate';
 
 		//	create carousel
 		FN._init(opts_orig, true, starting_position);
@@ -2760,33 +3077,46 @@ imgLiquid.injectCss = '.imgLiquid img {visibility:hidden}';
 		FN._bind_buttons();
 
 		//	find item to start
-		if (is_array(opts.items.start)) {
+		if (is_array(opts.items.start))
+		{
 			var start_arr = opts.items.start;
-		} else {
+		}
+		else
+		{
 			var start_arr = [];
-			if (opts.items.start != 0) {
+			if (opts.items.start != 0)
+			{
 				start_arr.push(opts.items.start);
 			}
 		}
-		if (opts.cookie) {
+		if (opts.cookie)
+		{
 			start_arr.unshift(parseInt(cf_getCookie(opts.cookie), 10));
 		}
 
-		if (start_arr.length > 0) {
-			for (var a = 0, l = start_arr.length; a < l; a++) {
+		if (start_arr.length > 0)
+		{
+			for (var a = 0, l = start_arr.length; a < l; a++)
+			{
 				var s = start_arr[a];
-				if (s == 0) {
+				if (s == 0)
+				{
 					continue;
 				}
-				if (s === true) {
+				if (s === true)
+				{
 					s = window.location.hash;
-					if (s.length < 1) {
+					if (s.length < 1)
+					{
 						continue;
 					}
-				} else if (s === 'random') {
-					s = Math.floor(Math.random() * itms.total);
 				}
-				if ($cfs.triggerHandler(cf_e('slideTo', conf), [s, 0, true, { fx: 'none' }])) {
+				else if (s === 'random')
+				{
+					s = Math.floor(Math.random()*itms.total);
+				}
+				if ($cfs.triggerHandler(cf_e('slideTo', conf), [s, 0, true, { fx: 'none' }]))
+				{
 					break;
 				}
 			}
@@ -2794,101 +3124,112 @@ imgLiquid.injectCss = '.imgLiquid img {visibility:hidden}';
 		var siz = sz_setSizes($cfs, opts),
 			itm = gi_getCurrentItems($cfs.children(), opts);
 
-		if (opts.onCreate) {
+		if (opts.onCreate)
+		{
 			opts.onCreate.call($tt0, {
-				width: siz.width,
-				height: siz.height,
-				items: itm,
+				'width': siz.width,
+				'height': siz.height,
+				'items': itm
 			});
 		}
 
 		$cfs.trigger(cf_e('updatePageStatus', conf), [true, siz]);
 		$cfs.trigger(cf_e('linkAnchors', conf));
 
-		if (conf.debug) {
+		if (conf.debug)
+		{
 			$cfs.trigger(cf_e('debug', conf));
 		}
 
 		return $cfs;
 	};
 
+
+
 	//	GLOBAL PUBLIC
 
 	$.fn.carouFredSel.serialNumber = 1;
 	$.fn.carouFredSel.defaults = {
-		synchronise: false,
-		infinite: true,
-		circular: true,
-		responsive: false,
-		direction: 'left',
-		items: {
-			start: 0,
+		'synchronise'	: false,
+		'infinite'		: true,
+		'circular'		: true,
+		'responsive'	: false,
+		'direction'		: 'left',
+		'items'			: {
+			'start'			: 0
 		},
-		scroll: {
-			easing: 'swing',
-			duration: 500,
+		'scroll'		: {
+			'easing'		: 'swing',
+			'duration'		: 500,
 
-			pauseOnHover: false,
-			event: 'click',
-			queue: false,
-		},
+			'pauseOnHover'	: false,
+			'event'			: 'click',
+			'queue'			: false
+		}
 	};
 	$.fn.carouFredSel.configs = {
-		debug: false,
-		transition: false,
-		onWindowResize: 'throttle',
-		events: {
-			prefix: '',
-			namespace: 'cfs',
+		'debug'			: false,
+		'transition'	: false,
+		'onWindowResize': 'throttle',
+		'events'		: {
+			'prefix'		: '',
+			'namespace'		: 'cfs'
 		},
-		wrapper: {
-			element: 'div',
-			classname: 'caroufredsel_wrapper',
+		'wrapper'		: {
+			'element'		: 'div',
+			'classname'		: 'caroufredsel_wrapper'
 		},
-		classnames: {},
+		'classnames'	: {}
 	};
-	$.fn.carouFredSel.pageAnchorBuilder = function (nr) {
-		return '<a href="#"><span>' + nr + '</span></a>';
+	$.fn.carouFredSel.pageAnchorBuilder = function(nr) {
+		return '<a href="#"><span>'+nr+'</span></a>';
 	};
-	$.fn.carouFredSel.progressbarUpdater = function (perc) {
-		$(this).css('width', perc + '%');
+	$.fn.carouFredSel.progressbarUpdater = function(perc) {
+		$(this).css('width', perc+'%');
 	};
 
 	$.fn.carouFredSel.cookie = {
-		get: function (n) {
+		get: function(n) {
 			n += '=';
 			var ca = document.cookie.split(';');
-			for (var a = 0, l = ca.length; a < l; a++) {
+			for (var a = 0, l = ca.length; a < l; a++)
+			{
 				var c = ca[a];
-				while (c.charAt(0) == ' ') {
+				while (c.charAt(0) == ' ')
+				{
 					c = c.slice(1);
 				}
-				if (c.indexOf(n) == 0) {
+				if (c.indexOf(n) == 0)
+				{
 					return c.slice(n.length);
 				}
 			}
 			return 0;
 		},
-		set: function (n, v, d) {
-			var e = '';
-			if (d) {
+		set: function(n, v, d) {
+			var e = "";
+			if (d)
+			{
 				var date = new Date();
-				date.setTime(date.getTime() + d * 24 * 60 * 60 * 1000);
-				e = '; expires=' + date.toGMTString();
+				date.setTime(date.getTime() + (d * 24 * 60 * 60 * 1000));
+				e = "; expires=" + date.toGMTString();
 			}
 			document.cookie = n + '=' + v + e + '; path=/';
 		},
-		remove: function (n) {
-			$.fn.carouFredSel.cookie.set(n, '', -1);
-		},
+		remove: function(n) {
+			$.fn.carouFredSel.cookie.set(n, "", -1);
+		}
 	};
+
 
 	//	GLOBAL PRIVATE
 
 	//	scrolling functions
 	function sc_setScroll(d, e, c) {
-		if (c.transition == 'transition') {
-			if (e == 'swing') {
+		if (c.transition == 'transition')
+		{
+			if (e == 'swing')
+			{
 				e = 'ease';
 			}
 		}
@@ -2897,45 +3238,54 @@ imgLiquid.injectCss = '.imgLiquid img {visibility:hidden}';
 			duration: d,
 			orgDuration: d,
 			easing: e,
-			startTime: getTime(),
+			startTime: getTime()
 		};
 	}
 	function sc_startScroll(s, c) {
-		for (var a = 0, l = s.anims.length; a < l; a++) {
+		for (var a = 0, l = s.anims.length; a < l; a++)
+		{
 			var b = s.anims[a];
-			if (!b) {
+			if (!b)
+			{
 				continue;
 			}
 			b[0][c.transition](b[1], s.duration, s.easing, b[2]);
 		}
 	}
 	function sc_stopScroll(s, finish) {
-		if (!is_boolean(finish)) {
+		if (!is_boolean(finish))
+		{
 			finish = true;
 		}
-		if (is_object(s.pre)) {
+		if (is_object(s.pre))
+		{
 			sc_stopScroll(s.pre, finish);
 		}
-		for (var a = 0, l = s.anims.length; a < l; a++) {
+		for (var a = 0, l = s.anims.length; a < l; a++)
+		{
 			var b = s.anims[a];
 			b[0].stop(true);
-			if (finish) {
+			if (finish)
+			{
 				b[0].css(b[1]);
-				if (is_function(b[2])) {
+				if (is_function(b[2]))
+				{
 					b[2]();
 				}
 			}
 		}
-		if (is_object(s.post)) {
+		if (is_object(s.post))
+		{
 			sc_stopScroll(s.post, finish);
 		}
 	}
-	function sc_afterScroll($c, $c2, o) {
-		if ($c2) {
+	function sc_afterScroll( $c, $c2, o ) {
+		if ($c2)
+		{
 			$c2.remove();
 		}
 
-		switch (o.fx) {
+		switch(o.fx) {
 			case 'fade':
 			case 'crossfade':
 			case 'cover-fade':
@@ -2946,182 +3296,230 @@ imgLiquid.injectCss = '.imgLiquid img {visibility:hidden}';
 		}
 	}
 	function sc_fireCallbacks($t, o, b, a, c) {
-		if (o[b]) {
+		if (o[b])
+		{
 			o[b].call($t, a);
 		}
-		if (c[b].length) {
-			for (var i = 0, l = c[b].length; i < l; i++) {
+		if (c[b].length)
+		{
+			for (var i = 0, l = c[b].length; i < l; i++)
+			{
 				c[b][i].call($t, a);
 			}
 		}
 		return [];
 	}
 	function sc_fireQueue($c, q, c) {
-		if (q.length) {
+
+		if (q.length)
+		{
 			$c.trigger(cf_e(q[0][0], c), q[0][1]);
 			q.shift();
 		}
 		return q;
 	}
 	function sc_hideHiddenItems(hiddenitems) {
-		hiddenitems.each(function () {
+		hiddenitems.each(function() {
 			var hi = $(this);
 			hi.data('_cfs_isHidden', hi.is(':hidden')).hide();
 		});
 	}
 	function sc_showHiddenItems(hiddenitems) {
-		if (hiddenitems) {
-			hiddenitems.each(function () {
+		if (hiddenitems)
+		{
+			hiddenitems.each(function() {
 				var hi = $(this);
-				if (!hi.data('_cfs_isHidden')) {
+				if (!hi.data('_cfs_isHidden'))
+				{
 					hi.show();
 				}
 			});
 		}
 	}
 	function sc_clearTimers(t) {
-		if (t.auto) {
+		if (t.auto)
+		{
 			clearTimeout(t.auto);
 		}
-		if (t.progress) {
+		if (t.progress)
+		{
 			clearInterval(t.progress);
 		}
 		return t;
 	}
 	function sc_mapCallbackArguments(i_old, i_skp, i_new, s_itm, s_dir, s_dur, w_siz) {
 		return {
-			width: w_siz.width,
-			height: w_siz.height,
-			items: {
-				old: i_old,
-				skipped: i_skp,
-				visible: i_new,
+			'width': w_siz.width,
+			'height': w_siz.height,
+			'items': {
+				'old': i_old,
+				'skipped': i_skp,
+				'visible': i_new
 			},
-			scroll: {
-				items: s_itm,
-				direction: s_dir,
-				duration: s_dur,
-			},
+			'scroll': {
+				'items': s_itm,
+				'direction': s_dir,
+				'duration': s_dur
+			}
 		};
 	}
-	function sc_getDuration(sO, o, nI, siz) {
+	function sc_getDuration( sO, o, nI, siz ) {
 		var dur = sO.duration;
-		if (sO.fx == 'none') {
+		if (sO.fx == 'none')
+		{
 			return 0;
 		}
-		if (dur == 'auto') {
-			dur = (o.scroll.duration / o.scroll.items) * nI;
-		} else if (dur < 10) {
+		if (dur == 'auto')
+		{
+			dur = o.scroll.duration / o.scroll.items * nI;
+		}
+		else if (dur < 10)
+		{
 			dur = siz / dur;
 		}
-		if (dur < 1) {
+		if (dur < 1)
+		{
 			return 0;
 		}
-		if (sO.fx == 'fade') {
+		if (sO.fx == 'fade')
+		{
 			dur = dur / 2;
+
 		}
 		return Math.round(dur);
 	}
 
 	//	navigation functions
 	function nv_showNavi(o, t, c) {
-		var minimum = is_number(o.items.minimum) ? o.items.minimum : o.items.visible + 1;
-		if (t == 'show' || t == 'hide') {
+		var minimum = (is_number(o.items.minimum)) ? o.items.minimum : o.items.visible + 1;
+		if (t == 'show' || t == 'hide')
+		{
 			var f = t;
-		} else if (minimum > t) {
-			debug(c, 'Not enough items (' + t + ' total, ' + minimum + ' needed): Hiding navigation.');
+		}
+		else if (minimum > t)
+		{
+			debug(c, 'Not enough items ('+t+' total, '+minimum+' needed): Hiding navigation.');
 			var f = 'hide';
-		} else {
+		}
+		else
+		{
 			var f = 'show';
 		}
-		var s = f == 'show' ? 'removeClass' : 'addClass',
+		var s = (f == 'show') ? 'removeClass' : 'addClass',
 			h = cf_c('hidden', c);
 
-		if (o.auto.button) {
+		if (o.auto.button)
+		{
 			o.auto.button[f]()[s](h);
 		}
-		if (o.prev.button) {
+		if (o.prev.button)
+		{
 			o.prev.button[f]()[s](h);
 		}
-		if (o.next.button) {
+		if (o.next.button)
+		{
 			o.next.button[f]()[s](h);
 		}
-		if (o.pagination.container) {
+		if (o.pagination.container)
+		{
 			o.pagination.container[f]()[s](h);
 		}
 	}
 	function nv_enableNavi(o, f, c) {
 		if (o.circular || o.infinite) return;
-		var fx = f == 'removeClass' || f == 'addClass' ? f : false,
+		var fx = (f == 'removeClass' || f == 'addClass') ? f : false,
 			di = cf_c('disabled', c);
 
-		if (o.auto.button && fx) {
+		if (o.auto.button && fx)
+		{
 			o.auto.button[fx](di);
 		}
-		if (o.prev.button) {
-			var fn = fx || f == 0 ? 'addClass' : 'removeClass';
+		if (o.prev.button)
+		{
+			var fn = fx || (f == 0) ? 'addClass' : 'removeClass';
 			o.prev.button[fn](di);
 		}
-		if (o.next.button) {
-			var fn = fx || f == o.items.visible ? 'addClass' : 'removeClass';
+		if (o.next.button)
+		{
+			var fn = fx || (f == o.items.visible) ? 'addClass' : 'removeClass';
 			o.next.button[fn](di);
 		}
 	}
 
 	//	get object functions
 	function go_getObject($tt, obj) {
-		if (is_function(obj)) {
+		if (is_function(obj))
+		{
 			obj = obj.call($tt);
-		} else if (is_undefined(obj)) {
+		}
+		else if (is_undefined(obj))
+		{
 			obj = {};
 		}
 		return obj;
 	}
 	function go_getItemsObject($tt, obj) {
 		obj = go_getObject($tt, obj);
-		if (is_number(obj)) {
-			obj = {
-				visible: obj,
+		if (is_number(obj))
+		{
+			obj	= {
+				'visible': obj
 			};
-		} else if (obj == 'variable') {
+		}
+		else if (obj == 'variable')
+		{
 			obj = {
-				visible: obj,
-				width: obj,
-				height: obj,
+				'visible': obj,
+				'width': obj,
+				'height': obj
 			};
-		} else if (!is_object(obj)) {
+		}
+		else if (!is_object(obj))
+		{
 			obj = {};
 		}
 		return obj;
 	}
 	function go_getScrollObject($tt, obj) {
 		obj = go_getObject($tt, obj);
-		if (is_number(obj)) {
-			if (obj <= 50) {
+		if (is_number(obj))
+		{
+			if (obj <= 50)
+			{
 				obj = {
-					items: obj,
-				};
-			} else {
-				obj = {
-					duration: obj,
+					'items': obj
 				};
 			}
-		} else if (is_string(obj)) {
+			else
+			{
+				obj = {
+					'duration': obj
+				};
+			}
+		}
+		else if (is_string(obj))
+		{
 			obj = {
-				easing: obj,
+				'easing': obj
 			};
-		} else if (!is_object(obj)) {
+		}
+		else if (!is_object(obj))
+		{
 			obj = {};
 		}
 		return obj;
 	}
 	function go_getNaviObject($tt, obj) {
 		obj = go_getObject($tt, obj);
-		if (is_string(obj)) {
+		if (is_string(obj))
+		{
 			var temp = cf_getKeyCode(obj);
-			if (temp == -1) {
+			if (temp == -1)
+			{
 				obj = $(obj);
-			} else {
+			}
+			else
+			{
 				obj = temp;
 			}
 		}
@@ -3130,92 +3528,123 @@ imgLiquid.injectCss = '.imgLiquid img {visibility:hidden}';
 
 	function go_getAutoObject($tt, obj) {
 		obj = go_getNaviObject($tt, obj);
-		if (is_jquery(obj)) {
+		if (is_jquery(obj))
+		{
 			obj = {
-				button: obj,
-			};
-		} else if (is_boolean(obj)) {
-			obj = {
-				play: obj,
-			};
-		} else if (is_number(obj)) {
-			obj = {
-				timeoutDuration: obj,
+				'button': obj
 			};
 		}
-		if (obj.progress) {
-			if (is_string(obj.progress) || is_jquery(obj.progress)) {
+		else if (is_boolean(obj))
+		{
+			obj = {
+				'play': obj
+			};
+		}
+		else if (is_number(obj))
+		{
+			obj = {
+				'timeoutDuration': obj
+			};
+		}
+		if (obj.progress)
+		{
+			if (is_string(obj.progress) || is_jquery(obj.progress))
+			{
 				obj.progress = {
-					bar: obj.progress,
+					'bar': obj.progress
 				};
 			}
 		}
 		return obj;
 	}
 	function go_complementAutoObject($tt, obj) {
-		if (is_function(obj.button)) {
+		if (is_function(obj.button))
+		{
 			obj.button = obj.button.call($tt);
 		}
-		if (is_string(obj.button)) {
+		if (is_string(obj.button))
+		{
 			obj.button = $(obj.button);
 		}
-		if (!is_boolean(obj.play)) {
+		if (!is_boolean(obj.play))
+		{
 			obj.play = true;
 		}
-		if (!is_number(obj.delay)) {
+		if (!is_number(obj.delay))
+		{
 			obj.delay = 0;
 		}
-		if (is_undefined(obj.pauseOnEvent)) {
+		if (is_undefined(obj.pauseOnEvent))
+		{
 			obj.pauseOnEvent = true;
 		}
-		if (!is_boolean(obj.pauseOnResize)) {
+		if (!is_boolean(obj.pauseOnResize))
+		{
 			obj.pauseOnResize = true;
 		}
-		if (!is_number(obj.timeoutDuration)) {
-			obj.timeoutDuration = obj.duration < 10 ? 2500 : obj.duration * 5;
+		if (!is_number(obj.timeoutDuration))
+		{
+			obj.timeoutDuration = (obj.duration < 10)
+				? 2500
+				: obj.duration * 5;
 		}
-		if (obj.progress) {
-			if (is_function(obj.progress.bar)) {
+		if (obj.progress)
+		{
+			if (is_function(obj.progress.bar))
+			{
 				obj.progress.bar = obj.progress.bar.call($tt);
 			}
-			if (is_string(obj.progress.bar)) {
+			if (is_string(obj.progress.bar))
+			{
 				obj.progress.bar = $(obj.progress.bar);
 			}
-			if (obj.progress.bar) {
-				if (!is_function(obj.progress.updater)) {
+			if (obj.progress.bar)
+			{
+				if (!is_function(obj.progress.updater))
+				{
 					obj.progress.updater = $.fn.carouFredSel.progressbarUpdater;
 				}
-				if (!is_number(obj.progress.interval)) {
+				if (!is_number(obj.progress.interval))
+				{
 					obj.progress.interval = 50;
 				}
-			} else {
+			}
+			else
+			{
 				obj.progress = false;
 			}
 		}
 		return obj;
 	}
 
+
 	function go_getPrevNextObject($tt, obj) {
 		obj = go_getNaviObject($tt, obj);
-		if (is_jquery(obj)) {
+		if (is_jquery(obj))
+		{
 			obj = {
-				button: obj,
+				'button': obj
 			};
-		} else if (is_number(obj)) {
+		}
+		else if (is_number(obj))
+		{
 			obj = {
-				key: obj,
+				'key': obj
 			};
 		}
 		return obj;
 	}
 	function go_complementPrevNextObject($tt, obj) {
-		if (is_function(obj.button)) {
+		if (is_function(obj.button))
+		{
 			obj.button = obj.button.call($tt);
 		}
-		if (is_string(obj.button)) {
+		if (is_string(obj.button))
+		{
 			obj.button = $(obj.button);
 		}
-		if (is_string(obj.key)) {
+		if (is_string(obj.key))
+		{
 			obj.key = cf_getKeyCode(obj.key);
 		}
 		return obj;
@@ -3223,85 +3652,109 @@ imgLiquid.injectCss = '.imgLiquid img {visibility:hidden}';
 
 	function go_getPaginationObject($tt, obj) {
 		obj = go_getNaviObject($tt, obj);
-		if (is_jquery(obj)) {
+		if (is_jquery(obj))
+		{
 			obj = {
-				container: obj,
+				'container': obj
 			};
-		} else if (is_boolean(obj)) {
+		}
+		else if (is_boolean(obj))
+		{
 			obj = {
-				keys: obj,
+				'keys': obj
 			};
 		}
 		return obj;
 	}
 	function go_complementPaginationObject($tt, obj) {
-		if (is_function(obj.container)) {
+		if (is_function(obj.container))
+		{
 			obj.container = obj.container.call($tt);
 		}
-		if (is_string(obj.container)) {
+		if (is_string(obj.container))
+		{
 			obj.container = $(obj.container);
 		}
-		if (!is_number(obj.items)) {
+		if (!is_number(obj.items))
+		{
 			obj.items = false;
 		}
-		if (!is_boolean(obj.keys)) {
+		if (!is_boolean(obj.keys))
+		{
 			obj.keys = false;
 		}
-		if (!is_function(obj.anchorBuilder) && !is_false(obj.anchorBuilder)) {
+		if (!is_function(obj.anchorBuilder) && !is_false(obj.anchorBuilder))
+		{
 			obj.anchorBuilder = $.fn.carouFredSel.pageAnchorBuilder;
 		}
-		if (!is_number(obj.deviation)) {
+		if (!is_number(obj.deviation))
+		{
 			obj.deviation = 0;
 		}
 		return obj;
 	}
 
 	function go_getSwipeObject($tt, obj) {
-		if (is_function(obj)) {
+		if (is_function(obj))
+		{
 			obj = obj.call($tt);
 		}
-		if (is_undefined(obj)) {
+		if (is_undefined(obj))
+		{
 			obj = {
-				onTouch: false,
+				'onTouch': false
 			};
 		}
-		if (is_true(obj)) {
+		if (is_true(obj))
+		{
 			obj = {
-				onTouch: obj,
+				'onTouch': obj
 			};
-		} else if (is_number(obj)) {
+		}
+		else if (is_number(obj))
+		{
 			obj = {
-				items: obj,
+				'items': obj
 			};
 		}
 		return obj;
 	}
 	function go_complementSwipeObject($tt, obj) {
-		if (!is_boolean(obj.onTouch)) {
+		if (!is_boolean(obj.onTouch))
+		{
 			obj.onTouch = true;
 		}
-		if (!is_boolean(obj.onMouse)) {
+		if (!is_boolean(obj.onMouse))
+		{
 			obj.onMouse = false;
 		}
-		if (!is_object(obj.options)) {
+		if (!is_object(obj.options))
+		{
 			obj.options = {};
 		}
-		if (!is_boolean(obj.options.triggerOnTouchEnd)) {
+		if (!is_boolean(obj.options.triggerOnTouchEnd))
+		{
 			obj.options.triggerOnTouchEnd = false;
 		}
 		return obj;
 	}
 	function go_getMousewheelObject($tt, obj) {
-		if (is_function(obj)) {
+		if (is_function(obj))
+		{
 			obj = obj.call($tt);
 		}
-		if (is_true(obj)) {
+		if (is_true(obj))
+		{
 			obj = {};
-		} else if (is_number(obj)) {
+		}
+		else if (is_number(obj))
+		{
 			obj = {
-				items: obj,
+				'items': obj
 			};
-		} else if (is_undefined(obj)) {
+		}
+		else if (is_undefined(obj))
+		{
 			obj = false;
 		}
 		return obj;
@@ -3312,39 +3765,52 @@ imgLiquid.injectCss = '.imgLiquid img {visibility:hidden}';
 
 	//	get number functions
 	function gn_getItemIndex(num, dev, org, items, $cfs) {
-		if (is_string(num)) {
+		if (is_string(num))
+		{
 			num = $(num, $cfs);
 		}
 
-		if (is_object(num)) {
+		if (is_object(num))
+		{
 			num = $(num, $cfs);
 		}
-		if (is_jquery(num)) {
+		if (is_jquery(num))
+		{
 			num = $cfs.children().index(num);
-			if (!is_boolean(org)) {
+			if (!is_boolean(org))
+			{
 				org = false;
 			}
-		} else {
-			if (!is_boolean(org)) {
+		}
+		else
+		{
+			if (!is_boolean(org))
+			{
 				org = true;
 			}
 		}
-		if (!is_number(num)) {
+		if (!is_number(num))
+		{
 			num = 0;
 		}
-		if (!is_number(dev)) {
+		if (!is_number(dev))
+		{
 			dev = 0;
 		}
 
-		if (org) {
+		if (org)
+		{
 			num += items.first;
 		}
 		num += dev;
-		if (items.total > 0) {
-			while (num >= items.total) {
+		if (items.total > 0)
+		{
+			while (num >= items.total)
+			{
 				num -= items.total;
 			}
-			while (num < 0) {
+			while (num < 0)
+			{
 				num += items.total;
 			}
 		}
@@ -3356,13 +3822,16 @@ imgLiquid.injectCss = '.imgLiquid img {visibility:hidden}';
 		var t = 0,
 			x = 0;
 
-		for (var a = s; a >= 0; a--) {
+		for (var a = s; a >= 0; a--)
+		{
 			var j = i.eq(a);
-			t += j.is(':visible') ? j[o.d['outerWidth']](true) : 0;
-			if (t > o.maxDimension) {
+			t += (j.is(':visible')) ? j[o.d['outerWidth']](true) : 0;
+			if (t > o.maxDimension)
+			{
 				return x;
 			}
-			if (a == 0) {
+			if (a == 0)
+			{
 				a = i.length;
 			}
 			x++;
@@ -3378,30 +3847,33 @@ imgLiquid.injectCss = '.imgLiquid img {visibility:hidden}';
 		var t = 0,
 			x = 0;
 
-		for (var a = s, l = i.length; a >= 0; a--) {
+		for (var a = s, l = i.length; a >= 0; a--)
+		{
 			x++;
-			if (x == l) {
+			if (x == l)
+			{
 				return x;
 			}
 
 			var j = i.eq(a);
-			if (j.is(f)) {
+			if (j.is(f))
+			{
 				t++;
-				if (t == m) {
+				if (t == m)
+				{
 					return x;
 				}
 			}
-			if (a == 0) {
+			if (a == 0)
+			{
+
 				a = l;
 			}
 		}
 	}
 
 	function gn_getVisibleOrg($c, o) {
-		return (
-			o.items.visibleConf.org ||
-			$c.children().slice(0, o.items.visible).filter(o.items.filter).length
-		);
+		return o.items.visibleConf.org || $c.children().slice(0, o.items.visible).filter(o.items.filter).length;
 	}
 
 	//	items next
@@ -3409,27 +3881,33 @@ imgLiquid.injectCss = '.imgLiquid img {visibility:hidden}';
 		var t = 0,
 			x = 0;
 
-		for (var a = s, l = i.length - 1; a <= l; a++) {
+		for (var a = s, l = i.length-1; a <= l; a++)
+		{
 			var j = i.eq(a);
 
-			t += j.is(':visible') ? j[o.d['outerWidth']](true) : 0;
-			if (t > o.maxDimension) {
+			t += (j.is(':visible')) ? j[o.d['outerWidth']](true) : 0;
+			if (t > o.maxDimension)
+			{
 				return x;
 			}
 
 			x++;
-			if (x == l + 1) {
+			if (x == l+1)
+			{
 				return x;
 			}
-			if (a == l) {
+			if (a == l)
+			{
 				a = -1;
 			}
 		}
 	}
 	function gn_getVisibleItemsNextTestCircular(i, o, s, l) {
 		var v = gn_getVisibleItemsNext(i, o, s);
-		if (!o.circular) {
-			if (s + v > l) {
+		if (!o.circular)
+		{
+			if (s + v > l)
+			{
 				v = l - s;
 			}
 		}
@@ -3439,26 +3917,31 @@ imgLiquid.injectCss = '.imgLiquid img {visibility:hidden}';
 		return gn_getItemsNextFilter(i, o.items.filter, o.items.visibleConf.org, s, o.circular);
 	}
 	function gn_getScrollItemsNextFilter(i, o, s, m) {
-		return gn_getItemsNextFilter(i, o.items.filter, m + 1, s, o.circular) - 1;
+		return gn_getItemsNextFilter(i, o.items.filter, m+1, s, o.circular) - 1;
 	}
 	function gn_getItemsNextFilter(i, f, m, s, c) {
 		var t = 0,
 			x = 0;
 
-		for (var a = s, l = i.length - 1; a <= l; a++) {
+		for (var a = s, l = i.length-1; a <= l; a++)
+		{
 			x++;
-			if (x >= l) {
+			if (x >= l)
+			{
 				return x;
 			}
 
 			var j = i.eq(a);
-			if (j.is(f)) {
+			if (j.is(f))
+			{
 				t++;
-				if (t == m) {
+				if (t == m)
+				{
 					return x;
 				}
 			}
-			if (a == l) {
+			if (a == l)
+			{
 				a = -1;
 			}
 		}
@@ -3469,7 +3952,7 @@ imgLiquid.injectCss = '.imgLiquid img {visibility:hidden}';
 		return i.slice(0, o.items.visible);
 	}
 	function gi_getOldItemsPrev(i, o, n) {
-		return i.slice(n, o.items.visibleConf.old + n);
+		return i.slice(n, o.items.visibleConf.old+n);
 	}
 	function gi_getNewItemsPrev(i, o) {
 		return i.slice(0, o.items.visible);
@@ -3478,19 +3961,22 @@ imgLiquid.injectCss = '.imgLiquid img {visibility:hidden}';
 		return i.slice(0, o.items.visibleConf.old);
 	}
 	function gi_getNewItemsNext(i, o, n) {
-		return i.slice(n, o.items.visible + n);
+		return i.slice(n, o.items.visible+n);
 	}
 
 	//	sizes functions
 	function sz_storeMargin(i, o, d) {
-		if (o.usePadding) {
-			if (!is_string(d)) {
+		if (o.usePadding)
+		{
+			if (!is_string(d))
+			{
 				d = '_cfs_origCssMargin';
 			}
-			i.each(function () {
+			i.each(function() {
 				var j = $(this),
 					m = parseInt(j.css(o.d['marginRight']), 10);
-				if (!is_number(m)) {
+				if (!is_number(m))
+				{
 					m = 0;
 				}
 				j.data(d, m);
@@ -3498,29 +3984,28 @@ imgLiquid.injectCss = '.imgLiquid img {visibility:hidden}';
 		}
 	}
 	function sz_resetMargin(i, o, m) {
-		if (o.usePadding) {
-			var x = is_boolean(m) ? m : false;
-			if (!is_number(m)) {
+		if (o.usePadding)
+		{
+			var x = (is_boolean(m)) ? m : false;
+			if (!is_number(m))
+			{
 				m = 0;
 			}
 			sz_storeMargin(i, o, '_cfs_tempCssMargin');
-			i.each(function () {
+			i.each(function() {
 				var j = $(this);
-				j.css(
-					o.d['marginRight'],
-					x ? j.data('_cfs_tempCssMargin') : m + j.data('_cfs_origCssMargin'),
-				);
+				j.css(o.d['marginRight'], ((x) ? j.data('_cfs_tempCssMargin') : m + j.data('_cfs_origCssMargin')));
 			});
 		}
 	}
 	function sz_storeOrigCss(i) {
-		i.each(function () {
+		i.each(function() {
 			var j = $(this);
 			j.data('_cfs_origCss', j.attr('style') || '');
 		});
 	}
 	function sz_restoreOrigCss(i) {
-		i.each(function () {
+		i.each(function() {
 			var j = $(this);
 			j.attr('style', j.data('_cfs_origCss') || '');
 		});
@@ -3531,12 +4016,13 @@ imgLiquid.injectCss = '.imgLiquid img {visibility:hidden}';
 			seco = o[o.d['height']],
 			secp = is_percentage(seco);
 
-		all.each(function () {
+		all.each(function() {
 			var $t = $(this),
 				nw = newS - ms_getPaddingBorderMargin($t, o, 'Width');
 
 			$t[o.d['width']](nw);
-			if (secp) {
+			if (secp)
+			{
 				$t[o.d['height']](ms_getPercentage(nw, seco));
 			}
 		});
@@ -3549,11 +4035,13 @@ imgLiquid.injectCss = '.imgLiquid img {visibility:hidden}';
 
 		$w.css(sz);
 
-		if (o.usePadding) {
+		if (o.usePadding)
+		{
 			var p = o.padding,
 				r = p[o.d[1]];
 
-			if (o.align && r < 0) {
+			if (o.align && r < 0)
+			{
 				r = 0;
 			}
 			var $l = $v.last();
@@ -3562,7 +4050,7 @@ imgLiquid.injectCss = '.imgLiquid img {visibility:hidden}';
 			$c.css(o.d['left'], p[o.d[3]]);
 		}
 
-		$c.css(o.d['width'], sz[o.d['width']] + ms_getTotalSize($i, o, 'width') * 2);
+		$c.css(o.d['width'], sz[o.d['width']]+(ms_getTotalSize($i, o, 'width')*2));
 		$c.css(o.d['height'], ms_getLargestSize($i, o, 'height'));
 		return sz;
 	}
@@ -3572,26 +4060,31 @@ imgLiquid.injectCss = '.imgLiquid img {visibility:hidden}';
 		return [ms_getTotalSize(i, o, 'width', wrapper), ms_getLargestSize(i, o, 'height', wrapper)];
 	}
 	function ms_getLargestSize(i, o, dim, wrapper) {
-		if (!is_boolean(wrapper)) {
+		if (!is_boolean(wrapper))
+		{
 			wrapper = false;
 		}
-		if (is_number(o[o.d[dim]]) && wrapper) {
+		if (is_number(o[o.d[dim]]) && wrapper)
+		{
 			return o[o.d[dim]];
 		}
-		if (is_number(o.items[o.d[dim]])) {
+		if (is_number(o.items[o.d[dim]]))
+		{
 			return o.items[o.d[dim]];
 		}
-		dim = dim.toLowerCase().indexOf('width') > -1 ? 'outerWidth' : 'outerHeight';
+		dim = (dim.toLowerCase().indexOf('width') > -1) ? 'outerWidth' : 'outerHeight';
 		return ms_getTrueLargestSize(i, o, dim);
 	}
 	function ms_getTrueLargestSize(i, o, dim) {
 		var s = 0;
 
-		for (var a = 0, l = i.length; a < l; a++) {
+		for (var a = 0, l = i.length; a < l; a++)
+		{
 			var j = i.eq(a);
 
-			var m = j.is(':visible') ? j[o.d[dim]](true) : 0;
-			if (s < m) {
+			var m = (j.is(':visible')) ? j[o.d[dim]](true) : 0;
+			if (s < m)
+			{
 				s = m;
 			}
 		}
@@ -3599,104 +4092,124 @@ imgLiquid.injectCss = '.imgLiquid img {visibility:hidden}';
 	}
 
 	function ms_getTotalSize(i, o, dim, wrapper) {
-		if (!is_boolean(wrapper)) {
+		if (!is_boolean(wrapper))
+		{
 			wrapper = false;
 		}
-		if (is_number(o[o.d[dim]]) && wrapper) {
+		if (is_number(o[o.d[dim]]) && wrapper)
+		{
 			return o[o.d[dim]];
 		}
-		if (is_number(o.items[o.d[dim]])) {
+		if (is_number(o.items[o.d[dim]]))
+		{
 			return o.items[o.d[dim]] * i.length;
 		}
 
-		var d = dim.toLowerCase().indexOf('width') > -1 ? 'outerWidth' : 'outerHeight',
+		var d = (dim.toLowerCase().indexOf('width') > -1) ? 'outerWidth' : 'outerHeight',
 			s = 0;
 
-		for (var a = 0, l = i.length; a < l; a++) {
+		for (var a = 0, l = i.length; a < l; a++)
+		{
 			var j = i.eq(a);
-			s += j.is(':visible') ? j[o.d[d]](true) : 0;
+			s += (j.is(':visible')) ? j[o.d[d]](true) : 0;
 		}
 		return s;
 	}
 	function ms_getParentSize($w, o, d) {
 		var isVisible = $w.is(':visible');
-		if (isVisible) {
+		if (isVisible)
+		{
 			$w.hide();
 		}
 		var s = $w.parent()[o.d[d]]();
-		if (isVisible) {
+		if (isVisible)
+		{
 			$w.show();
 		}
 		return s;
 	}
 	function ms_getMaxDimension(o, a) {
-		return is_number(o[o.d['width']]) ? o[o.d['width']] : a;
+		return (is_number(o[o.d['width']])) ? o[o.d['width']] : a;
 	}
 	function ms_hasVariableSizes(i, o, dim) {
 		var s = false,
 			v = false;
 
-		for (var a = 0, l = i.length; a < l; a++) {
+		for (var a = 0, l = i.length; a < l; a++)
+		{
 			var j = i.eq(a);
 
-			var c = j.is(':visible') ? j[o.d[dim]](true) : 0;
-			if (s === false) {
+			var c = (j.is(':visible')) ? j[o.d[dim]](true) : 0;
+			if (s === false)
+			{
 				s = c;
-			} else if (s != c) {
+			}
+			else if (s != c)
+			{
 				v = true;
 			}
-			if (s == 0) {
+			if (s == 0)
+			{
 				v = true;
 			}
 		}
 		return v;
 	}
 	function ms_getPaddingBorderMargin(i, o, d) {
-		return i[o.d['outer' + d]](true) - i[o.d[d.toLowerCase()]]();
+		return i[o.d['outer'+d]](true) - i[o.d[d.toLowerCase()]]();
 	}
 	function ms_getPercentage(s, o) {
-		if (is_percentage(o)) {
-			o = parseInt(o.slice(0, -1), 10);
-			if (!is_number(o)) {
+		if (is_percentage(o))
+		{
+			o = parseInt( o.slice(0, -1), 10 );
+			if (!is_number(o))
+			{
 				return s;
 			}
-			s *= o / 100;
+			s *= o/100;
 		}
 		return s;
 	}
 
 	//	config functions
 	function cf_e(n, c, pf, ns, rd) {
-		if (!is_boolean(pf)) {
+		if (!is_boolean(pf))
+		{
 			pf = true;
 		}
-		if (!is_boolean(ns)) {
+		if (!is_boolean(ns))
+		{
 			ns = true;
 		}
-		if (!is_boolean(rd)) {
+		if (!is_boolean(rd))
+		{
 			rd = false;
 		}
 
-		if (pf) {
+		if (pf)
+		{
 			n = c.events.prefix + n;
 		}
-		if (ns) {
-			n = n + '.' + c.events.namespace;
+		if (ns)
+		{
+			n = n +'.'+ c.events.namespace;
 		}
-		if (ns && rd) {
+		if (ns && rd)
+		{
 			n += c.serialNumber;
 		}
 
 		return n;
 	}
 	function cf_c(n, c) {
-		return is_string(c.classnames[n]) ? c.classnames[n] : n;
+		return (is_string(c.classnames[n])) ? c.classnames[n] : n;
 	}
 	function cf_mapWrapperSizes(ws, o, p) {
-		if (!is_boolean(p)) {
+		if (!is_boolean(p))
+		{
 			p = true;
 		}
-		var pad = o.usePadding && p ? o.padding : [0, 0, 0, 0];
+		var pad = (o.usePadding && p) ? o.padding : [0, 0, 0, 0];
 		var wra = {};
 
 		wra[o.d['width']] = ws[0] + pad[1] + pad[3];
@@ -3706,9 +4219,12 @@ imgLiquid.injectCss = '.imgLiquid img {visibility:hidden}';
 	}
 	function cf_sortParams(vals, typs) {
 		var arr = [];
-		for (var a = 0, l1 = vals.length; a < l1; a++) {
-			for (var b = 0, l2 = typs.length; b < l2; b++) {
-				if (typs[b].indexOf(typeof vals[a]) > -1 && is_undefined(arr[b])) {
+		for (var a = 0, l1 = vals.length; a < l1; a++)
+		{
+			for (var b = 0, l2 = typs.length; b < l2; b++)
+			{
+				if (typs[b].indexOf(typeof vals[a]) > -1 && is_undefined(arr[b]))
+				{
 					arr[b] = vals[a];
 					break;
 				}
@@ -3717,23 +4233,29 @@ imgLiquid.injectCss = '.imgLiquid img {visibility:hidden}';
 		return arr;
 	}
 	function cf_getPadding(p) {
-		if (is_undefined(p)) {
+		if (is_undefined(p))
+		{
 			return [0, 0, 0, 0];
 		}
-		if (is_number(p)) {
+		if (is_number(p))
+		{
 			return [p, p, p, p];
 		}
-		if (is_string(p)) {
+		if (is_string(p))
+		{
 			p = p.split('px').join('').split('em').join('').split(' ');
 		}
 
-		if (!is_array(p)) {
+		if (!is_array(p))
+		{
 			return [0, 0, 0, 0];
 		}
-		for (var i = 0; i < 4; i++) {
+		for (var i = 0; i < 4; i++)
+		{
 			p[i] = parseInt(p[i], 10);
 		}
-		switch (p.length) {
+		switch (p.length)
+		{
 			case 0:
 				return [0, 0, 0, 0];
 			case 1:
@@ -3747,100 +4269,83 @@ imgLiquid.injectCss = '.imgLiquid img {visibility:hidden}';
 		}
 	}
 	function cf_getAlignPadding(itm, o) {
-		var x = is_number(o[o.d['width']])
-			? Math.ceil(o[o.d['width']] - ms_getTotalSize(itm, o, 'width'))
-			: 0;
-		switch (o.align) {
+		var x = (is_number(o[o.d['width']])) ? Math.ceil(o[o.d['width']] - ms_getTotalSize(itm, o, 'width')) : 0;
+		switch (o.align)
+		{
 			case 'left':
 				return [0, x];
 			case 'right':
 				return [x, 0];
 			case 'center':
 			default:
-				return [Math.ceil(x / 2), Math.floor(x / 2)];
+				return [Math.ceil(x/2), Math.floor(x/2)];
 		}
 	}
 	function cf_getDimensions(o) {
 		var dm = [
-			[
-				'width',
-				'innerWidth',
-				'outerWidth',
-				'height',
-				'innerHeight',
-				'outerHeight',
-				'left',
-				'top',
-				'marginRight',
-				0,
-				1,
-				2,
-				3,
-			],
-			[
-				'height',
-				'innerHeight',
-				'outerHeight',
-				'width',
-				'innerWidth',
-				'outerWidth',
-				'top',
-				'left',
-				'marginBottom',
-				3,
-				2,
-				1,
-				0,
-			],
+			['width'	, 'innerWidth'	, 'outerWidth'	, 'height'	, 'innerHeight'	, 'outerHeight'	, 'left', 'top'	, 'marginRight'	, 0, 1, 2, 3],
+			['height'	, 'innerHeight'	, 'outerHeight'	, 'width'	, 'innerWidth'	, 'outerWidth'	, 'top'	, 'left', 'marginBottom', 3, 2, 1, 0]
 		];
 
 		var dl = dm[0].length,
-			dx = o.direction == 'right' || o.direction == 'left' ? 0 : 1;
+			dx = (o.direction == 'right' || o.direction == 'left') ? 0 : 1;
 
 		var dimensions = {};
-		for (var d = 0; d < dl; d++) {
+		for (var d = 0; d < dl; d++)
+		{
 			dimensions[dm[0][d]] = dm[dx][d];
 		}
 		return dimensions;
 	}
 	function cf_getAdjust(x, o, a, $t) {
 		var v = x;
-		if (is_function(a)) {
+		if (is_function(a))
+		{
 			v = a.call($t, v);
-		} else if (is_string(a)) {
+
+		}
+		else if (is_string(a))
+		{
 			var p = a.split('+'),
 				m = a.split('-');
 
-			if (m.length > p.length) {
+			if (m.length > p.length)
+			{
 				var neg = true,
 					sta = m[0],
 					adj = m[1];
-			} else {
+			}
+			else
+			{
 				var neg = false,
 					sta = p[0],
 					adj = p[1];
 			}
 
-			switch (sta) {
+			switch(sta)
+			{
 				case 'even':
-					v = x % 2 == 1 ? x - 1 : x;
+					v = (x % 2 == 1) ? x-1 : x;
 					break;
 				case 'odd':
-					v = x % 2 == 0 ? x - 1 : x;
+					v = (x % 2 == 0) ? x-1 : x;
 					break;
 				default:
 					v = x;
 					break;
 			}
 			adj = parseInt(adj, 10);
-			if (is_number(adj)) {
-				if (neg) {
+			if (is_number(adj))
+			{
+				if (neg)
+				{
 					adj = -adj;
 				}
 				v += adj;
 			}
 		}
-		if (!is_number(v) || v < 1) {
+		if (!is_number(v) || v < 1)
+		{
 			v = 1;
 		}
 		return v;
@@ -3849,129 +4354,160 @@ imgLiquid.injectCss = '.imgLiquid img {visibility:hidden}';
 		return cf_getItemAdjustMinMax(cf_getAdjust(x, o, a, $t), o.items.visibleConf);
 	}
 	function cf_getItemAdjustMinMax(v, i) {
-		if (is_number(i.min) && v < i.min) {
+		if (is_number(i.min) && v < i.min)
+		{
 			v = i.min;
 		}
-		if (is_number(i.max) && v > i.max) {
+		if (is_number(i.max) && v > i.max)
+		{
 			v = i.max;
 		}
-		if (v < 1) {
+		if (v < 1)
+		{
 			v = 1;
 		}
 		return v;
 	}
 	function cf_getSynchArr(s) {
-		if (!is_array(s)) {
+		if (!is_array(s))
+		{
 			s = [[s]];
 		}
-		if (!is_array(s[0])) {
+		if (!is_array(s[0]))
+		{
 			s = [s];
 		}
-		for (var j = 0, l = s.length; j < l; j++) {
-			if (is_string(s[j][0])) {
+		for (var j = 0, l = s.length; j < l; j++)
+		{
+			if (is_string(s[j][0]))
+			{
 				s[j][0] = $(s[j][0]);
 			}
-			if (!is_boolean(s[j][1])) {
+			if (!is_boolean(s[j][1]))
+			{
 				s[j][1] = true;
 			}
-			if (!is_boolean(s[j][2])) {
+			if (!is_boolean(s[j][2]))
+			{
 				s[j][2] = true;
 			}
-			if (!is_number(s[j][3])) {
+			if (!is_number(s[j][3]))
+			{
 				s[j][3] = 0;
 			}
 		}
 		return s;
 	}
 	function cf_getKeyCode(k) {
-		if (k == 'right') {
+		if (k == 'right')
+		{
 			return 39;
 		}
-		if (k == 'left') {
+		if (k == 'left')
+		{
 			return 37;
 		}
-		if (k == 'up') {
+		if (k == 'up')
+		{
 			return 38;
 		}
-		if (k == 'down') {
+		if (k == 'down')
+		{
 			return 40;
 		}
 		return -1;
 	}
 	function cf_setCookie(n, $c, c) {
-		if (n) {
+		if (n)
+		{
 			var v = $c.triggerHandler(cf_e('currentPosition', c));
 			$.fn.carouFredSel.cookie.set(n, v);
 		}
 	}
 	function cf_getCookie(n) {
 		var c = $.fn.carouFredSel.cookie.get(n);
-		return c == '' ? 0 : c;
+		return (c == '') ? 0 : c;
 	}
 
 	//	init function
 	function in_mapCss($elem, props) {
 		var css = {};
-		for (var p = 0, l = props.length; p < l; p++) {
+		for (var p = 0, l = props.length; p < l; p++)
+		{
 			css[props[p]] = $elem.css(props[p]);
 		}
 		return css;
 	}
 	function in_complementItems(obj, opt, itm, sta) {
-		if (!is_object(obj.visibleConf)) {
+		if (!is_object(obj.visibleConf))
+		{
 			obj.visibleConf = {};
 		}
-		if (!is_object(obj.sizesConf)) {
+		if (!is_object(obj.sizesConf))
+		{
 			obj.sizesConf = {};
 		}
 
-		if (obj.start == 0 && is_number(sta)) {
+		if (obj.start == 0 && is_number(sta))
+		{
 			obj.start = sta;
 		}
 
 		//	visible items
-		if (is_object(obj.visible)) {
+		if (is_object(obj.visible))
+		{
 			obj.visibleConf.min = obj.visible.min;
 			obj.visibleConf.max = obj.visible.max;
 			obj.visible = false;
-		} else if (is_string(obj.visible)) {
+		}
+		else if (is_string(obj.visible))
+		{
 			//	variable visible items
-			if (obj.visible == 'variable') {
+			if (obj.visible == 'variable')
+			{
 				obj.visibleConf.variable = true;
 			}
 			//	adjust string visible items
-			else {
+			else
+			{
 				obj.visibleConf.adjust = obj.visible;
 			}
 			obj.visible = false;
-		} else if (is_function(obj.visible)) {
+		}
+		else if (is_function(obj.visible))
+		{
 			obj.visibleConf.adjust = obj.visible;
 			obj.visible = false;
 		}
 
 		//	set items filter
-		if (!is_string(obj.filter)) {
-			obj.filter = itm.filter(':hidden').length > 0 ? ':visible' : '*';
+		if (!is_string(obj.filter))
+		{
+			obj.filter = (itm.filter(':hidden').length > 0) ? ':visible' : '*';
 		}
 
 		//	primary item-size not set
-		if (!obj[opt.d['width']]) {
+		if (!obj[opt.d['width']])
+		{
 			//	responsive carousel -> set to largest
-			if (opt.responsive) {
-				debug(true, 'Set a ' + opt.d['width'] + ' for the items!');
+			if (opt.responsive)
+			{
+				debug(true, 'Set a '+opt.d['width']+' for the items!');
 				obj[opt.d['width']] = ms_getTrueLargestSize(itm, opt, 'outerWidth');
 			}
 			//	 non-responsive -> measure it or set to "variable"
-			else {
-				obj[opt.d['width']] = ms_hasVariableSizes(itm, opt, 'outerWidth')
+			else
+			{
+				obj[opt.d['width']] = (ms_hasVariableSizes(itm, opt, 'outerWidth'))
 					? 'variable'
 					: itm[opt.d['outerWidth']](true);
 			}
 		}
 
 		//	secondary item-size not set -> measure it or set to "variable"
-		if (!obj[opt.d['height']]) {
-			obj[opt.d['height']] = ms_hasVariableSizes(itm, opt, 'outerHeight')
+		if (!obj[opt.d['height']])
+		{
+			obj[opt.d['height']] = (ms_hasVariableSizes(itm, opt, 'outerHeight'))
 				? 'variable'
 				: itm[opt.d['outerHeight']](true);
 		}
@@ -3982,23 +4518,28 @@ imgLiquid.injectCss = '.imgLiquid img {visibility:hidden}';
 	}
 	function in_complementVisibleItems(opt, avl) {
 		//	primary item-size variable -> set visible items variable
-		if (opt.items[opt.d['width']] == 'variable') {
+		if (opt.items[opt.d['width']] == 'variable')
+		{
 			opt.items.visibleConf.variable = true;
 		}
 		if (!opt.items.visibleConf.variable) {
 			//	primary size is number -> calculate visible-items
-			if (is_number(opt[opt.d['width']])) {
+			if (is_number(opt[opt.d['width']]))
+			{
 				opt.items.visible = Math.floor(opt[opt.d['width']] / opt.items[opt.d['width']]);
 			}
 			//	measure and calculate primary size and visible-items
-			else {
+			else
+			{
 				opt.items.visible = Math.floor(avl / opt.items[opt.d['width']]);
 				opt[opt.d['width']] = opt.items.visible * opt.items[opt.d['width']];
-				if (!opt.items.visibleConf.adjust) {
+				if (!opt.items.visibleConf.adjust)
+				{
 					opt.align = false;
 				}
 			}
-			if (opt.items.visible == 'Infinity' || opt.items.visible < 1) {
+			if (opt.items.visible == 'Infinity' || opt.items.visible < 1)
+			{
 				debug(true, 'Not a valid number of visible items: Set to "variable".');
 				opt.items.visibleConf.variable = true;
 			}
@@ -4007,18 +4548,21 @@ imgLiquid.injectCss = '.imgLiquid img {visibility:hidden}';
 	}
 	function in_complementPrimarySize(obj, opt, all) {
 		//	primary size set to auto -> measure largest item-size and set it
-		if (obj == 'auto') {
+		if (obj == 'auto')
+		{
 			obj = ms_getTrueLargestSize(all, opt, 'outerWidth');
 		}
 		return obj;
 	}
 	function in_complementSecondarySize(obj, opt, all) {
 		//	secondary size set to auto -> measure largest item-size and set it
-		if (obj == 'auto') {
+		if (obj == 'auto')
+		{
 			obj = ms_getTrueLargestSize(all, opt, 'outerHeight');
 		}
 		//	secondary size not set -> set to secondary item-size
-		if (!obj) {
+		if (!obj)
+		{
 			obj = opt.items[opt.d['height']];
 		}
 		return obj;
@@ -4030,15 +4574,14 @@ imgLiquid.injectCss = '.imgLiquid img {visibility:hidden}';
 		return o;
 	}
 	function in_getResponsiveValues(o, all, avl) {
-		var visb = cf_getItemAdjustMinMax(
-			Math.ceil(o[o.d['width']] / o.items[o.d['width']]),
-			o.items.visibleConf,
-		);
-		if (visb > all.length) {
+
+		var visb = cf_getItemAdjustMinMax(Math.ceil(o[o.d['width']] / o.items[o.d['width']]), o.items.visibleConf);
+		if (visb > all.length)
+		{
 			visb = all.length;
 		}
 
-		var newS = Math.floor(o[o.d['width']] / visb);
+		var newS = Math.floor(o[o.d['width']]/visb);
 
 		o.items.visible = visb;
 		o.items[o.d['width']] = newS;
@@ -4046,213 +4589,227 @@ imgLiquid.injectCss = '.imgLiquid img {visibility:hidden}';
 		return o;
 	}
 
+
 	//	buttons functions
 	function bt_pauseOnHoverConfig(p) {
-		if (is_string(p)) {
-			var i = p.indexOf('immediate') > -1 ? true : false,
-				r = p.indexOf('resume') > -1 ? true : false;
-		} else {
-			var i = (r = false);
+		if (is_string(p))
+		{
+			var i = (p.indexOf('immediate') > -1) ? true : false,
+				r = (p.indexOf('resume') 	> -1) ? true : false;
+		}
+		else
+		{
+			var i = r = false;
 		}
 		return [i, r];
 	}
 	function bt_mousesheelNumber(mw) {
-		return is_number(mw) ? mw : null;
+		return (is_number(mw)) ? mw : null
 	}
 
 	//	helper functions
 	function is_null(a) {
-		return a === null;
+		return (a === null);
 	}
 	function is_undefined(a) {
-		return is_null(a) || typeof a == 'undefined' || a === '' || a === 'undefined';
+		return (is_null(a) || typeof a == 'undefined' || a === '' || a === 'undefined');
 	}
 	function is_array(a) {
-		return a instanceof Array;
+		return (a instanceof Array);
 	}
 	function is_jquery(a) {
-		return a instanceof jQuery;
+		return (a instanceof jQuery);
 	}
 	function is_object(a) {
-		return (
-			(a instanceof Object || typeof a == 'object') &&
-			!is_null(a) &&
-			!is_jquery(a) &&
-			!is_array(a) &&
-			!is_function(a)
-		);
+		return ((a instanceof Object || typeof a == 'object') && !is_null(a) && !is_jquery(a) && !is_array(a) && !is_function(a));
 	}
 	function is_number(a) {
-		return (a instanceof Number || typeof a == 'number') && !isNaN(a);
+		return ((a instanceof Number || typeof a == 'number') && !isNaN(a));
 	}
 	function is_string(a) {
-		return (
-			(a instanceof String || typeof a == 'string') &&
-			!is_undefined(a) &&
-			!is_true(a) &&
-			!is_false(a)
-		);
+		return ((a instanceof String || typeof a == 'string') && !is_undefined(a) && !is_true(a) && !is_false(a));
 	}
 	function is_function(a) {
-		return a instanceof Function || typeof a == 'function';
+		return (a instanceof Function || typeof a == 'function');
 	}
 	function is_boolean(a) {
-		return a instanceof Boolean || typeof a == 'boolean' || is_true(a) || is_false(a);
+		return (a instanceof Boolean || typeof a == 'boolean' || is_true(a) || is_false(a));
 	}
 	function is_true(a) {
-		return a === true || a === 'true';
+		return (a === true || a === 'true');
 	}
 	function is_false(a) {
-		return a === false || a === 'false';
+
+		return (a === false || a === 'false');
 	}
 	function is_percentage(x) {
-		return is_string(x) && x.slice(-1) == '%';
+		return (is_string(x) && x.slice(-1) == '%');
 	}
+
 
 	function getTime() {
 		return new Date().getTime();
 	}
 
-	function deprecated(o, n) {
-		debug(true, o + ' is DEPRECATED, support for it will be removed. Use ' + n + ' instead.');
+	function deprecated( o, n ) {
+		debug(true, o+' is DEPRECATED, support for it will be removed. Use '+n+' instead.');
 	}
 	function debug(d, m) {
-		if (!is_undefined(window.console) && !is_undefined(window.console.log)) {
-			if (is_object(d)) {
-				var s = ' (' + d.selector + ')';
+		if (!is_undefined(window.console) && !is_undefined(window.console.log))
+		{
+			if (is_object(d))
+			{
+				var s = ' ('+d.selector+')';
 				d = d.debug;
-			} else {
+			}
+			else
+			{
 				var s = '';
 			}
-			if (!d) {
+			if (!d)
+			{
 				return false;
 			}
 
-			if (is_string(m)) {
-				m = 'carouFredSel' + s + ': ' + m;
-			} else {
-				m = ['carouFredSel' + s + ':', m];
+			if (is_string(m))
+			{
+				m = 'carouFredSel'+s+': ' + m;
+			}
+			else
+			{
+				m = ['carouFredSel'+s+':', m];
 			}
 			//window.console.log(m);
 		}
 		return false;
 	}
 
+
+
 	//	EASING FUNCTIONS
 	$.extend($.easing, {
-		quadratic: function (t) {
+		'quadratic': function(t) {
 			var t2 = t * t;
 			return t * (-t2 * t + 4 * t2 - 6 * t + 4);
 		},
-		cubic: function (t) {
+		'cubic': function(t) {
 			return t * (4 * t * t - 9 * t + 6);
 		},
-		elastic: function (t) {
+		'elastic': function(t) {
 			var t2 = t * t;
 			return t * (33 * t2 * t2 - 106 * t2 * t + 126 * t2 - 67 * t + 15);
-		},
+		}
 	});
+
+
 })(jQuery);
 
-/*
- * @fileOverview TouchSwipe - jQuery Plugin
- * @version 1.6.6
- *
- * @author Matt Bryson http://www.github.com/mattbryson
- * @see https://github.com/mattbryson/TouchSwipe-Jquery-Plugin
- * @see http://labs.skinkers.com/touchSwipe/
- * @see http://plugins.jquery.com/project/touchSwipe
- *
- * Copyright (c) 2010 Matt Bryson
- * Dual licensed under the MIT or GPL Version 2 licenses.
- *
- */
+
+
+
+
+
+
 
 /*
- *
- * Changelog
- * $Date: 2010-12-12 (Wed, 12 Dec 2010) $
- * $version: 1.0.0
- * $version: 1.0.1 - removed multibyte comments
- *
- * $Date: 2011-21-02 (Mon, 21 Feb 2011) $
- * $version: 1.1.0 	- added allowPageScroll property to allow swiping and scrolling of page
- *					- changed handler signatures so one handler can be used for multiple events
- * $Date: 2011-23-02 (Wed, 23 Feb 2011) $
- * $version: 1.2.0 	- added click handler. This is fired if the user simply clicks and does not swipe. The event object and click target are passed to handler.
- *					- If you use the http://code.google.com/p/jquery-ui-for-ipad-and-iphone/ plugin, you can also assign jQuery mouse events to children of a touchSwipe object.
- * $version: 1.2.1 	- removed console log!
- *
- * $version: 1.2.2 	- Fixed bug where scope was not preserved in callback methods.
- *
- * $Date: 2011-28-04 (Thurs, 28 April 2011) $
- * $version: 1.2.4 	- Changed licence terms to be MIT or GPL inline with jQuery. Added check for support of touch events to stop non compatible browsers erroring.
- *
- * $Date: 2011-27-09 (Tues, 27 September 2011) $
- * $version: 1.2.5 	- Added support for testing swipes with mouse on desktop browser (thanks to https://github.com/joelhy)
- *
- * $Date: 2012-14-05 (Mon, 14 May 2012) $
- * $version: 1.2.6 	- Added timeThreshold between start and end touch, so user can ignore slow swipes (thanks to Mark Chase). Default is null, all swipes are detected
- *
- * $Date: 2012-05-06 (Tues, 05 June 2012) $
- * $version: 1.2.7 	- Changed time threshold to have null default for backwards compatibility. Added duration param passed back in events, and refactored how time is handled.
- *
- * $Date: 2012-05-06 (Tues, 05 June 2012) $
- * $version: 1.2.8 	- Added the possibility to return a value like null or false in the trigger callback. In that way we can control when the touch start/move should take effect or not (simply by returning in some cases return null; or return false;) This effects the ontouchstart/ontouchmove event.
- *
- * $Date: 2012-06-06 (Wed, 06 June 2012) $
- * $version: 1.3.0 	- Refactored whole plugin to allow for methods to be executed, as well as exposed defaults for user override. Added 'enable', 'disable', and 'destroy' methods
- *
- * $Date: 2012-05-06 (Fri, 05 June 2012) $
- * $version: 1.3.1 	- Bug fixes  - bind() with false as last argument is no longer supported in jQuery 1.6, also, if you just click, the duration is now returned correctly.
- *
- * $Date: 2012-29-07 (Sun, 29 July 2012) $
- * $version: 1.3.2	- Added fallbackToMouseEvents option to NOT capture mouse events on non touch devices.
- * 			- Added "all" fingers value to the fingers property, so any combination of fingers triggers the swipe, allowing event handlers to check the finger count
- *
- * $Date: 2012-09-08 (Thurs, 9 Aug 2012) $
- * $version: 1.3.3	- Code tidy prep for minefied version
- *
- * $Date: 2012-04-10 (wed, 4 Oct 2012) $
- * $version: 1.4.0	- Added pinch support, pinchIn and pinchOut
- *
- * $Date: 2012-11-10 (Thurs, 11 Oct 2012) $
- * $version: 1.5.0	- Added excludedElements, a jquery selector that specifies child elements that do NOT trigger swipes. By default, this is one select that removes all form, input select, button and anchor elements.
- *
- * $Date: 2012-22-10 (Mon, 22 Oct 2012) $
- * $version: 1.5.1	- Fixed bug with jQuery 1.8 and trailing comma in excludedElements
- *					- Fixed bug with IE and eventPreventDefault()
- * $Date: 2013-01-12 (Fri, 12 Jan 2013) $
- * $version: 1.6.0	- Fixed bugs with pinching, mainly when both pinch and swipe enabled, as well as adding time threshold for multifinger gestures, so releasing one finger beofre the other doesnt trigger as single finger gesture.
- *					- made the demo site all static local HTML pages so they can be run locally by a developer
- *					- added jsDoc comments and added documentation for the plugin
- *					- code tidy
- *					- added triggerOnTouchLeave property that will end the event when the user swipes off the element.
- * $Date: 2013-03-23 (Sat, 23 Mar 2013) $
- * $version: 1.6.1	- Added support for ie8 touch events
- * $version: 1.6.2	- Added support for events binding with on / off / bind in jQ for all callback names.
- *                   - Deprecated the 'click' handler in favour of tap.
- *                   - added cancelThreshold property
- *                   - added option method to update init options at runtime
- * $version 1.6.3    - added doubletap, longtap events and longTapThreshold, doubleTapThreshold property
- *
- * $Date: 2013-04-04 (Thurs, 04 April 2013) $
- * $version 1.6.4    - Fixed bug with cancelThreshold introduced in 1.6.3, where swipe status no longer fired start event, and stopped once swiping back.
- *
- * $Date: 2013-08-24 (Sat, 24 Aug 2013) $
- * $version 1.6.5    - Merged a few pull requests fixing various bugs, added AMD support.
- *
- * $Date: 2014-06-04 (Wed, 04 June 2014) $
- * $version 1.6.6 	- Merge of pull requests.
- *    				- IE10 touch support
- *    				- Only prevent default event handling on valid swipe
- *    				- Separate license/changelog comment
- *    				- Detect if the swipe is valid at the end of the touch event.
- *    				- Pass fingerdata to event handlers.
- *    				- Add 'hold' gesture
- *    				- Be more tolerant about the tap distance
- *    				- Typos and minor fixes
- */
+* @fileOverview TouchSwipe - jQuery Plugin
+* @version 1.6.6
+*
+* @author Matt Bryson http://www.github.com/mattbryson
+* @see https://github.com/mattbryson/TouchSwipe-Jquery-Plugin
+* @see http://labs.skinkers.com/touchSwipe/
+* @see http://plugins.jquery.com/project/touchSwipe
+*
+* Copyright (c) 2010 Matt Bryson
+* Dual licensed under the MIT or GPL Version 2 licenses.
+*
+*/
+
+/*
+*
+* Changelog
+* $Date: 2010-12-12 (Wed, 12 Dec 2010) $
+* $version: 1.0.0
+* $version: 1.0.1 - removed multibyte comments
+*
+* $Date: 2011-21-02 (Mon, 21 Feb 2011) $
+* $version: 1.1.0 	- added allowPageScroll property to allow swiping and scrolling of page
+*					- changed handler signatures so one handler can be used for multiple events
+* $Date: 2011-23-02 (Wed, 23 Feb 2011) $
+* $version: 1.2.0 	- added click handler. This is fired if the user simply clicks and does not swipe. The event object and click target are passed to handler.
+*					- If you use the http://code.google.com/p/jquery-ui-for-ipad-and-iphone/ plugin, you can also assign jQuery mouse events to children of a touchSwipe object.
+* $version: 1.2.1 	- removed console log!
+*
+* $version: 1.2.2 	- Fixed bug where scope was not preserved in callback methods.
+*
+* $Date: 2011-28-04 (Thurs, 28 April 2011) $
+* $version: 1.2.4 	- Changed licence terms to be MIT or GPL inline with jQuery. Added check for support of touch events to stop non compatible browsers erroring.
+*
+* $Date: 2011-27-09 (Tues, 27 September 2011) $
+* $version: 1.2.5 	- Added support for testing swipes with mouse on desktop browser (thanks to https://github.com/joelhy)
+*
+* $Date: 2012-14-05 (Mon, 14 May 2012) $
+* $version: 1.2.6 	- Added timeThreshold between start and end touch, so user can ignore slow swipes (thanks to Mark Chase). Default is null, all swipes are detected
+*
+* $Date: 2012-05-06 (Tues, 05 June 2012) $
+* $version: 1.2.7 	- Changed time threshold to have null default for backwards compatibility. Added duration param passed back in events, and refactored how time is handled.
+*
+* $Date: 2012-05-06 (Tues, 05 June 2012) $
+* $version: 1.2.8 	- Added the possibility to return a value like null or false in the trigger callback. In that way we can control when the touch start/move should take effect or not (simply by returning in some cases return null; or return false;) This effects the ontouchstart/ontouchmove event.
+*
+* $Date: 2012-06-06 (Wed, 06 June 2012) $
+* $version: 1.3.0 	- Refactored whole plugin to allow for methods to be executed, as well as exposed defaults for user override. Added 'enable', 'disable', and 'destroy' methods
+*
+* $Date: 2012-05-06 (Fri, 05 June 2012) $
+* $version: 1.3.1 	- Bug fixes  - bind() with false as last argument is no longer supported in jQuery 1.6, also, if you just click, the duration is now returned correctly.
+*
+* $Date: 2012-29-07 (Sun, 29 July 2012) $
+* $version: 1.3.2	- Added fallbackToMouseEvents option to NOT capture mouse events on non touch devices.
+* 			- Added "all" fingers value to the fingers property, so any combination of fingers triggers the swipe, allowing event handlers to check the finger count
+*
+* $Date: 2012-09-08 (Thurs, 9 Aug 2012) $
+* $version: 1.3.3	- Code tidy prep for minefied version
+*
+* $Date: 2012-04-10 (wed, 4 Oct 2012) $
+* $version: 1.4.0	- Added pinch support, pinchIn and pinchOut
+*
+* $Date: 2012-11-10 (Thurs, 11 Oct 2012) $
+* $version: 1.5.0	- Added excludedElements, a jquery selector that specifies child elements that do NOT trigger swipes. By default, this is one select that removes all form, input select, button and anchor elements.
+*
+* $Date: 2012-22-10 (Mon, 22 Oct 2012) $
+* $version: 1.5.1	- Fixed bug with jQuery 1.8 and trailing comma in excludedElements
+*					- Fixed bug with IE and eventPreventDefault()
+* $Date: 2013-01-12 (Fri, 12 Jan 2013) $
+* $version: 1.6.0	- Fixed bugs with pinching, mainly when both pinch and swipe enabled, as well as adding time threshold for multifinger gestures, so releasing one finger beofre the other doesnt trigger as single finger gesture.
+*					- made the demo site all static local HTML pages so they can be run locally by a developer
+*					- added jsDoc comments and added documentation for the plugin	
+*					- code tidy
+*					- added triggerOnTouchLeave property that will end the event when the user swipes off the element.
+* $Date: 2013-03-23 (Sat, 23 Mar 2013) $
+* $version: 1.6.1	- Added support for ie8 touch events
+* $version: 1.6.2	- Added support for events binding with on / off / bind in jQ for all callback names.
+*                   - Deprecated the 'click' handler in favour of tap.
+*                   - added cancelThreshold property
+*                   - added option method to update init options at runtime
+* $version 1.6.3    - added doubletap, longtap events and longTapThreshold, doubleTapThreshold property
+*
+* $Date: 2013-04-04 (Thurs, 04 April 2013) $
+* $version 1.6.4    - Fixed bug with cancelThreshold introduced in 1.6.3, where swipe status no longer fired start event, and stopped once swiping back.
+*
+* $Date: 2013-08-24 (Sat, 24 Aug 2013) $
+* $version 1.6.5    - Merged a few pull requests fixing various bugs, added AMD support.
+*
+* $Date: 2014-06-04 (Wed, 04 June 2014) $
+* $version 1.6.6 	- Merge of pull requests.
+*    				- IE10 touch support 
+*    				- Only prevent default event handling on valid swipe
+*    				- Separate license/changelog comment
+*    				- Detect if the swipe is valid at the end of the touch event.
+*    				- Pass fingerdata to event handlers. 
+*    				- Add 'hold' gesture 
+*    				- Be more tolerant about the tap distance
+*    				- Typos and minor fixes
+*/
 
 /**
  * See (http://jquery.com/).
@@ -4271,6 +4828,8 @@ imgLiquid.injectCss = '.imgLiquid img {visibility:hidden}';
  * @memberOf $
  */
 
+
+
 (function (factory) {
 	if (typeof define === 'function' && define.amd && define.amd.jQuery) {
 		// AMD. Register as anonymous module.
@@ -4279,36 +4838,48 @@ imgLiquid.injectCss = '.imgLiquid img {visibility:hidden}';
 		// Browser globals.
 		factory(jQuery);
 	}
-})(function ($) {
-	'use strict';
+}(function ($) {
+	"use strict";
 
 	//Constants
-	var LEFT = 'left',
-		RIGHT = 'right',
-		UP = 'up',
-		DOWN = 'down',
-		IN = 'in',
-		OUT = 'out',
-		NONE = 'none',
-		AUTO = 'auto',
-		SWIPE = 'swipe',
-		PINCH = 'pinch',
-		TAP = 'tap',
-		DOUBLE_TAP = 'doubletap',
-		LONG_TAP = 'longtap',
-		HOLD = 'hold',
-		HORIZONTAL = 'horizontal',
-		VERTICAL = 'vertical',
-		ALL_FINGERS = 'all',
+	var LEFT = "left",
+		RIGHT = "right",
+		UP = "up",
+		DOWN = "down",
+		IN = "in",
+		OUT = "out",
+
+		NONE = "none",
+		AUTO = "auto",
+
+		SWIPE = "swipe",
+		PINCH = "pinch",
+		TAP = "tap",
+		DOUBLE_TAP = "doubletap",
+		LONG_TAP = "longtap",
+		HOLD = "hold",
+
+		HORIZONTAL = "horizontal",
+		VERTICAL = "vertical",
+
+		ALL_FINGERS = "all",
+
 		DOUBLE_TAP_THRESHOLD = 10,
-		PHASE_START = 'start',
-		PHASE_MOVE = 'move',
-		PHASE_END = 'end',
-		PHASE_CANCEL = 'cancel',
+
+		PHASE_START = "start",
+		PHASE_MOVE = "move",
+		PHASE_END = "end",
+		PHASE_CANCEL = "cancel",
+
 		SUPPORTS_TOUCH = 'ontouchstart' in window,
+
 		SUPPORTS_POINTER_IE10 = window.navigator.msPointerEnabled && !window.navigator.pointerEnabled,
+
 		SUPPORTS_POINTER = window.navigator.pointerEnabled || window.navigator.msPointerEnabled,
+
 		PLUGIN_NS = 'TouchSwipe';
+
+
 
 	/**
 	 * The default configuration, and available options to configure touch swipe with.
@@ -4350,32 +4921,34 @@ imgLiquid.injectCss = '.imgLiquid img {visibility:hidden}';
 	var defaults = {
 		fingers: 1,
 		threshold: 75,
-		cancelThreshold: null,
-		pinchThreshold: 20,
+		cancelThreshold:null,
+		pinchThreshold:20,
 		maxTimeThreshold: null,
-		fingerReleaseThreshold: 250,
-		longTapThreshold: 500,
-		doubleTapThreshold: 200,
+		fingerReleaseThreshold:250,
+		longTapThreshold:500,
+		doubleTapThreshold:200,
 		swipe: null,
 		swipeLeft: null,
 		swipeRight: null,
 		swipeUp: null,
 		swipeDown: null,
 		swipeStatus: null,
-		pinchIn: null,
-		pinchOut: null,
-		pinchStatus: null,
-		click: null, //Deprecated since 1.6.2
-		tap: null,
-		doubleTap: null,
-		longTap: null,
-		hold: null,
+		pinchIn:null,
+		pinchOut:null,
+		pinchStatus:null,
+		click:null, //Deprecated since 1.6.2
+		tap:null,
+		doubleTap:null,
+		longTap:null,
+		hold:null,
 		triggerOnTouchEnd: true,
-		triggerOnTouchLeave: false,
-		allowPageScroll: 'auto',
+		triggerOnTouchLeave:false,
+		allowPageScroll: "auto",
 		fallbackToMouseEvents: true,
-		excludedElements: 'label, button, input, select, textarea,  .noSwipe',
+		excludedElements:"label, button, input, select, textarea,  .noSwipe"
 	};
+
+
 
 	/**
 	 * Applies TouchSwipe behaviour to one or more jQuery objects.
@@ -4393,7 +4966,7 @@ imgLiquid.injectCss = '.imgLiquid img {visibility:hidden}';
 		var $this = $(this),
 			plugin = $this.data(PLUGIN_NS);
 
-		//Check if we are already instantiated and trying to execute a method
+		//Check if we are already instantiated and trying to execute a method	
 		if (plugin && typeof method === 'string') {
 			if (plugin[method]) {
 				return plugin[method].apply(this, Array.prototype.slice.call(arguments, 1));
@@ -4426,7 +4999,7 @@ imgLiquid.injectCss = '.imgLiquid img {visibility:hidden}';
 		PHASE_START: PHASE_START,
 		PHASE_MOVE: PHASE_MOVE,
 		PHASE_END: PHASE_END,
-		PHASE_CANCEL: PHASE_CANCEL,
+		PHASE_CANCEL: PHASE_CANCEL
 	};
 
 	/**
@@ -4446,8 +5019,8 @@ imgLiquid.injectCss = '.imgLiquid img {visibility:hidden}';
 		RIGHT: RIGHT,
 		UP: UP,
 		DOWN: DOWN,
-		IN: IN,
-		OUT: OUT,
+		IN : IN,
+		OUT: OUT
 	};
 
 	/**
@@ -4465,7 +5038,7 @@ imgLiquid.injectCss = '.imgLiquid img {visibility:hidden}';
 		NONE: NONE,
 		HORIZONTAL: HORIZONTAL,
 		VERTICAL: VERTICAL,
-		AUTO: AUTO,
+		AUTO: AUTO
 	};
 
 	/**
@@ -4484,7 +5057,7 @@ imgLiquid.injectCss = '.imgLiquid img {visibility:hidden}';
 		ONE: 1,
 		TWO: 2,
 		THREE: 3,
-		ALL: ALL_FINGERS,
+		ALL: ALL_FINGERS
 	};
 
 	/**
@@ -4495,17 +5068,13 @@ imgLiquid.injectCss = '.imgLiquid img {visibility:hidden}';
 	 */
 	function init(options) {
 		//Prep and extend the options
-		if (
-			options &&
-			options.allowPageScroll === undefined &&
-			(options.swipe !== undefined || options.swipeStatus !== undefined)
-		) {
+		if (options && (options.allowPageScroll === undefined && (options.swipe !== undefined || options.swipeStatus !== undefined))) {
 			options.allowPageScroll = NONE;
 		}
 
 		//Check for deprecated options
 		//Ensure that any old click handlers are assigned to the new tap, unless we have a tap
-		if (options.click !== undefined && options.tap === undefined) {
+		if(options.click!==undefined && options.tap===undefined) {
 			options.tap = options.click;
 		}
 
@@ -4542,34 +5111,14 @@ imgLiquid.injectCss = '.imgLiquid img {visibility:hidden}';
 	 * @class
 	 */
 	function TouchSwipe(element, options) {
-		var useTouchEvents = SUPPORTS_TOUCH || SUPPORTS_POINTER || !options.fallbackToMouseEvents,
-			START_EV = useTouchEvents
-				? SUPPORTS_POINTER
-					? SUPPORTS_POINTER_IE10
-						? 'MSPointerDown'
-						: 'pointerdown'
-					: 'touchstart'
-				: 'mousedown',
-			MOVE_EV = useTouchEvents
-				? SUPPORTS_POINTER
-					? SUPPORTS_POINTER_IE10
-						? 'MSPointerMove'
-						: 'pointermove'
-					: 'touchmove'
-				: 'mousemove',
-			END_EV = useTouchEvents
-				? SUPPORTS_POINTER
-					? SUPPORTS_POINTER_IE10
-						? 'MSPointerUp'
-						: 'pointerup'
-					: 'touchend'
-				: 'mouseup',
+		var useTouchEvents = (SUPPORTS_TOUCH || SUPPORTS_POINTER || !options.fallbackToMouseEvents),
+			START_EV = useTouchEvents ? (SUPPORTS_POINTER ? (SUPPORTS_POINTER_IE10 ? 'MSPointerDown' : 'pointerdown') : 'touchstart') : 'mousedown',
+			MOVE_EV = useTouchEvents ? (SUPPORTS_POINTER ? (SUPPORTS_POINTER_IE10 ? 'MSPointerMove' : 'pointermove') : 'touchmove') : 'mousemove',
+			END_EV = useTouchEvents ? (SUPPORTS_POINTER ? (SUPPORTS_POINTER_IE10 ? 'MSPointerUp' : 'pointerup') : 'touchend') : 'mouseup',
 			LEAVE_EV = useTouchEvents ? null : 'mouseleave', //we manually detect leave on touch devices, so null event here
-			CANCEL_EV = SUPPORTS_POINTER
-				? SUPPORTS_POINTER_IE10
-					? 'MSPointerCancel'
-					: 'pointercancel'
-				: 'touchcancel';
+			CANCEL_EV = (SUPPORTS_POINTER ? (SUPPORTS_POINTER_IE10 ? 'MSPointerCancel' : 'pointercancel') : 'touchcancel');
+
+
 
 		//touch properties
 		var distance = 0,
@@ -4580,36 +5129,39 @@ imgLiquid.injectCss = '.imgLiquid img {visibility:hidden}';
 			pinchZoom = 1,
 			pinchDistance = 0,
 			pinchDirection = 0,
-			maximumsMap = null;
+			maximumsMap=null;
+
+
 
 		//jQuery wrapped element for this instance
 		var $element = $(element);
 
 		//Current phase of th touch cycle
-		var phase = 'start';
+		var phase = "start";
 
 		// the current number of fingers being used.
 		var fingerCount = 0;
 
 		//track mouse points / delta
-		var fingerData = null;
+		var fingerData=null;
 
 		//track times
 		var startTime = 0,
 			endTime = 0,
-			previousTouchEndTime = 0,
-			previousTouchFingerCount = 0,
-			doubleTapStartTime = 0;
+			previousTouchEndTime=0,
+			previousTouchFingerCount=0,
+			doubleTapStartTime=0;
 
 		//Timeouts
-		var singleTapTimeout = null,
-			holdTimeout = null;
+		var singleTapTimeout=null,
+			holdTimeout=null;
 
 		// Add gestures to all swipable areas if supported
 		try {
 			$element.bind(START_EV, touchStart);
 			$element.bind(CANCEL_EV, touchCancel);
-		} catch (e) {
+		}
+		catch (e) {
 			$.error('events not supported ' + START_EV + ',' + CANCEL_EV + ' on jQuery.swipe');
 		}
 
@@ -4655,6 +5207,7 @@ imgLiquid.injectCss = '.imgLiquid img {visibility:hidden}';
 			return $element;
 		};
 
+
 		/**
 		 * Allows run time updating of the swipe configuration options.
 		 * @function
@@ -4668,8 +5221,8 @@ imgLiquid.injectCss = '.imgLiquid img {visibility:hidden}';
 		 *
 		 */
 		this.option = function (property, value) {
-			if (options[property] !== undefined) {
-				if (value === undefined) {
+			if(options[property]!==undefined) {
+				if(value===undefined) {
 					return options[property];
 				} else {
 					options[property] = value;
@@ -4679,7 +5232,7 @@ imgLiquid.injectCss = '.imgLiquid img {visibility:hidden}';
 			}
 
 			return null;
-		};
+		}
 
 		//
 		// Private methods
@@ -4696,10 +5249,12 @@ imgLiquid.injectCss = '.imgLiquid img {visibility:hidden}';
 		 */
 		function touchStart(jqEvent) {
 			//If we already in a touch event (a finger already in use) then ignore subsequent ones..
-			if (getTouchInProgress()) return;
+			if( getTouchInProgress() )
+				return;
 
 			//Check if this element matches any in the excluded elements selectors,  or its parent is excluded, if so, DON'T swipe
-			if ($(jqEvent.target).closest(options.excludedElements, $element).length > 0) return;
+			if( $(jqEvent.target).closest( options.excludedElements, $element ).length>0 )
+				return;
 
 			//As we use Jquery bind for events, we need to target the original event object
 			//If these events are being programmatically triggered, we don't have an original event object, so use the Jq one.
@@ -4723,41 +5278,35 @@ imgLiquid.injectCss = '.imgLiquid img {visibility:hidden}';
 			//clear vars..
 			distance = 0;
 			direction = null;
-			pinchDirection = null;
+			pinchDirection=null;
 			duration = 0;
-			startTouchesDistance = 0;
-			endTouchesDistance = 0;
+			startTouchesDistance=0;
+			endTouchesDistance=0;
 			pinchZoom = 1;
 			pinchDistance = 0;
-			fingerData = createAllFingerData();
-			maximumsMap = createMaximumsData();
+			fingerData=createAllFingerData();
+			maximumsMap=createMaximumsData();
 			cancelMultiFingerRelease();
 
+
 			// check the number of fingers is what we are looking for, or we are capturing pinches
-			if (
-				!SUPPORTS_TOUCH ||
-				fingerCount === options.fingers ||
-				options.fingers === ALL_FINGERS ||
-				hasPinches()
-			) {
+			if (!SUPPORTS_TOUCH || (fingerCount === options.fingers || options.fingers === ALL_FINGERS) || hasPinches()) {
 				// get the coordinates of the touch
-				createFingerData(0, evt);
+				createFingerData( 0, evt );
 				startTime = getTimeStamp();
 
-				if (fingerCount == 2) {
+				if(fingerCount==2) {
 					//Keep track of the initial pinch distance, so we can calculate the diff later
 					//Store second finger data as start
-					createFingerData(1, event.touches[1]);
-					startTouchesDistance = endTouchesDistance = calculateTouchesDistance(
-						fingerData[0].start,
-						fingerData[1].start,
-					);
+					createFingerData( 1, event.touches[1] );
+					startTouchesDistance = endTouchesDistance = calculateTouchesDistance(fingerData[0].start, fingerData[1].start);
 				}
 
 				if (options.swipeStatus || options.pinchStatus) {
 					ret = triggerHandler(event, phase);
 				}
-			} else {
+			}
+			else {
 				//A touch with more or less than the fingers we are looking for, so cancel
 				ret = false;
 			}
@@ -4767,26 +5316,26 @@ imgLiquid.injectCss = '.imgLiquid img {visibility:hidden}';
 				phase = PHASE_CANCEL;
 				triggerHandler(event, phase);
 				return ret;
-			} else {
+			}
+			else {
 				if (options.hold) {
-					holdTimeout = setTimeout(
-						$.proxy(function () {
-							//Trigger the event
-							$element.trigger('hold', [event.target]);
-							//Fire the callback
-							if (options.hold) {
-								ret = options.hold.call($element, event, event.target);
-							}
-						}, this),
-						options.longTapThreshold,
-					);
+					holdTimeout = setTimeout($.proxy(function() {
+						//Trigger the event
+						$element.trigger('hold', [event.target]);
+						//Fire the callback
+						if(options.hold) {
+							ret = options.hold.call($element, event, event.target);
+						}
+					}, this), options.longTapThreshold );
 				}
 
 				setTouchInProgress(true);
 			}
 
 			return null;
-		}
+		};
+
+
 
 		/**
 		 * Event handler for a touch move event.
@@ -4795,17 +5344,20 @@ imgLiquid.injectCss = '.imgLiquid img {visibility:hidden}';
 		 * @param {object} jqEvent The normalised jQuery event object.
 		 */
 		function touchMove(jqEvent) {
+
 			//As we use Jquery bind for events, we need to target the original event object
 			//If these events are being programmatically triggered, we don't have an original event object, so use the Jq one.
 			var event = jqEvent.originalEvent ? jqEvent.originalEvent : jqEvent;
 
 			//If we are ending, cancelling, or within the threshold of 2 fingers being released, don't track anything..
-			if (phase === PHASE_END || phase === PHASE_CANCEL || inMultiFingerRelease()) return;
+			if (phase === PHASE_END || phase === PHASE_CANCEL || inMultiFingerRelease())
+				return;
 
 			var ret,
 				evt = SUPPORTS_TOUCH ? event.touches[0] : event;
 
-			//Update the  finger data
+
+			//Update the  finger data 
 			var currentFinger = updateFingerData(evt);
 			endTime = getTimeStamp();
 
@@ -4813,22 +5365,21 @@ imgLiquid.injectCss = '.imgLiquid img {visibility:hidden}';
 				fingerCount = event.touches.length;
 			}
 
-			if (options.hold) clearTimeout(holdTimeout);
+			if (options.hold)
+				clearTimeout(holdTimeout);
 
 			phase = PHASE_MOVE;
 
 			//If we have 2 fingers get Touches distance as well
-			if (fingerCount == 2) {
+			if(fingerCount==2) {
+
 				//Keep track of the initial pinch distance, so we can calculate the diff later
 				//We do this here as well as the start event, in case they start with 1 finger, and the press 2 fingers
-				if (startTouchesDistance == 0) {
+				if(startTouchesDistance==0) {
 					//Create second finger if this is the first time...
-					createFingerData(1, event.touches[1]);
+					createFingerData( 1, event.touches[1] );
 
-					startTouchesDistance = endTouchesDistance = calculateTouchesDistance(
-						fingerData[0].start,
-						fingerData[1].start,
-					);
+					startTouchesDistance = endTouchesDistance = calculateTouchesDistance(fingerData[0].start, fingerData[1].start);
 				} else {
 					//Else just update the second finger
 					updateFingerData(event.touches[1]);
@@ -4837,16 +5388,14 @@ imgLiquid.injectCss = '.imgLiquid img {visibility:hidden}';
 					pinchDirection = calculatePinchDirection(fingerData[0].end, fingerData[1].end);
 				}
 
+
 				pinchZoom = calculatePinchZoom(startTouchesDistance, endTouchesDistance);
 				pinchDistance = Math.abs(startTouchesDistance - endTouchesDistance);
 			}
 
-			if (
-				fingerCount === options.fingers ||
-				options.fingers === ALL_FINGERS ||
-				!SUPPORTS_TOUCH ||
-				hasPinches()
-			) {
+
+			if ( (fingerCount === options.fingers || options.fingers === ALL_FINGERS) || !SUPPORTS_TOUCH || hasPinches() ) {
+
 				direction = calculateDirection(currentFinger.start, currentFinger.end);
 
 				//Check if we need to prevent default event (page scroll / pinch zoom) or not
@@ -4859,34 +5408,38 @@ imgLiquid.injectCss = '.imgLiquid img {visibility:hidden}';
 				//Cache the maximum distance we made in this direction
 				setMaxDistance(direction, distance);
 
+
 				if (options.swipeStatus || options.pinchStatus) {
 					ret = triggerHandler(event, phase);
 				}
 
+
 				//If we trigger end events when threshold are met, or trigger events when touch leaves element
-				if (!options.triggerOnTouchEnd || options.triggerOnTouchLeave) {
+				if(!options.triggerOnTouchEnd || options.triggerOnTouchLeave) {
+
 					var inBounds = true;
 
 					//If checking if we leave the element, run the bounds check (we can use touchleave as its not supported on webkit)
-					if (options.triggerOnTouchLeave) {
-						var bounds = getbounds(this);
-						inBounds = isInBounds(currentFinger.end, bounds);
+					if(options.triggerOnTouchLeave) {
+						var bounds = getbounds( this );
+						inBounds = isInBounds( currentFinger.end, bounds );
 					}
 
 					//Trigger end handles as we swipe if thresholds met or if we have left the element if the user has asked to check these..
-					if (!options.triggerOnTouchEnd && inBounds) {
-						phase = getNextPhase(PHASE_MOVE);
+					if(!options.triggerOnTouchEnd && inBounds) {
+						phase = getNextPhase( PHASE_MOVE );
 					}
-					//We end if out of bounds here, so set current phase to END, and check if its modified
-					else if (options.triggerOnTouchLeave && !inBounds) {
-						phase = getNextPhase(PHASE_END);
+					//We end if out of bounds here, so set current phase to END, and check if its modified 
+					else if(options.triggerOnTouchLeave && !inBounds ) {
+						phase = getNextPhase( PHASE_END );
 					}
 
-					if (phase == PHASE_CANCEL || phase == PHASE_END) {
+					if(phase==PHASE_CANCEL || phase==PHASE_END)	{
 						triggerHandler(event, phase);
 					}
 				}
-			} else {
+			}
+			else {
 				phase = PHASE_CANCEL;
 				triggerHandler(event, phase);
 			}
@@ -4896,6 +5449,8 @@ imgLiquid.injectCss = '.imgLiquid img {visibility:hidden}';
 				triggerHandler(event, phase);
 			}
 		}
+
+
 
 		/**
 		 * Event handler for a touch end event.
@@ -4907,10 +5462,11 @@ imgLiquid.injectCss = '.imgLiquid img {visibility:hidden}';
 			//As we use Jquery bind for events, we need to target the original event object
 			var event = jqEvent.originalEvent;
 
+
 			//If we are still in a touch with another finger return
 			//This allows us to wait a fraction and see if the other finger comes up, if it does within the threshold, then we treat it as a multi release, not a single release.
 			if (SUPPORTS_TOUCH) {
-				if (event.touches.length > 0) {
+				if(event.touches.length>0) {
 					startMultiFingerRelease();
 					return true;
 				}
@@ -4918,8 +5474,8 @@ imgLiquid.injectCss = '.imgLiquid img {visibility:hidden}';
 
 			//If a previous finger has been released, check how long ago, if within the threshold, then assume it was a multifinger release.
 			//This is used to allow 2 fingers to release fractionally after each other, whilst maintainig the event as containg 2 fingers, not 1
-			if (inMultiFingerRelease()) {
-				fingerCount = previousTouchFingerCount;
+			if(inMultiFingerRelease()) {
+				fingerCount=previousTouchFingerCount;
 			}
 
 			//Set end of swipe
@@ -4929,14 +5485,11 @@ imgLiquid.injectCss = '.imgLiquid img {visibility:hidden}';
 			duration = calculateDuration();
 
 			//If we trigger handlers at end of swipe OR, we trigger during, but they didnt trigger and we are still in the move phase
-			if (didSwipeBackToCancel() || !validateSwipeDistance()) {
+			if(didSwipeBackToCancel() || !validateSwipeDistance()) {
 				phase = PHASE_CANCEL;
 				triggerHandler(event, phase);
-			} else if (
-				options.triggerOnTouchEnd ||
-				(options.triggerOnTouchEnd == false && phase === PHASE_MOVE)
-			) {
-				//call this on jq event so we are cross browser
+			} else if (options.triggerOnTouchEnd || (options.triggerOnTouchEnd == false && phase === PHASE_MOVE)) {
+				//call this on jq event so we are cross browser 
 				jqEvent.preventDefault();
 				phase = PHASE_END;
 				triggerHandler(event, phase);
@@ -4948,7 +5501,8 @@ imgLiquid.injectCss = '.imgLiquid img {visibility:hidden}';
 				//Trigger the pinch events...
 				phase = PHASE_END;
 				triggerHandlerForGesture(event, phase, TAP);
-			} else if (phase === PHASE_MOVE) {
+			}
+			else if (phase === PHASE_MOVE) {
 				phase = PHASE_CANCEL;
 				triggerHandler(event, phase);
 			}
@@ -4957,6 +5511,8 @@ imgLiquid.injectCss = '.imgLiquid img {visibility:hidden}';
 
 			return null;
 		}
+
+
 
 		/**
 		 * Event handler for a touch cancel event.
@@ -4968,15 +5524,16 @@ imgLiquid.injectCss = '.imgLiquid img {visibility:hidden}';
 			fingerCount = 0;
 			endTime = 0;
 			startTime = 0;
-			startTouchesDistance = 0;
-			endTouchesDistance = 0;
-			pinchZoom = 1;
+			startTouchesDistance=0;
+			endTouchesDistance=0;
+			pinchZoom=1;
 
 			//If we were in progress of tracking a possible multi touch end, then re set it.
 			cancelMultiFingerRelease();
 
 			setTouchInProgress(false);
 		}
+
 
 		/**
 		 * Event handler for a touch leave event.
@@ -4988,8 +5545,8 @@ imgLiquid.injectCss = '.imgLiquid img {visibility:hidden}';
 			var event = jqEvent.originalEvent;
 
 			//If we have the trigger on leave property set....
-			if (options.triggerOnTouchLeave) {
-				phase = getNextPhase(PHASE_END);
+			if(options.triggerOnTouchLeave) {
+				phase = getNextPhase( PHASE_END );
 				triggerHandler(event, phase);
 			}
 		}
@@ -5005,17 +5562,19 @@ imgLiquid.injectCss = '.imgLiquid img {visibility:hidden}';
 			$element.unbind(END_EV, touchEnd);
 
 			//we only have leave events on desktop, we manually calculate leave on touch as its not supported in webkit
-			if (LEAVE_EV) {
+			if(LEAVE_EV) {
 				$element.unbind(LEAVE_EV, touchLeave);
 			}
 
 			setTouchInProgress(false);
 		}
 
+
 		/**
 		 * Checks if the time and distance thresholds have been met, and if so then the appropriate handlers are fired.
 		 */
 		function getNextPhase(currentPhase) {
+
 			var nextPhase = currentPhase;
 
 			// Ensure we have valid swipe (under time and over distance  and check if we are out of bound...)
@@ -5023,25 +5582,22 @@ imgLiquid.injectCss = '.imgLiquid img {visibility:hidden}';
 			var validDistance = validateSwipeDistance();
 			var didCancel = didSwipeBackToCancel();
 
-			//If we have exceeded our time, then cancel
-			if (!validTime || didCancel) {
+			//If we have exceeded our time, then cancel	
+			if(!validTime || didCancel) {
 				nextPhase = PHASE_CANCEL;
 			}
 			//Else if we are moving, and have reached distance then end
-			else if (
-				validDistance &&
-				currentPhase == PHASE_MOVE &&
-				(!options.triggerOnTouchEnd || options.triggerOnTouchLeave)
-			) {
+			else if (validDistance && currentPhase == PHASE_MOVE && (!options.triggerOnTouchEnd || options.triggerOnTouchLeave) ) {
 				nextPhase = PHASE_END;
 			}
 			//Else if we have ended by leaving and didn't reach distance, then cancel
-			else if (!validDistance && currentPhase == PHASE_END && options.triggerOnTouchLeave) {
+			else if (!validDistance && currentPhase==PHASE_END && options.triggerOnTouchLeave) {
 				nextPhase = PHASE_CANCEL;
 			}
 
 			return nextPhase;
 		}
+
 
 		/**
 		 * Trigger the relevant event handler
@@ -5051,38 +5607,40 @@ imgLiquid.injectCss = '.imgLiquid img {visibility:hidden}';
 		 * @inner
 		 */
 		function triggerHandler(event, phase) {
+
 			var ret = undefined;
 
 			// SWIPE GESTURES
-			if (didSwipe() || hasSwipes()) {
-				//hasSwipes as status needs to fire even if swipe is invalid
+			if(didSwipe() || hasSwipes()) { //hasSwipes as status needs to fire even if swipe is invalid
 				//Trigger the swipe events...
 				ret = triggerHandlerForGesture(event, phase, SWIPE);
 			}
 
 			// PINCH GESTURES (if the above didn't cancel)
-			else if ((didPinch() || hasPinches()) && ret !== false) {
+			else if((didPinch() || hasPinches()) && ret!==false) {
 				//Trigger the pinch events...
 				ret = triggerHandlerForGesture(event, phase, PINCH);
 			}
 
 			// CLICK / TAP (if the above didn't cancel)
-			if (didDoubleTap() && ret !== false) {
+			if(didDoubleTap() && ret!==false) {
 				//Trigger the tap events...
 				ret = triggerHandlerForGesture(event, phase, DOUBLE_TAP);
 			}
 
 			// CLICK / TAP (if the above didn't cancel)
-			else if (didLongTap() && ret !== false) {
+			else if(didLongTap() && ret!==false) {
 				//Trigger the tap events...
 				ret = triggerHandlerForGesture(event, phase, LONG_TAP);
 			}
 
 			// CLICK / TAP (if the above didn't cancel)
-			else if (didTap() && ret !== false) {
+			else if(didTap() && ret!==false) {
 				//Trigger the tap event..
 				ret = triggerHandlerForGesture(event, phase, TAP);
 			}
+
+
 
 			// If we are cancelling the gesture, then manually trigger the reset handler
 			if (phase === PHASE_CANCEL) {
@@ -5090,19 +5648,22 @@ imgLiquid.injectCss = '.imgLiquid img {visibility:hidden}';
 			}
 
 			// If we are ending the gesture, then manually trigger the reset handler IF all fingers are off
-			if (phase === PHASE_END) {
+			if(phase === PHASE_END) {
 				//If we support touch, then check that all fingers are off before we cancel
 				if (SUPPORTS_TOUCH) {
-					if (event.touches.length == 0) {
+					if(event.touches.length==0) {
 						touchCancel(event);
 					}
-				} else {
+				}
+				else {
 					touchCancel(event);
 				}
 			}
 
 			return ret;
 		}
+
+
 
 		/**
 		 * Trigger the relevant event handler
@@ -5114,37 +5675,25 @@ imgLiquid.injectCss = '.imgLiquid img {visibility:hidden}';
 		 * @inner
 		 */
 		function triggerHandlerForGesture(event, phase, gesture) {
-			var ret = undefined;
+
+			var ret=undefined;
 
 			//SWIPES....
-			if (gesture == SWIPE) {
+			if(gesture==SWIPE) {
 				//Trigger status every time..
 
 				//Trigger the event...
-				$element.trigger('swipeStatus', [
-					phase,
-					direction || null,
-					distance || 0,
-					duration || 0,
-					fingerCount,
-					fingerData,
-				]);
+				$element.trigger('swipeStatus', [phase, direction || null, distance || 0, duration || 0, fingerCount, fingerData]);
 
 				//Fire the callback
 				if (options.swipeStatus) {
-					ret = options.swipeStatus.call(
-						$element,
-						event,
-						phase,
-						direction || null,
-						distance || 0,
-						duration || 0,
-						fingerCount,
-						fingerData,
-					);
+					ret = options.swipeStatus.call($element, event, phase, direction || null, distance || 0, duration || 0, fingerCount, fingerData);
 					//If the status cancels, then dont run the subsequent event handlers..
-					if (ret === false) return false;
+					if(ret===false) return false;
 				}
+
+
+
 
 				if (phase == PHASE_END && validateSwipe()) {
 					//Fire the catch all event
@@ -5152,66 +5701,30 @@ imgLiquid.injectCss = '.imgLiquid img {visibility:hidden}';
 
 					//Fire catch all callback
 					if (options.swipe) {
-						ret = options.swipe.call(
-							$element,
-							event,
-							direction,
-							distance,
-							duration,
-							fingerCount,
-							fingerData,
-						);
+						ret = options.swipe.call($element, event, direction, distance, duration, fingerCount, fingerData);
 						//If the status cancels, then dont run the subsequent event handlers..
-						if (ret === false) return false;
+						if(ret===false) return false;
 					}
 
-					//trigger direction specific event handlers
+					//trigger direction specific event handlers	
 					switch (direction) {
 						case LEFT:
 							//Trigger the event
-							$element.trigger('swipeLeft', [
-								direction,
-								distance,
-								duration,
-								fingerCount,
-								fingerData,
-							]);
+							$element.trigger('swipeLeft', [direction, distance, duration, fingerCount, fingerData]);
 
 							//Fire the callback
 							if (options.swipeLeft) {
-								ret = options.swipeLeft.call(
-									$element,
-									event,
-									direction,
-									distance,
-									duration,
-									fingerCount,
-									fingerData,
-								);
+								ret = options.swipeLeft.call($element, event, direction, distance, duration, fingerCount, fingerData);
 							}
 							break;
 
 						case RIGHT:
 							//Trigger the event
-							$element.trigger('swipeRight', [
-								direction,
-								distance,
-								duration,
-								fingerCount,
-								fingerData,
-							]);
+							$element.trigger('swipeRight', [direction, distance, duration, fingerCount, fingerData]);
 
 							//Fire the callback
 							if (options.swipeRight) {
-								ret = options.swipeRight.call(
-									$element,
-									event,
-									direction,
-									distance,
-									duration,
-									fingerCount,
-									fingerData,
-								);
+								ret = options.swipeRight.call($element, event, direction, distance, duration, fingerCount, fingerData);
 							}
 							break;
 
@@ -5221,196 +5734,136 @@ imgLiquid.injectCss = '.imgLiquid img {visibility:hidden}';
 
 							//Fire the callback
 							if (options.swipeUp) {
-								ret = options.swipeUp.call(
-									$element,
-									event,
-									direction,
-									distance,
-									duration,
-									fingerCount,
-									fingerData,
-								);
+								ret = options.swipeUp.call($element, event, direction, distance, duration, fingerCount, fingerData);
 							}
 							break;
 
 						case DOWN:
 							//Trigger the event
-							$element.trigger('swipeDown', [
-								direction,
-								distance,
-								duration,
-								fingerCount,
-								fingerData,
-							]);
+							$element.trigger('swipeDown', [direction, distance, duration, fingerCount, fingerData]);
 
 							//Fire the callback
 							if (options.swipeDown) {
-								ret = options.swipeDown.call(
-									$element,
-									event,
-									direction,
-									distance,
-									duration,
-									fingerCount,
-									fingerData,
-								);
+								ret = options.swipeDown.call($element, event, direction, distance, duration, fingerCount, fingerData);
 							}
 							break;
 					}
 				}
 			}
 
+
 			//PINCHES....
-			if (gesture == PINCH) {
+			if(gesture==PINCH) {
 				//Trigger the event
-				$element.trigger('pinchStatus', [
-					phase,
-					pinchDirection || null,
-					pinchDistance || 0,
-					duration || 0,
-					fingerCount,
-					pinchZoom,
-					fingerData,
-				]);
+				$element.trigger('pinchStatus', [phase, pinchDirection || null, pinchDistance || 0, duration || 0, fingerCount, pinchZoom, fingerData]);
 
 				//Fire the callback
 				if (options.pinchStatus) {
-					ret = options.pinchStatus.call(
-						$element,
-						event,
-						phase,
-						pinchDirection || null,
-						pinchDistance || 0,
-						duration || 0,
-						fingerCount,
-						pinchZoom,
-						fingerData,
-					);
+					ret = options.pinchStatus.call($element, event, phase, pinchDirection || null, pinchDistance || 0, duration || 0, fingerCount, pinchZoom, fingerData);
 					//If the status cancels, then dont run the subsequent event handlers..
-					if (ret === false) return false;
+					if(ret===false) return false;
 				}
 
-				if (phase == PHASE_END && validatePinch()) {
+				if(phase==PHASE_END && validatePinch()) {
+
 					switch (pinchDirection) {
 						case IN:
 							//Trigger the event
-							$element.trigger('pinchIn', [
-								pinchDirection || null,
-								pinchDistance || 0,
-								duration || 0,
-								fingerCount,
-								pinchZoom,
-								fingerData,
-							]);
+							$element.trigger('pinchIn', [pinchDirection || null, pinchDistance || 0, duration || 0, fingerCount, pinchZoom, fingerData]);
 
 							//Fire the callback
 							if (options.pinchIn) {
-								ret = options.pinchIn.call(
-									$element,
-									event,
-									pinchDirection || null,
-									pinchDistance || 0,
-									duration || 0,
-									fingerCount,
-									pinchZoom,
-									fingerData,
-								);
+								ret = options.pinchIn.call($element, event, pinchDirection || null, pinchDistance || 0, duration || 0, fingerCount, pinchZoom, fingerData);
 							}
 							break;
 
 						case OUT:
 							//Trigger the event
-							$element.trigger('pinchOut', [
-								pinchDirection || null,
-								pinchDistance || 0,
-								duration || 0,
-								fingerCount,
-								pinchZoom,
-								fingerData,
-							]);
+							$element.trigger('pinchOut', [pinchDirection || null, pinchDistance || 0, duration || 0, fingerCount, pinchZoom, fingerData]);
 
 							//Fire the callback
 							if (options.pinchOut) {
-								ret = options.pinchOut.call(
-									$element,
-									event,
-									pinchDirection || null,
-									pinchDistance || 0,
-									duration || 0,
-									fingerCount,
-									pinchZoom,
-									fingerData,
-								);
+								ret = options.pinchOut.call($element, event, pinchDirection || null, pinchDistance || 0, duration || 0, fingerCount, pinchZoom, fingerData);
 							}
 							break;
 					}
 				}
 			}
 
-			if (gesture == TAP) {
-				if (phase === PHASE_CANCEL || phase === PHASE_END) {
+
+
+
+
+			if(gesture==TAP) {
+				if(phase === PHASE_CANCEL || phase === PHASE_END) {
+
+
 					//Cancel any existing double tap
 					clearTimeout(singleTapTimeout);
 					//Cancel hold timeout
 					clearTimeout(holdTimeout);
 
 					//If we are also looking for doubelTaps, wait incase this is one...
-					if (hasDoubleTap() && !inDoubleTap()) {
+					if(hasDoubleTap() && !inDoubleTap()) {
 						//Cache the time of this tap
 						doubleTapStartTime = getTimeStamp();
 
 						//Now wait for the double tap timeout, and trigger this single tap
 						//if its not cancelled by a double tap
-						singleTapTimeout = setTimeout(
-							$.proxy(function () {
-								doubleTapStartTime = null;
-								//Trigger the event
-								$element.trigger('tap', [event.target]);
+						singleTapTimeout = setTimeout($.proxy(function() {
+							doubleTapStartTime=null;
+							//Trigger the event
+							$element.trigger('tap', [event.target]);
 
-								//Fire the callback
-								if (options.tap) {
-									ret = options.tap.call($element, event, event.target);
-								}
-							}, this),
-							options.doubleTapThreshold,
-						);
+
+							//Fire the callback
+							if(options.tap) {
+								ret = options.tap.call($element, event, event.target);
+							}
+						}, this), options.doubleTapThreshold );
+
 					} else {
-						doubleTapStartTime = null;
+						doubleTapStartTime=null;
 
 						//Trigger the event
 						$element.trigger('tap', [event.target]);
 
+
 						//Fire the callback
-						if (options.tap) {
+						if(options.tap) {
 							ret = options.tap.call($element, event, event.target);
 						}
 					}
 				}
-			} else if (gesture == DOUBLE_TAP) {
-				if (phase === PHASE_CANCEL || phase === PHASE_END) {
-					//Cancel any pending singletap
+			}
+
+			else if (gesture==DOUBLE_TAP) {
+				if(phase === PHASE_CANCEL || phase === PHASE_END) {
+					//Cancel any pending singletap 
 					clearTimeout(singleTapTimeout);
-					doubleTapStartTime = null;
+					doubleTapStartTime=null;
 
 					//Trigger the event
 					$element.trigger('doubletap', [event.target]);
 
 					//Fire the callback
-					if (options.doubleTap) {
+					if(options.doubleTap) {
 						ret = options.doubleTap.call($element, event, event.target);
 					}
 				}
-			} else if (gesture == LONG_TAP) {
-				if (phase === PHASE_CANCEL || phase === PHASE_END) {
+			}
+
+			else if (gesture==LONG_TAP) {
+				if(phase === PHASE_CANCEL || phase === PHASE_END) {
 					//Cancel any pending singletap (shouldnt be one)
 					clearTimeout(singleTapTimeout);
-					doubleTapStartTime = null;
+					doubleTapStartTime=null;
 
 					//Trigger the event
 					$element.trigger('longtap', [event.target]);
 
 					//Fire the callback
-					if (options.longTap) {
+					if(options.longTap) {
 						ret = options.longTap.call($element, event, event.target);
 					}
 				}
@@ -5418,6 +5871,9 @@ imgLiquid.injectCss = '.imgLiquid img {visibility:hidden}';
 
 			return ret;
 		}
+
+
+
 
 		//
 		// GESTURE VALIDATION
@@ -5447,8 +5903,8 @@ imgLiquid.injectCss = '.imgLiquid img {visibility:hidden}';
 		 */
 		function didSwipeBackToCancel() {
 			var cancelled = false;
-			if (options.cancelThreshold !== null && direction !== null) {
-				cancelled = getMaxDistance(direction) - distance >= options.cancelThreshold;
+			if(options.cancelThreshold !== null && direction !==null)  {
+				cancelled =  (getMaxDistance( direction ) - distance) >= options.cancelThreshold;
 			}
 
 			return cancelled;
@@ -5482,12 +5938,14 @@ imgLiquid.injectCss = '.imgLiquid img {visibility:hidden}';
 				} else {
 					result = true;
 				}
-			} else {
+			}
+			else {
 				result = true;
 			}
 
 			return result;
 		}
+
 
 		/**
 		 * Checks direction of the swipe and the value allowPageScroll to see if we should allow or prevent the default behaviour from occurring.
@@ -5529,7 +5987,9 @@ imgLiquid.injectCss = '.imgLiquid img {visibility:hidden}';
 						break;
 				}
 			}
+
 		}
+
 
 		// PINCHES
 		/**
@@ -5542,6 +6002,7 @@ imgLiquid.injectCss = '.imgLiquid img {visibility:hidden}';
 			var hasEndPoint = validateEndPoint();
 			var hasCorrectDistance = validatePinchDistance();
 			return hasCorrectFingerCount && hasEndPoint && hasCorrectDistance;
+
 		}
 
 		/**
@@ -5564,6 +6025,9 @@ imgLiquid.injectCss = '.imgLiquid img {visibility:hidden}';
 			return !!(validatePinch() && hasPinches());
 		}
 
+
+
+
 		// SWIPES
 		/**
 		 * Returns true if the current swipe meets the thresholds
@@ -5579,9 +6043,8 @@ imgLiquid.injectCss = '.imgLiquid img {visibility:hidden}';
 			var didCancel = didSwipeBackToCancel();
 
 			// if the user swiped more than the minimum length, perform the appropriate action
-			// hasValidDistance is null when no distance is set
-			var valid =
-				!didCancel && hasEndPoint && hasCorrectFingerCount && hasValidDistance && hasValidTime;
+			// hasValidDistance is null when no distance is set 
+			var valid =  !didCancel && hasEndPoint && hasCorrectFingerCount && hasValidDistance && hasValidTime;
 
 			return valid;
 		}
@@ -5593,15 +6056,9 @@ imgLiquid.injectCss = '.imgLiquid img {visibility:hidden}';
 		 */
 		function hasSwipes() {
 			//Enure we dont return 0 or null for false values
-			return !!(
-				options.swipe ||
-				options.swipeStatus ||
-				options.swipeLeft ||
-				options.swipeRight ||
-				options.swipeUp ||
-				options.swipeDown
-			);
+			return !!(options.swipe || options.swipeStatus || options.swipeLeft || options.swipeRight || options.swipeUp || options.swipeDown);
 		}
+
 
 		/**
 		 * Returns true if we are detecting swipes and have one
@@ -5620,7 +6077,7 @@ imgLiquid.injectCss = '.imgLiquid img {visibility:hidden}';
 		 */
 		function validateFingers() {
 			//The number of fingers we want were matched, or on desktop we ignore
-			return fingerCount === options.fingers || options.fingers === ALL_FINGERS || !SUPPORTS_TOUCH;
+			return ((fingerCount === options.fingers || options.fingers === ALL_FINGERS) || !SUPPORTS_TOUCH);
 		}
 
 		/**
@@ -5641,7 +6098,7 @@ imgLiquid.injectCss = '.imgLiquid img {visibility:hidden}';
 		 */
 		function hasTap() {
 			//Enure we dont return 0 or null for false values
-			return !!options.tap;
+			return !!(options.tap) ;
 		}
 
 		/**
@@ -5651,7 +6108,7 @@ imgLiquid.injectCss = '.imgLiquid img {visibility:hidden}';
 		 */
 		function hasDoubleTap() {
 			//Enure we dont return 0 or null for false values
-			return !!options.doubleTap;
+			return !!(options.doubleTap) ;
 		}
 
 		/**
@@ -5661,7 +6118,7 @@ imgLiquid.injectCss = '.imgLiquid img {visibility:hidden}';
 		 */
 		function hasLongTap() {
 			//Enure we dont return 0 or null for false values
-			return !!options.longTap;
+			return !!(options.longTap) ;
 		}
 
 		/**
@@ -5670,11 +6127,11 @@ imgLiquid.injectCss = '.imgLiquid img {visibility:hidden}';
 		 * @inner
 		 */
 		function validateDoubleTap() {
-			if (doubleTapStartTime == null) {
+			if(doubleTapStartTime==null){
 				return false;
 			}
 			var now = getTimeStamp();
-			return hasDoubleTap() && now - doubleTapStartTime <= options.doubleTapThreshold;
+			return (hasDoubleTap() && ((now-doubleTapStartTime) <= options.doubleTapThreshold));
 		}
 
 		/**
@@ -5686,15 +6143,14 @@ imgLiquid.injectCss = '.imgLiquid img {visibility:hidden}';
 			return validateDoubleTap();
 		}
 
+
 		/**
 		 * Returns true if we have a valid tap
 		 * @return Boolean
 		 * @inner
 		 */
 		function validateTap() {
-			return (
-				(fingerCount === 1 || !SUPPORTS_TOUCH) && (isNaN(distance) || distance < options.threshold)
-			);
+			return ((fingerCount === 1 || !SUPPORTS_TOUCH) && (isNaN(distance) || distance < options.threshold));
 		}
 
 		/**
@@ -5704,7 +6160,7 @@ imgLiquid.injectCss = '.imgLiquid img {visibility:hidden}';
 		 */
 		function validateLongTap() {
 			//slight threshold on moving finger
-			return duration > options.longTapThreshold && distance < DOUBLE_TAP_THRESHOLD;
+			return ((duration > options.longTapThreshold) && (distance < DOUBLE_TAP_THRESHOLD));
 		}
 
 		/**
@@ -5716,6 +6172,7 @@ imgLiquid.injectCss = '.imgLiquid img {visibility:hidden}';
 			//Enure we dont return 0 or null for false values
 			return !!(validateTap() && hasTap());
 		}
+
 
 		/**
 		 * Returns true if we are detecting double taps and have one
@@ -5737,6 +6194,9 @@ imgLiquid.injectCss = '.imgLiquid img {visibility:hidden}';
 			return !!(validateLongTap() && hasLongTap());
 		}
 
+
+
+
 		// MULTI FINGER TOUCH
 		/**
 		 * Starts tracking the time between 2 finger releases, and keeps track of how many fingers we initially had up
@@ -5744,7 +6204,7 @@ imgLiquid.injectCss = '.imgLiquid img {visibility:hidden}';
 		 */
 		function startMultiFingerRelease() {
 			previousTouchEndTime = getTimeStamp();
-			previousTouchFingerCount = event.touches.length + 1;
+			previousTouchFingerCount = event.touches.length+1;
 		}
 
 		/**
@@ -5762,17 +6222,19 @@ imgLiquid.injectCss = '.imgLiquid img {visibility:hidden}';
 		 * @inner
 		 */
 		function inMultiFingerRelease() {
+
 			var withinThreshold = false;
 
-			if (previousTouchEndTime) {
-				var diff = getTimeStamp() - previousTouchEndTime;
-				if (diff <= options.fingerReleaseThreshold) {
+			if(previousTouchEndTime) {
+				var diff = getTimeStamp() - previousTouchEndTime
+				if( diff<=options.fingerReleaseThreshold ) {
 					withinThreshold = true;
 				}
 			}
 
 			return withinThreshold;
 		}
+
 
 		/**
 		 * gets a data flag to indicate that a touch is in progress
@@ -5781,7 +6243,7 @@ imgLiquid.injectCss = '.imgLiquid img {visibility:hidden}';
 		 */
 		function getTouchInProgress() {
 			//strict equality to ensure only true and false are returned
-			return !!($element.data(PLUGIN_NS + '_intouch') === true);
+			return !!($element.data(PLUGIN_NS+'_intouch') === true);
 		}
 
 		/**
@@ -5790,13 +6252,14 @@ imgLiquid.injectCss = '.imgLiquid img {visibility:hidden}';
 		 * @inner
 		 */
 		function setTouchInProgress(val) {
+
 			//Add or remove event listeners depending on touch status
-			if (val === true) {
+			if(val===true) {
 				$element.bind(MOVE_EV, touchMove);
 				$element.bind(END_EV, touchEnd);
 
 				//we only have leave events on desktop, we manually calcuate leave on touch as its not supported in webkit
-				if (LEAVE_EV) {
+				if(LEAVE_EV) {
 					$element.bind(LEAVE_EV, touchLeave);
 				}
 			} else {
@@ -5805,14 +6268,16 @@ imgLiquid.injectCss = '.imgLiquid img {visibility:hidden}';
 				$element.unbind(END_EV, touchEnd, false);
 
 				//we only have leave events on desktop, we manually calcuate leave on touch as its not supported in webkit
-				if (LEAVE_EV) {
+				if(LEAVE_EV) {
 					$element.unbind(LEAVE_EV, touchLeave, false);
 				}
 			}
 
+
 			//strict equality to ensure only true and false can update the value
-			$element.data(PLUGIN_NS + '_intouch', val === true);
+			$element.data(PLUGIN_NS+'_intouch', val === true);
 		}
+
 
 		/**
 		 * Creates the finger data for the touch/finger in the event object.
@@ -5821,12 +6286,12 @@ imgLiquid.injectCss = '.imgLiquid img {visibility:hidden}';
 		 * @return finger data object
 		 * @inner
 		 */
-		function createFingerData(index, evt) {
-			var id = evt.identifier !== undefined ? evt.identifier : 0;
+		function createFingerData( index, evt ) {
+			var id = evt.identifier!==undefined ? evt.identifier : 0;
 
 			fingerData[index].identifier = id;
-			fingerData[index].start.x = fingerData[index].end.x = evt.pageX || evt.clientX;
-			fingerData[index].start.y = fingerData[index].end.y = evt.pageY || evt.clientY;
+			fingerData[index].start.x = fingerData[index].end.x = evt.pageX||evt.clientX;
+			fingerData[index].start.y = fingerData[index].end.y = evt.pageY||evt.clientY;
 
 			return fingerData[index];
 		}
@@ -5838,11 +6303,12 @@ imgLiquid.injectCss = '.imgLiquid img {visibility:hidden}';
 		 * @inner
 		 */
 		function updateFingerData(evt) {
-			var id = evt.identifier !== undefined ? evt.identifier : 0;
-			var f = getFingerData(id);
 
-			f.end.x = evt.pageX || evt.clientX;
-			f.end.y = evt.pageY || evt.clientY;
+			var id = evt.identifier!==undefined ? evt.identifier : 0;
+			var f = getFingerData( id );
+
+			f.end.x = evt.pageX||evt.clientX;
+			f.end.y = evt.pageY||evt.clientY;
 
 			return f;
 		}
@@ -5855,9 +6321,9 @@ imgLiquid.injectCss = '.imgLiquid img {visibility:hidden}';
 		 * @return a finger data object.
 		 * @inner
 		 */
-		function getFingerData(id) {
-			for (var i = 0; i < fingerData.length; i++) {
-				if (fingerData[i].identifier == id) {
+		function getFingerData( id ) {
+			for(var i=0; i<fingerData.length; i++) {
+				if(fingerData[i].identifier == id) {
 					return fingerData[i];
 				}
 			}
@@ -5869,12 +6335,12 @@ imgLiquid.injectCss = '.imgLiquid img {visibility:hidden}';
 		 * @inner
 		 */
 		function createAllFingerData() {
-			var fingerData = [];
-			for (var i = 0; i <= 5; i++) {
+			var fingerData=[];
+			for (var i=0; i<=5; i++) {
 				fingerData.push({
-					start: { x: 0, y: 0 },
-					end: { x: 0, y: 0 },
-					identifier: 0,
+					start:{ x: 0, y: 0 },
+					end:{ x: 0, y: 0 },
+					identifier:0
 				});
 			}
 
@@ -5889,7 +6355,7 @@ imgLiquid.injectCss = '.imgLiquid img {visibility:hidden}';
 		 * @inner
 		 */
 		function setMaxDistance(direction, distance) {
-			distance = Math.max(distance, getMaxDistance(direction));
+			distance = Math.max(distance, getMaxDistance(direction) );
 			maximumsMap[direction].distance = distance;
 		}
 
@@ -5910,11 +6376,11 @@ imgLiquid.injectCss = '.imgLiquid img {visibility:hidden}';
 		 * @inner
 		 */
 		function createMaximumsData() {
-			var maxData = {};
-			maxData[LEFT] = createMaximumVO(LEFT);
-			maxData[RIGHT] = createMaximumVO(RIGHT);
-			maxData[UP] = createMaximumVO(UP);
-			maxData[DOWN] = createMaximumVO(DOWN);
+			var maxData={};
+			maxData[LEFT]=createMaximumVO(LEFT);
+			maxData[RIGHT]=createMaximumVO(RIGHT);
+			maxData[UP]=createMaximumVO(UP);
+			maxData[DOWN]=createMaximumVO(DOWN);
 
 			return maxData;
 		}
@@ -5927,10 +6393,11 @@ imgLiquid.injectCss = '.imgLiquid img {visibility:hidden}';
 		 */
 		function createMaximumVO(dir) {
 			return {
-				direction: dir,
-				distance: 0,
-			};
+				direction:dir,
+				distance:0
+			}
 		}
+
 
 		//
 		// MATHS / UTILS
@@ -5956,7 +6423,7 @@ imgLiquid.injectCss = '.imgLiquid img {visibility:hidden}';
 			var diffX = Math.abs(startPoint.x - endPoint.x);
 			var diffY = Math.abs(startPoint.y - endPoint.y);
 
-			return Math.round(Math.sqrt(diffX * diffX + diffY * diffY));
+			return Math.round(Math.sqrt(diffX*diffX+diffY*diffY));
 		}
 
 		/**
@@ -5967,9 +6434,10 @@ imgLiquid.injectCss = '.imgLiquid img {visibility:hidden}';
 		 * @inner
 		 */
 		function calculatePinchZoom(startDistance, endDistance) {
-			var percent = (endDistance / startDistance) * 1;
+			var percent = (endDistance/startDistance) * 1;
 			return percent.toFixed(2);
 		}
+
 
 		/**
 		 * Returns the pinch direction, either IN or OUT for the given points
@@ -5978,12 +6446,14 @@ imgLiquid.injectCss = '.imgLiquid img {visibility:hidden}';
 		 * @inner
 		 */
 		function calculatePinchDirection() {
-			if (pinchZoom < 1) {
+			if(pinchZoom<1) {
 				return OUT;
-			} else {
+			}
+			else {
 				return IN;
 			}
 		}
+
 
 		/**
 		 * Calculate the length / distance of the swipe
@@ -5993,9 +6463,7 @@ imgLiquid.injectCss = '.imgLiquid img {visibility:hidden}';
 		 * @inner
 		 */
 		function calculateDistance(startPoint, endPoint) {
-			return Math.round(
-				Math.sqrt(Math.pow(endPoint.x - startPoint.x, 2) + Math.pow(endPoint.y - startPoint.y, 2)),
-			);
+			return Math.round(Math.sqrt(Math.pow(endPoint.x - startPoint.x, 2) + Math.pow(endPoint.y - startPoint.y, 2)));
 		}
 
 		/**
@@ -6009,7 +6477,7 @@ imgLiquid.injectCss = '.imgLiquid img {visibility:hidden}';
 			var x = startPoint.x - endPoint.x;
 			var y = endPoint.y - startPoint.y;
 			var r = Math.atan2(y, x); //radians
-			var angle = Math.round((r * 180) / Math.PI); //degrees
+			var angle = Math.round(r * 180 / Math.PI); //degrees
 
 			//ensure value is positive
 			if (angle < 0) {
@@ -6028,21 +6496,22 @@ imgLiquid.injectCss = '.imgLiquid img {visibility:hidden}';
 		 * @see $.fn.swipe.directions
 		 * @inner
 		 */
-		function calculateDirection(startPoint, endPoint) {
+		function calculateDirection(startPoint, endPoint ) {
 			var angle = calculateAngle(startPoint, endPoint);
 
-			if (angle <= 45 && angle >= 0) {
+			if ((angle <= 45) && (angle >= 0)) {
 				return LEFT;
-			} else if (angle <= 360 && angle >= 315) {
+			} else if ((angle <= 360) && (angle >= 315)) {
 				return LEFT;
-			} else if (angle >= 135 && angle <= 225) {
+			} else if ((angle >= 135) && (angle <= 225)) {
 				return RIGHT;
-			} else if (angle > 45 && angle < 135) {
+			} else if ((angle > 45) && (angle < 135)) {
 				return DOWN;
 			} else {
 				return UP;
 			}
 		}
+
 
 		/**
 		 * Returns a MS time stamp of the current time
@@ -6054,23 +6523,26 @@ imgLiquid.injectCss = '.imgLiquid img {visibility:hidden}';
 			return now.getTime();
 		}
 
+
+
 		/**
 		 * Returns a bounds object with left, right, top and bottom properties for the element specified.
 		 * @param {DomNode} The DOM node to get the bounds for.
 		 */
-		function getbounds(el) {
+		function getbounds( el ) {
 			el = $(el);
 			var offset = el.offset();
 
 			var bounds = {
-				left: offset.left,
-				right: offset.left + el.outerWidth(),
-				top: offset.top,
-				bottom: offset.top + el.outerHeight(),
-			};
+				left:offset.left,
+				right:offset.left+el.outerWidth(),
+				top:offset.top,
+				bottom:offset.top+el.outerHeight()
+			}
 
 			return bounds;
 		}
+
 
 		/**
 		 * Checks if the point object is in the bounds object.
@@ -6084,14 +6556,14 @@ imgLiquid.injectCss = '.imgLiquid img {visibility:hidden}';
 		 * @param {int} bounds.bottom The bottommost value
 		 */
 		function isInBounds(point, bounds) {
-			return (
-				point.x > bounds.left &&
-				point.x < bounds.right &&
-				point.y > bounds.top &&
-				point.y < bounds.bottom
-			);
-		}
+			return (point.x > bounds.left && point.x < bounds.right && point.y > bounds.top && point.y < bounds.bottom);
+		};
+
+
 	}
+
+
+
 
 	/**
 	 * A catch all handler that is triggered for all swipe directions.
@@ -6105,6 +6577,9 @@ imgLiquid.injectCss = '.imgLiquid img {visibility:hidden}';
 	 * @param {int} fingerCount The number of fingers used. See {@link $.fn.swipe.fingers}
 	 * @param {object} fingerData The coordinates of fingers in event
 	 */
+
+
+
 
 	/**
 	 * A handler that is triggered for "left" swipes.
@@ -6271,7 +6746,16 @@ imgLiquid.injectCss = '.imgLiquid img {visibility:hidden}';
 	 * @param {EventObject} event The original event object
 	 * @param {DomObject} target The element clicked on.
 	 */
-});
+
+}));
+
+
+
+
+
+
+
+
 
 /**
  * jQuery CSS Customizable Scrollbar
@@ -6288,561 +6772,22 @@ imgLiquid.injectCss = '.imgLiquid img {visibility:hidden}';
  * @url https://github.com/gromo/jquery.scrollbar/
  *
  */
-!(function (l, e) {
-	'function' == typeof define && define.amd ? define(['jquery'], e) : e(l.jQuery);
-})(this, function (l) {
-	'use strict';
-	function e(e) {
-		if (t.webkit && !e) return { height: 0, width: 0 };
-		if (!t.data.outer) {
-			var o = {
-				border: 'none',
-				'box-sizing': 'content-box',
-				height: '200px',
-				margin: '0',
-				padding: '0',
-				width: '200px',
-			};
-			(t.data.inner = l('<div>').css(l.extend({}, o))),
-				(t.data.outer = l('<div>')
-					.css(
-						l.extend(
-							{ left: '-1000px', overflow: 'scroll', position: 'absolute', top: '-1000px' },
-							o,
-						),
-					)
-					.append(t.data.inner)
-					.appendTo('body'));
-		}
-		return (
-			t.data.outer.scrollLeft(1e3).scrollTop(1e3),
-				{
-					height: Math.ceil(t.data.outer.offset().top - t.data.inner.offset().top || 0),
-					width: Math.ceil(t.data.outer.offset().left - t.data.inner.offset().left || 0),
-				}
-		);
-	}
-	function o() {
-		var l = e(!0);
-		return !(l.height || l.width);
-	}
-	function s(l) {
-		var e = l.originalEvent;
-		return e.axis && e.axis === e.HORIZONTAL_AXIS ? !1 : e.wheelDeltaX ? !1 : !0;
-	}
-	var r = !1,
-		t = {
-			data: { index: 0, name: 'scrollbar' },
-			macosx: /mac/i.test(navigator.platform),
-			mobile: /android|webos|iphone|ipad|ipod|blackberry/i.test(navigator.userAgent),
-			overlay: null,
-			scroll: null,
-			scrolls: [],
-			webkit: /webkit/i.test(navigator.userAgent) && !/edge\/\d+/i.test(navigator.userAgent),
-		};
-	(t.scrolls.add = function (l) {
-		this.remove(l).push(l);
-	}),
-		(t.scrolls.remove = function (e) {
-			for (; l.inArray(e, this) >= 0; ) this.splice(l.inArray(e, this), 1);
-			return this;
-		});
-	var i = {
-			autoScrollSize: !0,
-			autoUpdate: !0,
-			debug: !1,
-			disableBodyScroll: !1,
-			duration: 200,
-			ignoreMobile: !1,
-			ignoreOverlay: !1,
-			scrollStep: 30,
-			showArrows: !1,
-			stepScrolling: !0,
-			scrollx: null,
-			scrolly: null,
-			onDestroy: null,
-			onInit: null,
-			onScroll: null,
-			onUpdate: null,
-		},
-		n = function (s) {
-			t.scroll ||
-			((t.overlay = o()),
-				(t.scroll = e()),
-				a(),
-				l(window).resize(function () {
-					var l = !1;
-					if (t.scroll && (t.scroll.height || t.scroll.width)) {
-						var o = e();
-						(o.height !== t.scroll.height || o.width !== t.scroll.width) &&
-						((t.scroll = o), (l = !0));
-					}
-					a(l);
-				})),
-				(this.container = s),
-				(this.namespace = '.scrollbar_' + t.data.index++),
-				(this.options = l.extend({}, i, window.jQueryScrollbarOptions || {})),
-				(this.scrollTo = null),
-				(this.scrollx = {}),
-				(this.scrolly = {}),
-				s.data(t.data.name, this),
-				t.scrolls.add(this);
-		};
-	n.prototype = {
-		destroy: function () {
-			if (this.wrapper) {
-				this.container.removeData(t.data.name), t.scrolls.remove(this);
-				var e = this.container.scrollLeft(),
-					o = this.container.scrollTop();
-				this.container
-					.insertBefore(this.wrapper)
-					.css({ height: '', margin: '', 'max-height': '' })
-					.removeClass('scroll-content scroll-scrollx_visible scroll-scrolly_visible')
-					.off(this.namespace)
-					.scrollLeft(e)
-					.scrollTop(o),
-					this.scrollx.scroll
-						.removeClass('scroll-scrollx_visible')
-						.find('div')
-						.andSelf()
-						.off(this.namespace),
-					this.scrolly.scroll
-						.removeClass('scroll-scrolly_visible')
-						.find('div')
-						.andSelf()
-						.off(this.namespace),
-					this.wrapper.remove(),
-					l(document).add('body').off(this.namespace),
-				l.isFunction(this.options.onDestroy) &&
-				this.options.onDestroy.apply(this, [this.container]);
-			}
-		},
-		init: function (e) {
-			var o = this,
-				r = this.container,
-				i = this.containerWrapper || r,
-				n = this.namespace,
-				c = l.extend(this.options, e || {}),
-				a = { x: this.scrollx, y: this.scrolly },
-				d = this.wrapper,
-				h = { scrollLeft: r.scrollLeft(), scrollTop: r.scrollTop() };
-			if ((t.mobile && c.ignoreMobile) || (t.overlay && c.ignoreOverlay) || (t.macosx && !t.webkit))
-				return !1;
-			if (d)
-				i.css({
-					height: 'auto',
-					'margin-bottom': -1 * t.scroll.height + 'px',
-					'margin-right': -1 * t.scroll.width + 'px',
-					'max-height': '',
-				});
-			else {
-				if (
-					((this.wrapper = d =
-						l('<div>')
-							.addClass('scroll-wrapper')
-							.addClass(r.attr('class'))
-							.css('position', 'absolute' == r.css('position') ? 'absolute' : 'relative')
-							.insertBefore(r)
-							.append(r)),
-					r.is('textarea') &&
-					((this.containerWrapper = i = l('<div>').insertBefore(r).append(r)),
-						d.addClass('scroll-textarea')),
-						i
-							.addClass('scroll-content')
-							.css({
-								height: 'auto',
-								'margin-bottom': -1 * t.scroll.height + 'px',
-								'margin-right': -1 * t.scroll.width + 'px',
-								'max-height': '',
-							}),
-						r.on('scroll' + n, function (e) {
-							l.isFunction(c.onScroll) &&
-							c.onScroll.call(
-								o,
-								{
-									maxScroll: a.y.maxScrollOffset,
-									scroll: r.scrollTop(),
-									size: a.y.size,
-									visible: a.y.visible,
-								},
-								{
-									maxScroll: a.x.maxScrollOffset,
-									scroll: r.scrollLeft(),
-									size: a.x.size,
-									visible: a.x.visible,
-								},
-							),
-							a.x.isVisible && a.x.scroll.bar.css('left', r.scrollLeft() * a.x.kx + 'px'),
-							a.y.isVisible && a.y.scroll.bar.css('top', r.scrollTop() * a.y.kx + 'px');
-						}),
-						d.on('scroll' + n, function () {
-							d.scrollTop(0).scrollLeft(0);
-						}),
-						c.disableBodyScroll)
-				) {
-					var p = function (l) {
-						s(l) ? a.y.isVisible && a.y.mousewheel(l) : a.x.isVisible && a.x.mousewheel(l);
-					};
-					d.on('MozMousePixelScroll' + n, p),
-						d.on('mousewheel' + n, p),
-					t.mobile &&
-					d.on('touchstart' + n, function (e) {
-						var o = (e.originalEvent.touches && e.originalEvent.touches[0]) || e,
-							s = { pageX: o.pageX, pageY: o.pageY },
-							t = { left: r.scrollLeft(), top: r.scrollTop() };
-						l(document).on('touchmove' + n, function (l) {
-							var e = (l.originalEvent.targetTouches && l.originalEvent.targetTouches[0]) || l;
-							r.scrollLeft(t.left + s.pageX - e.pageX),
-								r.scrollTop(t.top + s.pageY - e.pageY),
-								l.preventDefault();
-						}),
-							l(document).on('touchend' + n, function () {
-								l(document).off(n);
-							});
-					});
-				}
-				l.isFunction(c.onInit) && c.onInit.apply(this, [r]);
-			}
-			l.each(a, function (e, t) {
-				var i = null,
-					d = 1,
-					h = 'x' === e ? 'scrollLeft' : 'scrollTop',
-					p = c.scrollStep,
-					u = function () {
-						var l = r[h]();
-						r[h](l + p),
-						1 == d && l + p >= f && (l = r[h]()),
-						-1 == d && f >= l + p && (l = r[h]()),
-						r[h]() == l && i && i();
-					},
-					f = 0;
-				t.scroll ||
-				((t.scroll = o._getScroll(c['scroll' + e]).addClass('scroll-' + e)),
-				c.showArrows && t.scroll.addClass('scroll-element_arrows_visible'),
-					(t.mousewheel = function (l) {
-						if (!t.isVisible || ('x' === e && s(l))) return !0;
-						if ('y' === e && !s(l)) return a.x.mousewheel(l), !0;
-						var i = -1 * l.originalEvent.wheelDelta || l.originalEvent.detail,
-							n = t.size - t.visible - t.offset;
-						return (
-							((i > 0 && n > f) || (0 > i && f > 0)) &&
-							((f += i),
-							0 > f && (f = 0),
-							f > n && (f = n),
-								(o.scrollTo = o.scrollTo || {}),
-								(o.scrollTo[h] = f),
-								setTimeout(function () {
-									o.scrollTo &&
-									(r.stop().animate(o.scrollTo, 240, 'linear', function () {
-										f = r[h]();
-									}),
-										(o.scrollTo = null));
-								}, 1)),
-								l.preventDefault(),
-								!1
-						);
-					}),
-					t.scroll
-						.on('MozMousePixelScroll' + n, t.mousewheel)
-						.on('mousewheel' + n, t.mousewheel)
-						.on('mouseenter' + n, function () {
-							f = r[h]();
-						}),
-					t.scroll.find('.scroll-arrow, .scroll-element_track').on('mousedown' + n, function (s) {
-						if (1 != s.which) return !0;
-						d = 1;
-						var n = {
-								eventOffset: s['x' === e ? 'pageX' : 'pageY'],
-								maxScrollValue: t.size - t.visible - t.offset,
-								scrollbarOffset: t.scroll.bar.offset()['x' === e ? 'left' : 'top'],
-								scrollbarSize: t.scroll.bar['x' === e ? 'outerWidth' : 'outerHeight'](),
-							},
-							a = 0,
-							v = 0;
-						return (
-							l(this).hasClass('scroll-arrow')
-								? ((d = l(this).hasClass('scroll-arrow_more') ? 1 : -1),
-									(p = c.scrollStep * d),
-									(f = d > 0 ? n.maxScrollValue : 0))
-								: ((d =
-									n.eventOffset > n.scrollbarOffset + n.scrollbarSize
-										? 1
-										: n.eventOffset < n.scrollbarOffset
-											? -1
-											: 0),
-									(p = Math.round(0.75 * t.visible) * d),
-									(f =
-										n.eventOffset -
-										n.scrollbarOffset -
-										(c.stepScrolling
-											? 1 == d
-												? n.scrollbarSize
-												: 0
-											: Math.round(n.scrollbarSize / 2))),
-									(f = r[h]() + f / t.kx)),
-								(o.scrollTo = o.scrollTo || {}),
-								(o.scrollTo[h] = c.stepScrolling ? r[h]() + p : f),
-							c.stepScrolling &&
-							((i = function () {
-								(f = r[h]()), clearInterval(v), clearTimeout(a), (a = 0), (v = 0);
-							}),
-								(a = setTimeout(function () {
-									v = setInterval(u, 40);
-								}, c.duration + 100))),
-								setTimeout(function () {
-									o.scrollTo && (r.animate(o.scrollTo, c.duration), (o.scrollTo = null));
-								}, 1),
-								o._handleMouseDown(i, s)
-						);
-					}),
-					t.scroll.bar.on('mousedown' + n, function (s) {
-						if (1 != s.which) return !0;
-						var i = s['x' === e ? 'pageX' : 'pageY'],
-							c = r[h]();
-						return (
-							t.scroll.addClass('scroll-draggable'),
-								l(document).on('mousemove' + n, function (l) {
-									var o = parseInt((l['x' === e ? 'pageX' : 'pageY'] - i) / t.kx, 10);
-									r[h](c + o);
-								}),
-								o._handleMouseDown(function () {
-									t.scroll.removeClass('scroll-draggable'), (f = r[h]());
-								}, s)
-						);
-					}));
-			}),
-				l.each(a, function (l, e) {
-					var o = 'scroll-scroll' + l + '_visible',
-						s = 'x' == l ? a.y : a.x;
-					e.scroll.removeClass(o), s.scroll.removeClass(o), i.removeClass(o);
-				}),
-				l.each(a, function (e, o) {
-					l.extend(
-						o,
-						'x' == e
-							? {
-								offset: parseInt(r.css('left'), 10) || 0,
-								size: r.prop('scrollWidth'),
-								visible: d.width(),
-							}
-							: {
-								offset: parseInt(r.css('top'), 10) || 0,
-								size: r.prop('scrollHeight'),
-								visible: d.height(),
-							},
-					);
-				}),
-				this._updateScroll('x', this.scrollx),
-				this._updateScroll('y', this.scrolly),
-			l.isFunction(c.onUpdate) && c.onUpdate.apply(this, [r]),
-				l.each(a, function (l, e) {
-					var o = 'x' === l ? 'left' : 'top',
-						s = 'x' === l ? 'outerWidth' : 'outerHeight',
-						t = 'x' === l ? 'width' : 'height',
-						i = parseInt(r.css(o), 10) || 0,
-						n = e.size,
-						a = e.visible + i,
-						d = e.scroll.size[s]() + (parseInt(e.scroll.size.css(o), 10) || 0);
-					c.autoScrollSize &&
-					((e.scrollbarSize = parseInt((d * a) / n, 10)),
-						e.scroll.bar.css(t, e.scrollbarSize + 'px')),
-						(e.scrollbarSize = e.scroll.bar[s]()),
-						(e.kx = (d - e.scrollbarSize) / (n - a) || 1),
-						(e.maxScrollOffset = n - a);
-				}),
-				r.scrollLeft(h.scrollLeft).scrollTop(h.scrollTop).trigger('scroll');
-		},
-		_getScroll: function (e) {
-			var o = {
-				advanced: [
-					'<div class="scroll-element">',
-					'<div class="scroll-element_corner"></div>',
-					'<div class="scroll-arrow scroll-arrow_less"></div>',
-					'<div class="scroll-arrow scroll-arrow_more"></div>',
-					'<div class="scroll-element_outer">',
-					'<div class="scroll-element_size"></div>',
-					'<div class="scroll-element_inner-wrapper">',
-					'<div class="scroll-element_inner scroll-element_track">',
-					'<div class="scroll-element_inner-bottom"></div>',
-					'</div>',
-					'</div>',
-					'<div class="scroll-bar">',
-					'<div class="scroll-bar_body">',
-					'<div class="scroll-bar_body-inner"></div>',
-					'</div>',
-					'<div class="scroll-bar_bottom"></div>',
-					'<div class="scroll-bar_center"></div>',
-					'</div>',
-					'</div>',
-					'</div>',
-				].join(''),
-				simple: [
-					'<div class="scroll-element">',
-					'<div class="scroll-element_outer">',
-					'<div class="scroll-element_size"></div>',
-					'<div class="scroll-element_track"></div>',
-					'<div class="scroll-bar"></div>',
-					'</div>',
-					'</div>',
-				].join(''),
-			};
-			return (
-				o[e] && (e = o[e]),
-				e || (e = o.simple),
-					(e = 'string' == typeof e ? l(e).appendTo(this.wrapper) : l(e)),
-					l.extend(e, {
-						bar: e.find('.scroll-bar'),
-						size: e.find('.scroll-element_size'),
-						track: e.find('.scroll-element_track'),
-					}),
-					e
-			);
-		},
-		_handleMouseDown: function (e, o) {
-			var s = this.namespace;
-			return (
-				l(document).on('blur' + s, function () {
-					l(document).add('body').off(s), e && e();
-				}),
-					l(document).on('dragstart' + s, function (l) {
-						return l.preventDefault(), !1;
-					}),
-					l(document).on('mouseup' + s, function () {
-						l(document).add('body').off(s), e && e();
-					}),
-					l('body').on('selectstart' + s, function (l) {
-						return l.preventDefault(), !1;
-					}),
-				o && o.preventDefault(),
-					!1
-			);
-		},
-		_updateScroll: function (e, o) {
-			var s = this.container,
-				r = this.containerWrapper || s,
-				i = 'scroll-scroll' + e + '_visible',
-				n = 'x' === e ? this.scrolly : this.scrollx,
-				c = parseInt(this.container.css('x' === e ? 'left' : 'top'), 10) || 0,
-				a = this.wrapper,
-				d = o.size,
-				h = o.visible + c;
-			(o.isVisible = d - h > 1),
-				o.isVisible
-					? (o.scroll.addClass(i), n.scroll.addClass(i), r.addClass(i))
-					: (o.scroll.removeClass(i), n.scroll.removeClass(i), r.removeClass(i)),
-			'y' === e &&
-			(s.is('textarea') || h > d
-				? r.css({ height: h + t.scroll.height + 'px', 'max-height': 'none' })
-				: r.css({ 'max-height': h + t.scroll.height + 'px' })),
-			(o.size != s.prop('scrollWidth') ||
-				n.size != s.prop('scrollHeight') ||
-				o.visible != a.width() ||
-				n.visible != a.height() ||
-				o.offset != (parseInt(s.css('left'), 10) || 0) ||
-				n.offset != (parseInt(s.css('top'), 10) || 0)) &&
-			(l.extend(this.scrollx, {
-				offset: parseInt(s.css('left'), 10) || 0,
-				size: s.prop('scrollWidth'),
-				visible: a.width(),
-			}),
-				l.extend(this.scrolly, {
-					offset: parseInt(s.css('top'), 10) || 0,
-					size: this.container.prop('scrollHeight'),
-					visible: a.height(),
-				}),
-				this._updateScroll('x' === e ? 'y' : 'x', n));
-		},
-	};
-	var c = n;
-	(l.fn.scrollbar = function (e, o) {
-		return (
-			'string' != typeof e && ((o = e), (e = 'init')),
-			'undefined' == typeof o && (o = []),
-			l.isArray(o) || (o = [o]),
-				this.not('body, .scroll-wrapper').each(function () {
-					var s = l(this),
-						r = s.data(t.data.name);
-					(r || 'init' === e) && (r || (r = new c(s)), r[e] && r[e].apply(r, o));
-				}),
-				this
-		);
-	}),
-		(l.fn.scrollbar.options = i);
-	var a = (function () {
-		var l = 0,
-			e = 0;
-		return function (o) {
-			var s, i, n, c, d, h, p;
-			for (s = 0; s < t.scrolls.length; s++)
-				(c = t.scrolls[s]),
-					(i = c.container),
-					(n = c.options),
-					(d = c.wrapper),
-					(h = c.scrollx),
-					(p = c.scrolly),
-				(o ||
-					(n.autoUpdate &&
-						d &&
-						d.is(':visible') &&
-						(i.prop('scrollWidth') != h.size ||
-							i.prop('scrollHeight') != p.size ||
-							d.width() != h.visible ||
-							d.height() != p.visible))) &&
-				(c.init(),
-				n.debug &&
-				(window.console &&
-				console.log(
-					{
-						scrollHeight: i.prop('scrollHeight') + ':' + c.scrolly.size,
-						scrollWidth: i.prop('scrollWidth') + ':' + c.scrollx.size,
-						visibleHeight: d.height() + ':' + c.scrolly.visible,
-						visibleWidth: d.width() + ':' + c.scrollx.visible,
-					},
-					!0,
-				),
-					e++));
-			r && e > 10
-				? (window.console && console.log('Scroll updates exceed 10'), (a = function () {}))
-				: (clearTimeout(l), (l = setTimeout(a, 300)));
-		};
-	})();
-	window.angular &&
-	!(function (l) {
-		l.module('jQueryScrollbar', [])
-			.provider('jQueryScrollbar', function () {
-				var e = i;
-				return {
-					setOptions: function (o) {
-						l.extend(e, o);
-					},
-					$get: function () {
-						return { options: l.copy(e) };
-					},
-				};
-			})
-			.directive('jqueryScrollbar', [
-				'jQueryScrollbar',
-				'$parse',
-				function (l, e) {
-					return {
-						restrict: 'AC',
-						link: function (o, s, r) {
-							var t = e(r.jqueryScrollbar),
-								i = t(o);
-							s.scrollbar(i || l.options).on('$destroy', function () {
-								s.scrollbar('destroy');
-							});
-						},
-					};
-				},
-			]);
-	})(window.angular);
-});
+!function(l,e){"function"==typeof define&&define.amd?define(["jquery"],e):e(l.jQuery)}(this,function(l){"use strict";function e(e){if(t.webkit&&!e)return{height:0,width:0};if(!t.data.outer){var o={border:"none","box-sizing":"content-box",height:"200px",margin:"0",padding:"0",width:"200px"};t.data.inner=l("<div>").css(l.extend({},o)),t.data.outer=l("<div>").css(l.extend({left:"-1000px",overflow:"scroll",position:"absolute",top:"-1000px"},o)).append(t.data.inner).appendTo("body")}return t.data.outer.scrollLeft(1e3).scrollTop(1e3),{height:Math.ceil(t.data.outer.offset().top-t.data.inner.offset().top||0),width:Math.ceil(t.data.outer.offset().left-t.data.inner.offset().left||0)}}function o(){var l=e(!0);return!(l.height||l.width)}function s(l){var e=l.originalEvent;return e.axis&&e.axis===e.HORIZONTAL_AXIS?!1:e.wheelDeltaX?!1:!0}var r=!1,t={data:{index:0,name:"scrollbar"},macosx:/mac/i.test(navigator.platform),mobile:/android|webos|iphone|ipad|ipod|blackberry/i.test(navigator.userAgent),overlay:null,scroll:null,scrolls:[],webkit:/webkit/i.test(navigator.userAgent)&&!/edge\/\d+/i.test(navigator.userAgent)};t.scrolls.add=function(l){this.remove(l).push(l)},t.scrolls.remove=function(e){for(;l.inArray(e,this)>=0;)this.splice(l.inArray(e,this),1);return this};var i={autoScrollSize:!0,autoUpdate:!0,debug:!1,disableBodyScroll:!1,duration:200,ignoreMobile:!1,ignoreOverlay:!1,scrollStep:30,showArrows:!1,stepScrolling:!0,scrollx:null,scrolly:null,onDestroy:null,onInit:null,onScroll:null,onUpdate:null},n=function(s){t.scroll||(t.overlay=o(),t.scroll=e(),a(),l(window).resize(function(){var l=!1;if(t.scroll&&(t.scroll.height||t.scroll.width)){var o=e();(o.height!==t.scroll.height||o.width!==t.scroll.width)&&(t.scroll=o,l=!0)}a(l)})),this.container=s,this.namespace=".scrollbar_"+t.data.index++,this.options=l.extend({},i,window.jQueryScrollbarOptions||{}),this.scrollTo=null,this.scrollx={},this.scrolly={},s.data(t.data.name,this),t.scrolls.add(this)};n.prototype={destroy:function(){if(this.wrapper){this.container.removeData(t.data.name),t.scrolls.remove(this);var e=this.container.scrollLeft(),o=this.container.scrollTop();this.container.insertBefore(this.wrapper).css({height:"",margin:"","max-height":""}).removeClass("scroll-content scroll-scrollx_visible scroll-scrolly_visible").off(this.namespace).scrollLeft(e).scrollTop(o),this.scrollx.scroll.removeClass("scroll-scrollx_visible").find("div").andSelf().off(this.namespace),this.scrolly.scroll.removeClass("scroll-scrolly_visible").find("div").andSelf().off(this.namespace),this.wrapper.remove(),l(document).add("body").off(this.namespace),l.isFunction(this.options.onDestroy)&&this.options.onDestroy.apply(this,[this.container])}},init:function(e){var o=this,r=this.container,i=this.containerWrapper||r,n=this.namespace,c=l.extend(this.options,e||{}),a={x:this.scrollx,y:this.scrolly},d=this.wrapper,h={scrollLeft:r.scrollLeft(),scrollTop:r.scrollTop()};if(t.mobile&&c.ignoreMobile||t.overlay&&c.ignoreOverlay||t.macosx&&!t.webkit)return!1;if(d)i.css({height:"auto","margin-bottom":-1*t.scroll.height+"px","margin-right":-1*t.scroll.width+"px","max-height":""});else{if(this.wrapper=d=l("<div>").addClass("scroll-wrapper").addClass(r.attr("class")).css("position","absolute"==r.css("position")?"absolute":"relative").insertBefore(r).append(r),r.is("textarea")&&(this.containerWrapper=i=l("<div>").insertBefore(r).append(r),d.addClass("scroll-textarea")),i.addClass("scroll-content").css({height:"auto","margin-bottom":-1*t.scroll.height+"px","margin-right":-1*t.scroll.width+"px","max-height":""}),r.on("scroll"+n,function(e){l.isFunction(c.onScroll)&&c.onScroll.call(o,{maxScroll:a.y.maxScrollOffset,scroll:r.scrollTop(),size:a.y.size,visible:a.y.visible},{maxScroll:a.x.maxScrollOffset,scroll:r.scrollLeft(),size:a.x.size,visible:a.x.visible}),a.x.isVisible&&a.x.scroll.bar.css("left",r.scrollLeft()*a.x.kx+"px"),a.y.isVisible&&a.y.scroll.bar.css("top",r.scrollTop()*a.y.kx+"px")}),d.on("scroll"+n,function(){d.scrollTop(0).scrollLeft(0)}),c.disableBodyScroll){var p=function(l){s(l)?a.y.isVisible&&a.y.mousewheel(l):a.x.isVisible&&a.x.mousewheel(l)};d.on("MozMousePixelScroll"+n,p),d.on("mousewheel"+n,p),t.mobile&&d.on("touchstart"+n,function(e){var o=e.originalEvent.touches&&e.originalEvent.touches[0]||e,s={pageX:o.pageX,pageY:o.pageY},t={left:r.scrollLeft(),top:r.scrollTop()};l(document).on("touchmove"+n,function(l){var e=l.originalEvent.targetTouches&&l.originalEvent.targetTouches[0]||l;r.scrollLeft(t.left+s.pageX-e.pageX),r.scrollTop(t.top+s.pageY-e.pageY),l.preventDefault()}),l(document).on("touchend"+n,function(){l(document).off(n)})})}l.isFunction(c.onInit)&&c.onInit.apply(this,[r])}l.each(a,function(e,t){var i=null,d=1,h="x"===e?"scrollLeft":"scrollTop",p=c.scrollStep,u=function(){var l=r[h]();r[h](l+p),1==d&&l+p>=f&&(l=r[h]()),-1==d&&f>=l+p&&(l=r[h]()),r[h]()==l&&i&&i()},f=0;t.scroll||(t.scroll=o._getScroll(c["scroll"+e]).addClass("scroll-"+e),c.showArrows&&t.scroll.addClass("scroll-element_arrows_visible"),t.mousewheel=function(l){if(!t.isVisible||"x"===e&&s(l))return!0;if("y"===e&&!s(l))return a.x.mousewheel(l),!0;var i=-1*l.originalEvent.wheelDelta||l.originalEvent.detail,n=t.size-t.visible-t.offset;return(i>0&&n>f||0>i&&f>0)&&(f+=i,0>f&&(f=0),f>n&&(f=n),o.scrollTo=o.scrollTo||{},o.scrollTo[h]=f,setTimeout(function(){o.scrollTo&&(r.stop().animate(o.scrollTo,240,"linear",function(){f=r[h]()}),o.scrollTo=null)},1)),l.preventDefault(),!1},t.scroll.on("MozMousePixelScroll"+n,t.mousewheel).on("mousewheel"+n,t.mousewheel).on("mouseenter"+n,function(){f=r[h]()}),t.scroll.find(".scroll-arrow, .scroll-element_track").on("mousedown"+n,function(s){if(1!=s.which)return!0;d=1;var n={eventOffset:s["x"===e?"pageX":"pageY"],maxScrollValue:t.size-t.visible-t.offset,scrollbarOffset:t.scroll.bar.offset()["x"===e?"left":"top"],scrollbarSize:t.scroll.bar["x"===e?"outerWidth":"outerHeight"]()},a=0,v=0;return l(this).hasClass("scroll-arrow")?(d=l(this).hasClass("scroll-arrow_more")?1:-1,p=c.scrollStep*d,f=d>0?n.maxScrollValue:0):(d=n.eventOffset>n.scrollbarOffset+n.scrollbarSize?1:n.eventOffset<n.scrollbarOffset?-1:0,p=Math.round(.75*t.visible)*d,f=n.eventOffset-n.scrollbarOffset-(c.stepScrolling?1==d?n.scrollbarSize:0:Math.round(n.scrollbarSize/2)),f=r[h]()+f/t.kx),o.scrollTo=o.scrollTo||{},o.scrollTo[h]=c.stepScrolling?r[h]()+p:f,c.stepScrolling&&(i=function(){f=r[h](),clearInterval(v),clearTimeout(a),a=0,v=0},a=setTimeout(function(){v=setInterval(u,40)},c.duration+100)),setTimeout(function(){o.scrollTo&&(r.animate(o.scrollTo,c.duration),o.scrollTo=null)},1),o._handleMouseDown(i,s)}),t.scroll.bar.on("mousedown"+n,function(s){if(1!=s.which)return!0;var i=s["x"===e?"pageX":"pageY"],c=r[h]();return t.scroll.addClass("scroll-draggable"),l(document).on("mousemove"+n,function(l){var o=parseInt((l["x"===e?"pageX":"pageY"]-i)/t.kx,10);r[h](c+o)}),o._handleMouseDown(function(){t.scroll.removeClass("scroll-draggable"),f=r[h]()},s)}))}),l.each(a,function(l,e){var o="scroll-scroll"+l+"_visible",s="x"==l?a.y:a.x;e.scroll.removeClass(o),s.scroll.removeClass(o),i.removeClass(o)}),l.each(a,function(e,o){l.extend(o,"x"==e?{offset:parseInt(r.css("left"),10)||0,size:r.prop("scrollWidth"),visible:d.width()}:{offset:parseInt(r.css("top"),10)||0,size:r.prop("scrollHeight"),visible:d.height()})}),this._updateScroll("x",this.scrollx),this._updateScroll("y",this.scrolly),l.isFunction(c.onUpdate)&&c.onUpdate.apply(this,[r]),l.each(a,function(l,e){var o="x"===l?"left":"top",s="x"===l?"outerWidth":"outerHeight",t="x"===l?"width":"height",i=parseInt(r.css(o),10)||0,n=e.size,a=e.visible+i,d=e.scroll.size[s]()+(parseInt(e.scroll.size.css(o),10)||0);c.autoScrollSize&&(e.scrollbarSize=parseInt(d*a/n,10),e.scroll.bar.css(t,e.scrollbarSize+"px")),e.scrollbarSize=e.scroll.bar[s](),e.kx=(d-e.scrollbarSize)/(n-a)||1,e.maxScrollOffset=n-a}),r.scrollLeft(h.scrollLeft).scrollTop(h.scrollTop).trigger("scroll")},_getScroll:function(e){var o={advanced:['<div class="scroll-element">','<div class="scroll-element_corner"></div>','<div class="scroll-arrow scroll-arrow_less"></div>','<div class="scroll-arrow scroll-arrow_more"></div>','<div class="scroll-element_outer">','<div class="scroll-element_size"></div>','<div class="scroll-element_inner-wrapper">','<div class="scroll-element_inner scroll-element_track">','<div class="scroll-element_inner-bottom"></div>',"</div>","</div>",'<div class="scroll-bar">','<div class="scroll-bar_body">','<div class="scroll-bar_body-inner"></div>',"</div>",'<div class="scroll-bar_bottom"></div>','<div class="scroll-bar_center"></div>',"</div>","</div>","</div>"].join(""),simple:['<div class="scroll-element">','<div class="scroll-element_outer">','<div class="scroll-element_size"></div>','<div class="scroll-element_track"></div>','<div class="scroll-bar"></div>',"</div>","</div>"].join("")};return o[e]&&(e=o[e]),e||(e=o.simple),e="string"==typeof e?l(e).appendTo(this.wrapper):l(e),l.extend(e,{bar:e.find(".scroll-bar"),size:e.find(".scroll-element_size"),track:e.find(".scroll-element_track")}),e},_handleMouseDown:function(e,o){var s=this.namespace;return l(document).on("blur"+s,function(){l(document).add("body").off(s),e&&e()}),l(document).on("dragstart"+s,function(l){return l.preventDefault(),!1}),l(document).on("mouseup"+s,function(){l(document).add("body").off(s),e&&e()}),l("body").on("selectstart"+s,function(l){return l.preventDefault(),!1}),o&&o.preventDefault(),!1},_updateScroll:function(e,o){var s=this.container,r=this.containerWrapper||s,i="scroll-scroll"+e+"_visible",n="x"===e?this.scrolly:this.scrollx,c=parseInt(this.container.css("x"===e?"left":"top"),10)||0,a=this.wrapper,d=o.size,h=o.visible+c;o.isVisible=d-h>1,o.isVisible?(o.scroll.addClass(i),n.scroll.addClass(i),r.addClass(i)):(o.scroll.removeClass(i),n.scroll.removeClass(i),r.removeClass(i)),"y"===e&&(s.is("textarea")||h>d?r.css({height:h+t.scroll.height+"px","max-height":"none"}):r.css({"max-height":h+t.scroll.height+"px"})),(o.size!=s.prop("scrollWidth")||n.size!=s.prop("scrollHeight")||o.visible!=a.width()||n.visible!=a.height()||o.offset!=(parseInt(s.css("left"),10)||0)||n.offset!=(parseInt(s.css("top"),10)||0))&&(l.extend(this.scrollx,{offset:parseInt(s.css("left"),10)||0,size:s.prop("scrollWidth"),visible:a.width()}),l.extend(this.scrolly,{offset:parseInt(s.css("top"),10)||0,size:this.container.prop("scrollHeight"),visible:a.height()}),this._updateScroll("x"===e?"y":"x",n))}};var c=n;l.fn.scrollbar=function(e,o){return"string"!=typeof e&&(o=e,e="init"),"undefined"==typeof o&&(o=[]),l.isArray(o)||(o=[o]),this.not("body, .scroll-wrapper").each(function(){var s=l(this),r=s.data(t.data.name);(r||"init"===e)&&(r||(r=new c(s)),r[e]&&r[e].apply(r,o))}),this},l.fn.scrollbar.options=i;var a=function(){var l=0,e=0;return function(o){var s,i,n,c,d,h,p;for(s=0;s<t.scrolls.length;s++)c=t.scrolls[s],i=c.container,n=c.options,d=c.wrapper,h=c.scrollx,p=c.scrolly,(o||n.autoUpdate&&d&&d.is(":visible")&&(i.prop("scrollWidth")!=h.size||i.prop("scrollHeight")!=p.size||d.width()!=h.visible||d.height()!=p.visible))&&(c.init(),n.debug&&(window.console&&console.log({scrollHeight:i.prop("scrollHeight")+":"+c.scrolly.size,scrollWidth:i.prop("scrollWidth")+":"+c.scrollx.size,visibleHeight:d.height()+":"+c.scrolly.visible,visibleWidth:d.width()+":"+c.scrollx.visible},!0),e++));r&&e>10?(window.console&&console.log("Scroll updates exceed 10"),a=function(){}):(clearTimeout(l),l=setTimeout(a,300))}}();window.angular&&!function(l){l.module("jQueryScrollbar",[]).provider("jQueryScrollbar",function(){var e=i;return{setOptions:function(o){l.extend(e,o)},$get:function(){return{options:l.copy(e)}}}}).directive("jqueryScrollbar",["jQueryScrollbar","$parse",function(l,e){return{restrict:"AC",link:function(o,s,r){var t=e(r.jqueryScrollbar),i=t(o);s.scrollbar(i||l.options).on("$destroy",function(){s.scrollbar("destroy")})}}}])}(window.angular)});
+
+
+
+
+
+
+
+
+
+
 
 /**************************************************************
- * 蹂� �뚯씪�먮뒗 MIT License �쇰줈 諛고룷�섎뒗 jquery-popup-overlay �꾨줈�앺듃��
- *  (jquery-popup-overlay-1.6.1.tar.gz/jquery-popup-overlay-1.6.1/jquery.popupoverlay.js)  �뚯뒪肄붾뱶瑜� �쇰� �ы븿�섎ŉ,
- * �대떦 �뚯뒪肄붾뱶�� ���묎텒 臾멸뎄�� �ㅼ쓬怨� 媛숈뒿�덈떎.
+ * 본 파일에는 MIT License 으로 배포되는 jquery-popup-overlay 프로젝트의
+ *  (jquery-popup-overlay-1.6.1.tar.gz/jquery-popup-overlay-1.6.1/jquery.popupoverlay.js)  소스코드를 일부 포함하며,
+ * 해당 소스코드의 저작권 문구는 다음과 같습니다.
  **************************************************************/
 
 /*!
@@ -6854,6 +6799,7 @@ imgLiquid.injectCss = '.imgLiquid img {visibility:hidden}';
  * @author Ivan Lazarevic, Vladimir Siljkovic, Branko Sekulic, Marko Jankovic
  */
 (function ($) {
+
 	var $window = $(window);
 	var options = {};
 	var zindexvalues = [];
@@ -6870,6 +6816,7 @@ imgLiquid.injectCss = '.imgLiquid img {visibility:hidden}';
 	var focusedelementbeforepopup = null;
 
 	var methods = {
+
 		_init: function (el) {
 			var $el = $(el);
 			var options = $el.data('popupoptions');
@@ -6882,7 +6829,7 @@ imgLiquid.injectCss = '.imgLiquid img {visibility:hidden}';
 			}
 
 			if (options.autoopen) {
-				setTimeout(function () {
+				setTimeout(function() {
 					methods.show(el, 0);
 				}, 0);
 			}
@@ -6904,9 +6851,7 @@ imgLiquid.injectCss = '.imgLiquid img {visibility:hidden}';
 				var parent;
 				var child;
 				if (typeof scrollbarwidth === 'undefined') {
-					parent = $('<div style="width:50px;height:50px;overflow:auto"><div/></div>').appendTo(
-						'body',
-					);
+					parent = $('<div style="width:50px;height:50px;overflow:auto"><div/></div>').appendTo('body');
 					child = parent.children();
 					scrollbarwidth = child.innerWidth() - child.height(99).innerWidth();
 					parent.remove();
@@ -6929,13 +6874,13 @@ imgLiquid.injectCss = '.imgLiquid img {visibility:hidden}';
 				opacity: 0,
 				visibility: 'hidden',
 				position: 'absolute',
-				overflow: 'auto',
+				overflow: 'auto'
 			});
 
 			$el.css({
 				opacity: 0,
 				visibility: 'hidden',
-				display: 'inline-block',
+				display: 'inline-block'
 			});
 
 			if (options.setzindex && !options.autozindex) {
@@ -6954,7 +6899,8 @@ imgLiquid.injectCss = '.imgLiquid img {visibility:hidden}';
 			// Hide popup content from screen readers initially
 			$(el).attr('aria-hidden', true);
 
-			if (options.background && !$('#' + el.id + '_background').length) {
+			if ((options.background) && (!$('#' + el.id + '_background').length)) {
+
 				var popupbackground = '<div id="' + el.id + '_background" class="popup_background"></div>';
 
 				$body.prepend(popupbackground);
@@ -6969,7 +6915,7 @@ imgLiquid.injectCss = '.imgLiquid img {visibility:hidden}';
 					top: 0,
 					right: 0,
 					bottom: 0,
-					left: 0,
+					left: 0
 				});
 
 				if (options.setzindex && !options.autozindex) {
@@ -6985,7 +6931,7 @@ imgLiquid.injectCss = '.imgLiquid img {visibility:hidden}';
 				$el.css({
 					textAlign: 'left',
 					position: 'relative',
-					verticalAlign: 'middle',
+					verticalAlign: 'middle'
 				});
 
 				$wrapper.css({
@@ -6995,7 +6941,7 @@ imgLiquid.injectCss = '.imgLiquid img {visibility:hidden}';
 					right: 0,
 					left: 0,
 					bottom: 0,
-					textAlign: 'center',
+					textAlign: 'center'
 				});
 
 				// CSS vertical align helper
@@ -7004,20 +6950,20 @@ imgLiquid.injectCss = '.imgLiquid img {visibility:hidden}';
 				$('.popup_align').css({
 					display: 'inline-block',
 					verticalAlign: 'middle',
-					height: '100%',
+					height: '100%'
 				});
 			}
 
 			// Add WAI ARIA role to announce dialog to screen readers
 			$el.attr('role', 'dialog');
 
-			var openelement = options.openelement ? options.openelement : '.' + el.id + opensuffix;
+			var openelement =  (options.openelement) ? options.openelement : ('.' + el.id + opensuffix);
 
 			$(openelement).each(function (i, item) {
 				$(item).attr('data-popup-ordinal', i);
 
 				if (!$(item).attr('id')) {
-					$(item).attr('id', 'open_' + parseInt(Math.random() * 100000000, 10));
+					$(item).attr('id', 'open_' + parseInt((Math.random() * 100000000), 10));
 				}
 			});
 
@@ -7027,12 +6973,12 @@ imgLiquid.injectCss = '.imgLiquid img {visibility:hidden}';
 			}
 
 			$(document).on('click', openelement, function (e) {
-				if (!$el.data('popup-visible')) {
+				if (!($el.data('popup-visible'))) {
 					var ord = $(this).data('popup-ordinal');
 
 					// Show element when clicked on `open` link.
 					// setTimeout is to allow `close` method to finish (for issues with multiple tooltips)
-					setTimeout(function () {
+					setTimeout(function() {
 						methods.show(el, ord);
 					}, 0);
 
@@ -7041,7 +6987,7 @@ imgLiquid.injectCss = '.imgLiquid img {visibility:hidden}';
 			});
 
 			// Handler: `close` element
-			var closeelement = options.closeelement ? options.closeelement : '.' + el.id + closesuffix;
+			var closeelement = (options.closeelement) ? options.closeelement : ('.' + el.id + closesuffix);
 			$(document).on('click', closeelement, function (e) {
 				methods.hide(el);
 				e.preventDefault();
@@ -7089,21 +7035,20 @@ imgLiquid.injectCss = '.imgLiquid img {visibility:hidden}';
 				$wrapper.show();
 			}
 
-			setTimeout(function () {
+			setTimeout(function() {
 				$wrapper.css({
 					visibility: 'visible',
-					opacity: 1,
+					opacity: 1
 				});
 
-				$('html')
-					.addClass('popup_visible')
-					.addClass('popup_visible_' + el.id);
+				$('html').addClass('popup_visible').addClass('popup_visible_' + el.id);
 				$el.addClass('popup_content_visible');
 			}, 20);
 
+
 			$el.css({
-				visibility: 'visible',
-				opacity: 1,
+				'visibility': 'visible',
+				'opacity': 1
 			});
 
 			// Disable background layer scrolling when popup is opened
@@ -7116,10 +7061,10 @@ imgLiquid.injectCss = '.imgLiquid img {visibility:hidden}';
 
 			setTimeout(function () {
 				// Set event handlers
-				if (!onevisible) {
+				if(!onevisible) {
 					if (options.keepfocus) {
-						$(document).on('focusin', focushandler);
-					}
+						$(document).on('focusin', focushandler)
+					};
 
 					if (options.blur) {
 						$(document).on('click', blurhandler);
@@ -7146,14 +7091,14 @@ imgLiquid.injectCss = '.imgLiquid img {visibility:hidden}';
 			// Show background
 			if (options.background) {
 				$background.css({
-					visibility: 'visible',
-					opacity: options.opacity,
+					'visibility': 'visible',
+					'opacity': options.opacity
 				});
 
 				// Fix IE8 issue with background not appearing
-				setTimeout(function () {
+				setTimeout(function() {
 					$background.css({
-						opacity: options.opacity,
+						'opacity': options.opacity
 					});
 				}, 0);
 			}
@@ -7163,13 +7108,14 @@ imgLiquid.injectCss = '.imgLiquid img {visibility:hidden}';
 
 			// Handler: Keep focus inside dialog box
 			if (options.keepfocus) {
+
 				// Make holder div focusable
 				$el.attr('tabindex', -1);
 
 				// Focus popup or user specified element.
 				// Initial timeout of 50ms is set to give some time to popup to show after clicking on
 				// `open` element, and after animation is complete to prevent background scrolling.
-				setTimeout(function () {
+				setTimeout(function() {
 					if (options.focuselement) {
 						$(options.focuselement).focus();
 					} else {
@@ -7178,7 +7124,7 @@ imgLiquid.injectCss = '.imgLiquid img {visibility:hidden}';
 				}, options.focusdelay);
 
 				// Handler for keyboard focus
-				focushandler = function (event) {
+				focushandler = function(event) {
 					var dialog = document.getElementById(el.id);
 					if (!dialog.contains(event.target)) {
 						event.stopPropagation();
@@ -7189,17 +7135,20 @@ imgLiquid.injectCss = '.imgLiquid img {visibility:hidden}';
 
 			// Calculating maximum z-index
 			if (options.autozindex) {
+
 				var elements = document.getElementsByTagName('*');
 				var len = elements.length;
 				var maxzindex = 0;
 
-				for (var i = 0; i < len; i++) {
+				for(var i=0; i<len; i++){
+
 					var elementzindex = $(elements[i]).css('z-index');
 
-					if (elementzindex !== 'auto') {
+					if(elementzindex !== 'auto'){
+
 						elementzindex = parseInt(elementzindex);
 
-						if (maxzindex < elementzindex) {
+						if(maxzindex < elementzindex){
 							maxzindex = elementzindex;
 						}
 					}
@@ -7210,7 +7159,7 @@ imgLiquid.injectCss = '.imgLiquid img {visibility:hidden}';
 				// Add z-index to the wrapper
 				if (zindexvalues[el.id] > 0) {
 					$wrapper.css({
-						zIndex: zindexvalues[el.id] + 2,
+						zIndex: (zindexvalues[el.id] + 2)
 					});
 				}
 
@@ -7218,7 +7167,7 @@ imgLiquid.injectCss = '.imgLiquid img {visibility:hidden}';
 				if (options.background) {
 					if (zindexvalues[el.id] > 0) {
 						$('#' + el.id + '_background').css({
-							zIndex: zindexvalues[el.id] + 1,
+							zIndex: (zindexvalues[el.id] + 1)
 						});
 					}
 				}
@@ -7227,12 +7176,7 @@ imgLiquid.injectCss = '.imgLiquid img {visibility:hidden}';
 			// Handler: Hide popup if clicked outside of it
 			if (options.blur) {
 				blurhandler = function (e) {
-					if (
-						!$(e.target)
-							.parents()
-							.andSelf()
-							.is('#' + el.id)
-					) {
+					if (!$(e.target).parents().andSelf().is('#' + el.id)) {
 						methods.hide(el);
 					}
 				};
@@ -7253,7 +7197,7 @@ imgLiquid.injectCss = '.imgLiquid img {visibility:hidden}';
 			// Reveal popup content to screen readers
 			$el.attr('aria-hidden', false);
 
-			$wrapper.one('transitionend', function () {
+			$wrapper.one('transitionend', function() {
 				callback(el, ordinal, options.opentransitionend);
 			});
 
@@ -7266,6 +7210,7 @@ imgLiquid.injectCss = '.imgLiquid img {visibility:hidden}';
 		 * @param {object} el - popup instance DOM node
 		 */
 		hide: function (el) {
+
 			var $body = $('body');
 			var $el = $(el);
 			var options = $el.data('popupoptions');
@@ -7278,9 +7223,7 @@ imgLiquid.injectCss = '.imgLiquid img {visibility:hidden}';
 				$('html').removeClass('popup_visible_' + el.id);
 				oneormorevisible = false;
 			} else {
-				$('html')
-					.removeClass('popup_visible')
-					.removeClass('popup_visible_' + el.id);
+				$('html').removeClass('popup_visible').removeClass('popup_visible_' + el.id);
 				onevisible = false;
 			}
 
@@ -7288,10 +7231,10 @@ imgLiquid.injectCss = '.imgLiquid img {visibility:hidden}';
 
 			// Re-enable scrolling of background layer
 			if (options.scrolllock) {
-				setTimeout(function () {
+				setTimeout(function() {
 					$body.css({
 						overflow: 'visible',
-						'margin-right': bodymarginright,
+						'margin-right': bodymarginright
 					});
 				}, 10); // 10ms added for CSS transition in Firefox which doesn't like overflow:auto
 			}
@@ -7302,11 +7245,12 @@ imgLiquid.injectCss = '.imgLiquid img {visibility:hidden}';
 			}
 
 			if (options.keepfocus) {
+
 				// Unbind focus handler
 				$(document).off('focusin', focushandler);
 
 				// Focus back on saved element
-				setTimeout(function () {
+				setTimeout(function() {
 					if ($(focusedelementbeforepopup).is(':visible')) {
 						focusedelementbeforepopup.focus();
 					}
@@ -7320,25 +7264,26 @@ imgLiquid.injectCss = '.imgLiquid img {visibility:hidden}';
 
 			// Hide popup
 			$wrapper.css({
-				visibility: 'hidden',
-				opacity: 0,
+				'visibility': 'hidden',
+				'opacity': 0
 			});
 			$el.css({
-				visibility: 'hidden',
-				opacity: 0,
+				'visibility': 'hidden',
+				'opacity': 0
 			});
 
 			// Hide background
 			if (options.background) {
 				$background.css({
-					visibility: 'hidden',
-					opacity: 0,
+					'visibility': 'hidden',
+					'opacity': 0
 				});
 			}
 
 			// After closing CSS transition is over... (if transition is set and supported)
-			$el.one('transitionend', function (e) {
-				if (!$el.data('popup-visible')) {
+			$el.one('transitionend', function(e) {
+
+				if (!($el.data('popup-visible'))) {
 					if (options.detach) {
 						$el.hide().detach();
 					} else {
@@ -7379,7 +7324,7 @@ imgLiquid.injectCss = '.imgLiquid img {visibility:hidden}';
 			if ($el.data('popup-visible')) {
 				methods.hide(el);
 			} else {
-				setTimeout(function () {
+				setTimeout(function() {
 					methods.show(el, ordinal);
 				}, 0);
 			}
@@ -7402,7 +7347,7 @@ imgLiquid.injectCss = '.imgLiquid img {visibility:hidden}';
 			// Tooltip type
 			if (options.type == 'tooltip') {
 				$wrapper.css({
-					position: 'absolute',
+					'position': 'absolute'
 				});
 
 				var $elementclicked;
@@ -7420,59 +7365,31 @@ imgLiquid.injectCss = '.imgLiquid img {visibility:hidden}';
 				if (options.horizontal == 'right') {
 					$wrapper.css('left', linkOffset.left + $elementclicked.outerWidth() + options.offsetleft);
 				} else if (options.horizontal == 'leftedge') {
-					$wrapper.css(
-						'left',
-						linkOffset.left +
-						$elementclicked.outerWidth() -
-						$elementclicked.outerWidth() +
-						options.offsetleft,
-					);
+					$wrapper.css('left', linkOffset.left + $elementclicked.outerWidth() - $elementclicked.outerWidth() +  options.offsetleft);
 				} else if (options.horizontal == 'left') {
-					$wrapper.css('right', $(window).width() - linkOffset.left - options.offsetleft);
+					$wrapper.css('right', $(window).width() - linkOffset.left  - options.offsetleft);
 				} else if (options.horizontal == 'rightedge') {
-					$wrapper.css(
-						'right',
-						$(window).width() - linkOffset.left - $elementclicked.outerWidth() - options.offsetleft,
-					);
+					$wrapper.css('right', $(window).width()  - linkOffset.left - $elementclicked.outerWidth() - options.offsetleft);
 				} else {
-					$wrapper.css(
-						'left',
-						linkOffset.left +
-						$elementclicked.outerWidth() / 2 -
-						$el.outerWidth() / 2 -
-						parseFloat($el.css('marginLeft')) +
-						options.offsetleft,
-					);
+					$wrapper.css('left', linkOffset.left + ($elementclicked.outerWidth() / 2) - ($el.outerWidth() / 2) - parseFloat($el.css('marginLeft')) + options.offsetleft);
 				}
 
 				// Vertical position for tooltip
 				if (options.vertical == 'bottom') {
 					$wrapper.css('top', linkOffset.top + $elementclicked.outerHeight() + options.offsettop);
 				} else if (options.vertical == 'bottomedge') {
-					$wrapper.css(
-						'top',
-						linkOffset.top + $elementclicked.outerHeight() - $el.outerHeight() + options.offsettop,
-					);
+					$wrapper.css('top', linkOffset.top + $elementclicked.outerHeight() - $el.outerHeight() + options.offsettop);
 				} else if (options.vertical == 'top') {
 					$wrapper.css('bottom', $(window).height() - linkOffset.top - options.offsettop);
 				} else if (options.vertical == 'topedge') {
-					$wrapper.css(
-						'bottom',
-						$(window).height() - linkOffset.top - $el.outerHeight() - options.offsettop,
-					);
+					$wrapper.css('bottom', $(window).height() - linkOffset.top - $el.outerHeight() - options.offsettop);
 				} else {
-					$wrapper.css(
-						'top',
-						linkOffset.top +
-						$elementclicked.outerHeight() / 2 -
-						$el.outerHeight() / 2 -
-						parseFloat($el.css('marginTop')) +
-						options.offsettop,
-					);
+					$wrapper.css('top', linkOffset.top + ($elementclicked.outerHeight() / 2) - ($el.outerHeight() / 2) - parseFloat($el.css('marginTop')) + options.offsettop);
 				}
 
 				// Overlay type
 			} else if (options.type == 'overlay') {
+
 				// Horizontal position for overlay
 				if (options.horizontal) {
 					$wrapper.css('text-align', options.horizontal);
@@ -7487,7 +7404,8 @@ imgLiquid.injectCss = '.imgLiquid img {visibility:hidden}';
 					$el.css('vertical-align', 'middle');
 				}
 			}
-		},
+		}
+
 	};
 
 	/**
@@ -7498,7 +7416,7 @@ imgLiquid.injectCss = '.imgLiquid img {visibility:hidden}';
 	 * @param {function} func - callback function
 	 */
 	var callback = function (el, ordinal, func) {
-		var openelement = options.openelement ? options.openelement : '.' + el.id + opensuffix;
+		var openelement =  (options.openelement) ? options.openelement : ('.' + el.id + opensuffix);
 		var elementclicked = $(openelement + '[data-popup-ordinal="' + ordinal + '"]');
 		if (typeof func == 'function') {
 			func(elementclicked);
@@ -7510,32 +7428,34 @@ imgLiquid.injectCss = '.imgLiquid img {visibility:hidden}';
 	 */
 	$.fn.popup = function (customoptions) {
 		return this.each(function () {
+
 			$el = $(this);
 
-			if (typeof customoptions === 'object') {
-				// e.g. $('#popup').popup({'color':'blue'})
+			if (typeof customoptions === 'object') {  // e.g. $('#popup').popup({'color':'blue'})
 				var opt = $.extend({}, $.fn.popup.defaults, customoptions);
 				$el.data('popupoptions', opt);
 				options = $el.data('popupoptions');
 
 				methods._init(this);
-			} else if (typeof customoptions === 'string') {
-				// e.g. $('#popup').popup('hide')
-				if (!$el.data('popupoptions')) {
+
+			} else if (typeof customoptions === 'string') { // e.g. $('#popup').popup('hide')
+				if (!($el.data('popupoptions'))) {
 					$el.data('popupoptions', $.fn.popup.defaults);
 					options = $el.data('popupoptions');
 				}
 
 				methods[customoptions].call(this, this);
-			} else {
-				// e.g. $('#popup').popup()
-				if (!$el.data('popupoptions')) {
+
+			} else { // e.g. $('#popup').popup()
+				if (!($el.data('popupoptions'))) {
 					$el.data('popupoptions', $.fn.popup.defaults);
 					options = $el.data('popupoptions');
 				}
 
 				methods._init(this);
+
 			}
+
 		});
 	};
 
@@ -7565,76 +7485,109 @@ imgLiquid.injectCss = '.imgLiquid img {visibility:hidden}';
 		transition: '0.3s',
 		triggerevent: null,
 		notransitiondetach: false,
-		beforeopen: function () {},
-		onclose: function () {},
-		onopen: function () {},
-		opentransitionend: function () {},
-		closetransitionend: function () {},
+		beforeopen: function(){},
+		onclose: function(){},
+		onopen: function(){},
+		opentransitionend: function(){},
+		closetransitionend: function(){}
 	};
+
 })(jQuery);
+
+
+
+
 
 /*global jQuery */
 /*!
- * Lettering.JS 0.7.0
- *
- * Copyright 2010, Dave Rupert http://daverupert.com
- * Released under the WTFPL license
- * http://sam.zoy.org/wtfpl/
- *
- * Thanks to Paul Irish - http://paulirish.com - for the feedback.
- *
- * Date: Mon Sep 20 17:14:00 2010 -0600
- */
-(function ($) {
+* Lettering.JS 0.7.0
+*
+* Copyright 2010, Dave Rupert http://daverupert.com
+* Released under the WTFPL license
+* http://sam.zoy.org/wtfpl/
+*
+* Thanks to Paul Irish - http://paulirish.com - for the feedback.
+*
+* Date: Mon Sep 20 17:14:00 2010 -0600
+*/
+(function($){
 	function injector(t, splitter, klass, after) {
-		var text = t.text(),
-			a = text.split(splitter),
-			inject = '';
+		var text = t.text()
+			, a = text.split(splitter)
+			, inject = '';
 		if (a.length) {
-			$(a).each(function (i, item) {
-				inject +=
-					'<span class="' + klass + (i + 1) + '" aria-hidden="true">' + item + '</span>' + after;
+			$(a).each(function(i, item) {
+				inject += '<span class="'+klass+(i+1)+'" aria-hidden="true">'+item+'</span>'+after;
 			});
-			t.attr('aria-label', text).empty().append(inject);
+			t.attr('aria-label',text)
+				.empty()
+				.append(inject)
+
 		}
 	}
 
+
 	var methods = {
-		init: function () {
-			return this.each(function () {
+		init : function() {
+
+			return this.each(function() {
 				injector($(this), '', 'char', '');
 			});
+
 		},
 
-		words: function () {
-			return this.each(function () {
+		words : function() {
+
+			return this.each(function() {
 				injector($(this), ' ', 'word', ' ');
 			});
+
 		},
 
-		lines: function () {
-			return this.each(function () {
-				var r = 'eefec303079ad17405c889e092e105b0';
+		lines : function() {
+
+			return this.each(function() {
+				var r = "eefec303079ad17405c889e092e105b0";
 				// Because it's hard to split a <br/> tag consistently across browsers,
 				// (*ahem* IE *ahem*), we replace all <br/> instances with an md5 hash
 				// (of the word "split").  If you're trying to use this plugin on that
 				// md5 hash string, it will fail because you're being ridiculous.
-				injector($(this).children('br').replaceWith(r).end(), r, 'line', '');
+				injector($(this).children("br").replaceWith(r).end(), r, 'line', '');
 			});
-		},
+
+		}
 	};
 
-	$.fn.lettering = function (method) {
+	$.fn.lettering = function( method ) {
 		// Method calling logic
-		if (method && methods[method]) {
-			return methods[method].apply(this, [].slice.call(arguments, 1));
-		} else if (method === 'letters' || !method) {
-			return methods.init.apply(this, [].slice.call(arguments, 0)); // always pass an array
+		if ( method && methods[method] ) {
+			return methods[ method ].apply( this, [].slice.call( arguments, 1 ));
+		} else if ( method === 'letters' || ! method ) {
+			return methods.init.apply( this, [].slice.call( arguments, 0 ) ); // always pass an array
 		}
-		$.error('Method ' + method + ' does not exist on jQuery.lettering');
+		$.error( 'Method ' +  method + ' does not exist on jQuery.lettering' );
 		return this;
 	};
+
 })(jQuery);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 ///////////////////////////////////////////////
 /*
@@ -7643,7 +7596,8 @@ imgLiquid.injectCss = '.imgLiquid img {visibility:hidden}';
  * @author https://github.com/kottenator
  * @version 0.6.0
  */
-(function ($) {
+(function($){
+
 	$.circleProgress = {
 		// Default options (you may override them)
 		defaults: {
@@ -7684,7 +7638,7 @@ imgLiquid.injectCss = '.imgLiquid img {visibility:hidden}';
 			 *     - { color: 'lime', image: 'http://i.imgur.com/pT0i89v.png' } - color displayed until the image is loaded
 			 */
 			fill: {
-				gradient: ['#3aeabb', '#fdd250'],
+				gradient: ['#3aeabb', '#fdd250']
 			},
 
 			/**
@@ -7698,15 +7652,16 @@ imgLiquid.injectCss = '.imgLiquid img {visibility:hidden}';
 			 */
 			animation: {
 				duration: 1200,
-				easing: 'circleProgressEasing',
-			},
-		},
+				easing: 'circleProgressEasing'
+			}
+		}
 	};
 
-	// Renamed ease-in-out-cubic
-	$.easing.circleProgressEasing = function (x, t, b, c, d) {
-		if ((t /= d / 2) < 1) return (c / 2) * t * t * t + b;
-		return (c / 2) * ((t -= 2) * t * t + 2) + b;
+// Renamed ease-in-out-cubic
+	$.easing.circleProgressEasing = function(x, t, b, c, d) {
+		if ((t /= d / 2) < 1)
+			return c / 2 * t * t * t + b;
+		return c / 2 * ((t -= 2) * t * t + 2) + b;
 	};
 
 	/**
@@ -7727,12 +7682,13 @@ imgLiquid.injectCss = '.imgLiquid img {visibility:hidden}';
 	 *                `animation` may be set to false;
 	 *                you may also use .circleProgress('widget') to get the canvas
 	 */
-	$.fn.circleProgress = function (options) {
-		if (options == 'widget') return this.data('circle-progress');
+	$.fn.circleProgress = function(options) {
+		if (options == 'widget')
+			return this.data('circle-progress');
 
 		options = $.extend({}, $.circleProgress.defaults, options);
 
-		return this.each(function () {
+		return this.each(function() {
 			var el = $(this),
 				size = options.size,
 				radius = size / 2,
@@ -7742,7 +7698,8 @@ imgLiquid.injectCss = '.imgLiquid img {visibility:hidden}';
 				emptyArcFill = options.emptyFill,
 				arcFill;
 
-			if ($.isNumeric(options.thickness)) thickness = options.thickness;
+			if ($.isNumeric(options.thickness))
+				thickness = options.thickness;
 
 			// Prepare canvas
 			var canvas = el.data('circle-progress');
@@ -7757,9 +7714,11 @@ imgLiquid.injectCss = '.imgLiquid img {visibility:hidden}';
 
 			var ctx = canvas.getContext('2d');
 
-			if (!options.fill) throw Error('The fill is not specified!');
+			if (!options.fill)
+				throw Error("The fill is not specified!");
 
-			if (options.fill.color) arcFill = options.fill.color;
+			if (options.fill.color)
+				arcFill = options.fill.color;
 
 			if (options.fill.gradient) {
 				var gr = options.fill.gradient;
@@ -7767,7 +7726,8 @@ imgLiquid.injectCss = '.imgLiquid img {visibility:hidden}';
 					arcFill = gr[0];
 				} else if (gr.length > 1) {
 					var lg = ctx.createLinearGradient(0, 0, size, 0);
-					for (var i = 0; i < gr.length; i++) lg.addColorStop(i / (gr.length - 1), gr[i]);
+					for (var i = 0; i < gr.length; i++)
+						lg.addColorStop(i / (gr.length - 1), gr[i]);
 					arcFill = lg;
 				}
 			}
@@ -7775,7 +7735,7 @@ imgLiquid.injectCss = '.imgLiquid img {visibility:hidden}';
 			if (options.fill.image) {
 				var img = new Image();
 				img.src = options.fill.image;
-				img.onload = function () {
+				img.onload = function() {
 					var bg = $('<canvas>')[0];
 					bg.width = size;
 					bg.height = size;
@@ -7783,12 +7743,15 @@ imgLiquid.injectCss = '.imgLiquid img {visibility:hidden}';
 					arcFill = ctx.createPattern(bg, 'no-repeat');
 
 					// we need to redraw static value
-					if (!options.animation) draw(value);
-				};
+					if (!options.animation)
+						draw(value);
+				}
 			}
 
-			if (options.animation) drawAnimated(value);
-			else draw(value);
+			if (options.animation)
+				drawAnimated(value);
+			else
+				draw(value);
 
 			function draw(v) {
 				ctx.clearRect(0, 0, size, size);
@@ -7797,6 +7760,7 @@ imgLiquid.injectCss = '.imgLiquid img {visibility:hidden}';
 			}
 
 			function drawArc(v) {
+
 				ctx.save();
 				ctx.beginPath();
 				ctx.arc(radius, radius, radius - thickness / 2, startAngle, startAngle + Math.PI * 2 * v);
@@ -7810,15 +7774,10 @@ imgLiquid.injectCss = '.imgLiquid img {visibility:hidden}';
 				ctx.save();
 				if (v < 1) {
 					ctx.beginPath();
-					if (v <= 0) ctx.arc(radius, radius, radius - thickness / 2, 0, Math.PI * 2);
+					if (v <= 0)
+						ctx.arc(radius, radius, radius - thickness / 2, 0, Math.PI * 2);
 					else
-						ctx.arc(
-							radius,
-							radius,
-							radius - thickness / 2,
-							startAngle + Math.PI * 2 * v,
-							startAngle,
-						);
+						ctx.arc(radius, radius, radius - thickness / 2, startAngle + Math.PI * 2 * v, startAngle);
 					ctx.lineWidth = thickness;
 					ctx.strokeStyle = emptyArcFill;
 					ctx.stroke();
@@ -7829,32 +7788,35 @@ imgLiquid.injectCss = '.imgLiquid img {visibility:hidden}';
 			function drawAnimated(v) {
 				el.trigger('circle-animation-start');
 
-				$(canvas)
-					.css({ progress: 0 })
-					.animate(
-						{ progress: v },
-						$.extend({}, options.animation, {
-							step: function (p) {
-								draw(p);
-								el.trigger('circle-animation-progress', [p / v, p]);
-							},
+				$(canvas).css({ progress: 0 }).animate({ progress: v },
+					$.extend({}, options.animation, {
+						step: function(p) {
+							draw(p);
+							el.trigger('circle-animation-progress', [p / v, p]);
+						},
 
-							complete: function () {
-								el.trigger('circle-animation-end');
-							},
-						}),
-					);
+						complete: function() {
+							el.trigger('circle-animation-end');
+						}
+					})
+				);
 			}
+
 
 			var innerHeight = window.innerHeight;
 			var offsetHeight = document.body.offsetHeight;
 			var netHeight = offsetHeight - innerHeight;
 
-			$(window).on('scroll', function () {
+			$(window).on("scroll", function () {
+
 				var getOffset = window.pageYOffset || document.documentElement.scrollTop;
 				var per = Math.max(0, Math.min(1, getOffset / netHeight));
 				draw(per);
 			});
+
+
+
 		});
 	};
+
 })(jQuery);
