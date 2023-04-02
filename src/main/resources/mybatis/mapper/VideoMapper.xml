@@ -1,38 +1,39 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.co.velysound.mapper.VideoMapper">
 
-<mapper namespace="com.vely.back.mapper.VideoMapper">
-    <!-- 비디오 목록 조회 -->
-    <select id="getListVideo" parameterType="paramMap" resultType="resultMap">
-        /* 비디오 목록 조회 : SheetMapper.getListVideo */
-        SELECT
-            @ROWNUM:= @ROWNUM + 1 AS RN,
-            T1.*,
-            COUNT(*) OVER() AS FULL_COUNT
-        FROM (
-            SELECT
-                T1.*
-                , T2.SHEET_ORIGINAL_KEY
-                , T2.SHEET_KEYS
-            FROM VIDEO T1
-                LEFT JOIN SHEET T2 ON T1.SHEET_ID = T2.SHEET_ID AND T2.DELETE_YN = 'N'
-            WHERE T1.DELETE_YN = 'N'
-            <if test='categoryCode != null and categoryCode != ""'>
-                AND T1.CATEGORY_CODE = #{categoryCode}
-            </if>
-            <if test='displayType != null and displayType != ""'>
-                AND T1.DISPLAY_TYPE LIKE CONCAT('%',#{displayType},'%')
-            </if>
-            <if test='keyword != null and keyword != ""'>
-                AND UPPER(T1.VIDEO_TITLE) LIKE CONCAT('%',UPPER(#{keyword}),'%')
-            </if>
-        ) T1, (SELECT @ROWNUM:=0) RN_TB
-        <if test='sort == null or sort == ""'>ORDER BY T1.REG_DT DESC</if>
-        <if test='sort != null and sort == "regd"'>ORDER BY T1.REG_DT DESC</if>
-        <if test='sort != null and sort == "favt"'>ORDER BY T1.REG_DT DESC</if>
-        <if test='sort != null and sort == "name"'>ORDER BY T1.VIDEO_TITLE</if>
-        <if test='paging != null and paging != ""'>
-            LIMIT #{paging.start}, #{paging.size}
-        </if>
-    </select>
+	<!-- 비디오 목록 조회 -->
+	<select id="getList" parameterType="moMap" resultType="moMap">
+		/* 비디오 목록 조회 : VideoMapper.getList */
+		SELECT
+		@ROWNUM:= @ROWNUM + 1 AS RN,
+		T1.*,
+		COUNT(*) OVER() AS FULL_COUNT
+		FROM (
+		SELECT
+		T1.*
+		, T2.SHEET_ORIGINAL_KEY
+		, T2.SHEET_KEYS
+		FROM VIDEO T1
+		LEFT JOIN SHEET T2 ON T1.SHEET_ID = T2.SHEET_ID AND T2.DELETE_YN = 'N'
+		WHERE T1.DELETE_YN = 'N'
+		<if test='categoryCode != null and categoryCode != ""'>
+			AND T1.CATEGORY_CODE = #{categoryCode}
+		</if>
+		<if test='displayType != null and displayType != ""'>
+			AND T1.DISPLAY_TYPE LIKE CONCAT('%',#{displayType},'%')
+		</if>
+		<if test='keyword != null and keyword != ""'>
+			AND UPPER(T1.VIDEO_TITLE) LIKE CONCAT('%',UPPER(#{keyword}),'%')
+		</if>
+		) T1, (SELECT @ROWNUM:=0) RN_TB
+		<if test='sort == null or sort == ""'>ORDER BY T1.REG_DT DESC</if>
+		<if test='sort != null and sort == "regd"'>ORDER BY T1.REG_DT DESC</if>
+		<if test='sort != null and sort == "favt"'>ORDER BY T1.REG_DT DESC</if>
+		<if test='sort != null and sort == "name"'>ORDER BY T1.VIDEO_TITLE</if>
+		<if test='paging != null and paging != ""'>
+			LIMIT #{paging.start}, #{paging.size}
+		</if>
+	</select>
+	
 </mapper>

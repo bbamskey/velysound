@@ -2,36 +2,35 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="com.vely.back.mapper.AccountMapper">
-    <!-- 계정 정보 조회 -->
-    <select id="getOneAccount" parameterType="paramMap" resultType="resultMap">
-        /* 계정 정보 조회 : AccountMapper.getOneAccount */
-        SELECT
-            T1.*
-        FROM ACCOUNT T1
-        WHERE USER_NUM = #{userNum}
-    </select>
+	<!-- 계정 정보 조회 -->
+	<select id="getOneAccount" parameterType="moMap" resultType="moMap">
+		/* 계정 정보 조회 : AccountMapper.getOneAccount */
+		SELECT T1.*
+		FROM ACCOUNT T1
+		WHERE USER_NUM = #{userNum}
+	</select>
 
-    <!-- 계정 정보 변경 -->
-    <update id="updateAccount" parameterType="paramMap">
-        /* 계정 정보 변경 : AccountMapper.updateAccount */
-        UPDATE ACCOUNT
-        SET ALT_ID = #{userNum}
-            , ALT_DT = NOW()
-        <if test='nickname != null and nickname != ""'>
-            , NICKNAME = #{nickname}
-        </if>
-        <if test='password != null and password != ""'>
-            , PASSWORD = #{password}
-        </if>
-        <if test='autoLogin != null and autoLogin != ""'>
-            , AUTO_LOGIN = #{autoLogin}
-        </if>
-        <if test='sleepStatus != null and sleepStatus != ""'>
-            , SLEEP_STATUS = #{sleepStatus}
-        </if>
-        <if test='deleteYn != null and deleteYn != ""'>
-            , DELETE_YN = #{deleteYn}
-        </if>
-        WHERE USER_NUM = #{userNum}
-    </update>
+	<!-- 계정 정보 변경 -->
+	<update id="updateAccount" parameterType="moMap">
+		/* 계정 정보 변경 : AccountMapper.updateAccount */
+		UPDATE ACCOUNT
+		SET ALT_ID = #{userNum}
+		, ALT_DT = NOW()
+		<if test='nickname != null and nickname != ""'>
+			, NICKNAME = #{nickname}
+		</if>
+		<if test='password != null and password != ""'>
+			, PASSWORD = #{password}
+		</if>
+		<if test='autoLogin != null and autoLogin != ""'>
+			, AUTO_LOGIN = #{autoLogin}
+		</if>
+		<if test='sleepStatus != null and sleepStatus != ""'>
+			, SLEEP_STATUS = #{sleepStatus}
+		</if>
+		<if test='deleteYn != null and deleteYn != ""'>
+			, DELETE_YN = #{deleteYn}
+		</if>
+		WHERE USER_NUM = #{userNum}
+	</update>
 </mapper>

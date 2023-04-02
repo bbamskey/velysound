@@ -15,10 +15,11 @@
 	<link rel="stylesheet" type="text/css" href="/assets/css/style.css"/>
 
 	<script src="https://code.jquery.com/jquery-3.6.0.js"></script>
-	<script src="/assets/js/sample.js"></script>
-	<script src="/assets/js/swiper.min.js"></script>
-	<script src="/assets/js/template2.js"></script>
-	<script src="/assets/js/ui.js"></script>
+	<script src="/assets/js/ui/swiper.min.js"></script>
+	<script src="/assets/js/ui/template2.js"></script>
+	<script src="/assets/js/ui/ui.js"></script>
+
+	<script src="/assets/js/util/ajaxUtil.js"></script>
 </head>
 <body>
 <div id="wrap">

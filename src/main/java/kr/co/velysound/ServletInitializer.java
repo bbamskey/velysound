@@ -1,5 +1,6 @@
 package kr.co.velysound;
 
+import kr.co.velysound.controller.ViewController;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.boot.web.servlet.support.SpringBootServletInitializer;
 
