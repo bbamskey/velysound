@@ -113,7 +113,7 @@
 	<div class="cont_area bg">
 		<!-- Products -->
 		<div class="cont">
-			<h1 class="b_tit">Products</h1>
+			<h1 class="b_tit">Sheets</h1>
 
 			<!-- thumb_list_wrap -->
 			<div class="thumb_list_wrap">

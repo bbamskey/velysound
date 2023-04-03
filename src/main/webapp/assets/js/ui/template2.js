@@ -1,4 +1,7 @@
 /*** Layout **/
+
+let thumbListSwiperCont = [];
+
 $(function () {
 
 	$(window).resize(resizeBox).resize();
@@ -393,13 +396,14 @@ $(function () {
 
 function thumbListSwiper() {
 	var $target = $('.thumb_list_cont');
+	let idx = 0;
 	$target.each(function (index, element) {
 		var $parent = $(this).parent('.thumb_list_wrap');
 		var slideOption = {
 			spaceBetween: 36,
 			observer: true,
 			observeParents: true,
-			loop: true,
+			loop: false,
 			slidesPerView: 4,
 			spaceBetween: 30,
 			breakpoints: {
@@ -421,7 +425,9 @@ function thumbListSwiper() {
 		};
 
 		//if($parent.find('.swiper-slide').length > 4) {
-		thumbListSwiperCont = new Swiper(this, slideOption);
+		const sc = new Swiper(this, slideOption);
+		//thumbListSwiperCont.push({[idx++]: sc});
+		thumbListSwiperCont.push(sc);
 		$parent.addClass('swiper-on');
 		//}
 	});

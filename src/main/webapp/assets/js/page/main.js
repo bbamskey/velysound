@@ -9,7 +9,7 @@ const mainJs = {
 		me.getVideos("M1"); //V:비디오, S:악보, M1:메인비디오, M2:메인악보1, M3:메인악보2
 
 		me.getSheets("M2", "mainSheet1Ul");
-		
+
 		me.getSheets("M3", "mainSheet2Ul");
 
 	},
@@ -28,6 +28,11 @@ const mainJs = {
 		};
 		const list = getSheet.list({dataType: 'html'}, paramData, function (result) {
 			$(`#${appendId}`).html(result);
+			setTimeout(() => {
+				thumbListSwiperCont.forEach((item) => {
+					item.slideTo(0);
+				});
+			}, 0);
 		});
 	}
 }
