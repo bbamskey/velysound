@@ -583,11 +583,11 @@ $(function () {
 		$('.video_item').addClass('chk');
 	}
 
-	$('.video_link').click(function (e) {
-		e.preventDefault();
-		$(this).closest('.video_item').addClass('chk');
-		$(this).closest('.video_item').find('iframe')[0].src += '?autoplay=1';
-	});
+	// $('.video_link').click(function (e) {
+	// 	e.preventDefault();
+	// 	$(this).closest('.video_item').addClass('chk');
+	// 	$(this).closest('.video_item').find('iframe')[0].src += '?autoplay=1';
+	// });
 });
 
 

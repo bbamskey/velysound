@@ -39,7 +39,7 @@
 
 				<div class="swiper-slide">
 					<p class="mb_bg">
-						<img src="/assets/images/banner/forest.jpg" alt=""/>
+						<img src="/assets/images/banner/forest.jpg" alt="" />
 					</p>
 					<div class="txt">
 						<dl>
@@ -48,14 +48,16 @@
 								<p class="tit02">VELY SOUND</p>
 							</dt>
 							<dd class="s1">
-								블라사운드에 방문해 주셔서<br/>정말 감사합니다 :)
+								블라사운드에 방문해 주셔서
+								<br />
+								정말 감사합니다 :)
 							</dd>
 						</dl>
 					</div>
 				</div>
 				<div class="swiper-slide">
 					<p class="mb_bg">
-						<img src="/assets/images/banner/guitar.jpg" alt=""/>
+						<img src="/assets/images/banner/guitar.jpg" alt="" />
 					</p>
 					<div class="txt">
 						<dl>
@@ -64,7 +66,11 @@
 								<p class="tit02">PLAY & FUN</p>
 							</dt>
 							<dd class="s1">
-								당신의 삶을<br/>최고로 멋지게 연주하고<br/>최선을 다해 즐기세요 :)
+								당신의 삶을
+								<br />
+								최고로 멋지게 연주하고
+								<br />
+								최선을 다해 즐기세요 :)
 							</dd>
 						</dl>
 					</div>
@@ -88,16 +94,15 @@
 	<div class="cont_area">
 		<!-- Video -->
 		<div class="cont">
-			<h2 class="b_tit">Video</h2>
+			<h2 class="b_tit">Videos</h2>
 
 			<!-- video_list -->
-			<ul class="video_list" id="mainVideoUl">
-			</ul>
+			<ul class="video_list" id="mainVideoUl"></ul>
 			<!-- //video_list -->
 
 			<!-- btn_area -->
 			<div class="btn_area">
-				<button class="btn_more_view_box">
+				<button class="btn_more_view_box" onclick="javascript: window.location.href='https://www.youtube.com/@VELYSOUND'">
 					<strong>Watch More
 						<em></em>
 					</strong>
@@ -119,8 +124,7 @@
 			<div class="thumb_list_wrap">
 				<!-- thumb_list_cont -->
 				<div class="thumb_list_cont thumb_list">
-					<ul class="swiper-wrapper" id="mainSheet1Ul">
-					</ul>
+					<ul class="swiper-wrapper" id="mainSheet1Ul"></ul>
 				</div>
 				<!-- //thumb_list_cont -->
 
@@ -137,8 +141,7 @@
 			<div class="thumb_list_wrap">
 				<!-- thumb_list_cont -->
 				<div class="thumb_list_cont thumb_list">
-					<ul class="swiper-wrapper" id="mainSheet2Ul">
-					</ul>
+					<ul class="swiper-wrapper" id="mainSheet2Ul"></ul>
 				</div>
 				<!-- //thumb_list_cont -->
 

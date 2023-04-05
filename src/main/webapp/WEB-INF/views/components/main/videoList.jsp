@@ -6,13 +6,11 @@
 <c:forEach items="${items}" var="v">
 	<li>
 		<div class="video_item">
-			<iframe class="evt_video" src="${v.videoLink}"
-			        title="YouTube video player" frameborder="0"
-			        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-			        allowfullscreen muted></iframe>
+			<iframe class="evt_video" src="${v.videoLink}" title="YouTube video player" frameborder="0"
+			        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen muted></iframe>
 			<c:if test="${v.videoThumbPath ne null}">
 				<p class="video_img">
-					<img src="${v.videoThumbPath}" alt=""/>
+					<img src="${v.videoThumbPath}" alt="" />
 				</p>
 				<a href="#" class="video_link"></a>
 			</c:if>
